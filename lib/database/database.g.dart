@@ -3,12 +3,11 @@
 part of 'database.dart';
 
 // ignore_for_file: type=lint
-class $GroupTableTable extends GroupTable
-    with TableInfo<$GroupTableTable, GroupTableData> {
+class $GroupsTable extends Groups with TableInfo<$GroupsTable, Group> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
-  $GroupTableTable(this.attachedDatabase, [this._alias]);
+  $GroupsTable(this.attachedDatabase, [this._alias]);
   static const VerificationMeta _idMeta = const VerificationMeta('id');
   @override
   late final GeneratedColumn<int> id = GeneratedColumn<int>(
@@ -37,9 +36,9 @@ class $GroupTableTable extends GroupTable
   String get aliasedName => _alias ?? actualTableName;
   @override
   String get actualTableName => $name;
-  static const String $name = 'group_table';
+  static const String $name = 'groups';
   @override
-  VerificationContext validateIntegrity(Insertable<GroupTableData> instance,
+  VerificationContext validateIntegrity(Insertable<Group> instance,
       {bool isInserting = false}) {
     final context = VerificationContext();
     final data = instance.toColumns(true);
@@ -64,9 +63,9 @@ class $GroupTableTable extends GroupTable
   @override
   Set<GeneratedColumn> get $primaryKey => {id};
   @override
-  GroupTableData map(Map<String, dynamic> data, {String? tablePrefix}) {
+  Group map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return GroupTableData(
+    return Group(
       id: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
       name: attachedDatabase.typeMapping
@@ -77,17 +76,16 @@ class $GroupTableTable extends GroupTable
   }
 
   @override
-  $GroupTableTable createAlias(String alias) {
-    return $GroupTableTable(attachedDatabase, alias);
+  $GroupsTable createAlias(String alias) {
+    return $GroupsTable(attachedDatabase, alias);
   }
 }
 
-class GroupTableData extends DataClass implements Insertable<GroupTableData> {
+class Group extends DataClass implements Insertable<Group> {
   final int id;
   final String name;
   final String day;
-  const GroupTableData(
-      {required this.id, required this.name, required this.day});
+  const Group({required this.id, required this.name, required this.day});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -97,18 +95,18 @@ class GroupTableData extends DataClass implements Insertable<GroupTableData> {
     return map;
   }
 
-  GroupTableCompanion toCompanion(bool nullToAbsent) {
-    return GroupTableCompanion(
+  GroupsCompanion toCompanion(bool nullToAbsent) {
+    return GroupsCompanion(
       id: Value(id),
       name: Value(name),
       day: Value(day),
     );
   }
 
-  factory GroupTableData.fromJson(Map<String, dynamic> json,
+  factory Group.fromJson(Map<String, dynamic> json,
       {ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
-    return GroupTableData(
+    return Group(
       id: serializer.fromJson<int>(json['id']),
       name: serializer.fromJson<String>(json['name']),
       day: serializer.fromJson<String>(json['day']),
@@ -124,14 +122,13 @@ class GroupTableData extends DataClass implements Insertable<GroupTableData> {
     };
   }
 
-  GroupTableData copyWith({int? id, String? name, String? day}) =>
-      GroupTableData(
+  Group copyWith({int? id, String? name, String? day}) => Group(
         id: id ?? this.id,
         name: name ?? this.name,
         day: day ?? this.day,
       );
-  GroupTableData copyWithCompanion(GroupTableCompanion data) {
-    return GroupTableData(
+  Group copyWithCompanion(GroupsCompanion data) {
+    return Group(
       id: data.id.present ? data.id.value : this.id,
       name: data.name.present ? data.name.value : this.name,
       day: data.day.present ? data.day.value : this.day,
@@ -140,7 +137,7 @@ class GroupTableData extends DataClass implements Insertable<GroupTableData> {
 
   @override
   String toString() {
-    return (StringBuffer('GroupTableData(')
+    return (StringBuffer('Group(')
           ..write('id: $id, ')
           ..write('name: $name, ')
           ..write('day: $day')
@@ -153,28 +150,28 @@ class GroupTableData extends DataClass implements Insertable<GroupTableData> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is GroupTableData &&
+      (other is Group &&
           other.id == this.id &&
           other.name == this.name &&
           other.day == this.day);
 }
 
-class GroupTableCompanion extends UpdateCompanion<GroupTableData> {
+class GroupsCompanion extends UpdateCompanion<Group> {
   final Value<int> id;
   final Value<String> name;
   final Value<String> day;
-  const GroupTableCompanion({
+  const GroupsCompanion({
     this.id = const Value.absent(),
     this.name = const Value.absent(),
     this.day = const Value.absent(),
   });
-  GroupTableCompanion.insert({
+  GroupsCompanion.insert({
     this.id = const Value.absent(),
     required String name,
     required String day,
   })  : name = Value(name),
         day = Value(day);
-  static Insertable<GroupTableData> custom({
+  static Insertable<Group> custom({
     Expression<int>? id,
     Expression<String>? name,
     Expression<String>? day,
@@ -186,9 +183,9 @@ class GroupTableCompanion extends UpdateCompanion<GroupTableData> {
     });
   }
 
-  GroupTableCompanion copyWith(
+  GroupsCompanion copyWith(
       {Value<int>? id, Value<String>? name, Value<String>? day}) {
-    return GroupTableCompanion(
+    return GroupsCompanion(
       id: id ?? this.id,
       name: name ?? this.name,
       day: day ?? this.day,
@@ -212,7 +209,7 @@ class GroupTableCompanion extends UpdateCompanion<GroupTableData> {
 
   @override
   String toString() {
-    return (StringBuffer('GroupTableCompanion(')
+    return (StringBuffer('GroupsCompanion(')
           ..write('id: $id, ')
           ..write('name: $name, ')
           ..write('day: $day')
@@ -221,12 +218,11 @@ class GroupTableCompanion extends UpdateCompanion<GroupTableData> {
   }
 }
 
-class $WorkoutTableTable extends WorkoutTable
-    with TableInfo<$WorkoutTableTable, WorkoutTableData> {
+class $WorkoutsTable extends Workouts with TableInfo<$WorkoutsTable, Workout> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
-  $WorkoutTableTable(this.attachedDatabase, [this._alias]);
+  $WorkoutsTable(this.attachedDatabase, [this._alias]);
   static const VerificationMeta _idMeta = const VerificationMeta('id');
   @override
   late final GeneratedColumn<int> id = GeneratedColumn<int>(
@@ -251,16 +247,16 @@ class $WorkoutTableTable extends WorkoutTable
       type: DriftSqlType.int,
       requiredDuringInsert: true,
       defaultConstraints:
-          GeneratedColumn.constraintIsAlways('REFERENCES group_table (id)'));
+          GeneratedColumn.constraintIsAlways('REFERENCES "groups" (id)'));
   @override
   List<GeneratedColumn> get $columns => [id, name, group];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
   String get actualTableName => $name;
-  static const String $name = 'workout_table';
+  static const String $name = 'workouts';
   @override
-  VerificationContext validateIntegrity(Insertable<WorkoutTableData> instance,
+  VerificationContext validateIntegrity(Insertable<Workout> instance,
       {bool isInserting = false}) {
     final context = VerificationContext();
     final data = instance.toColumns(true);
@@ -285,9 +281,9 @@ class $WorkoutTableTable extends WorkoutTable
   @override
   Set<GeneratedColumn> get $primaryKey => {id};
   @override
-  WorkoutTableData map(Map<String, dynamic> data, {String? tablePrefix}) {
+  Workout map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return WorkoutTableData(
+    return Workout(
       id: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
       name: attachedDatabase.typeMapping
@@ -298,18 +294,16 @@ class $WorkoutTableTable extends WorkoutTable
   }
 
   @override
-  $WorkoutTableTable createAlias(String alias) {
-    return $WorkoutTableTable(attachedDatabase, alias);
+  $WorkoutsTable createAlias(String alias) {
+    return $WorkoutsTable(attachedDatabase, alias);
   }
 }
 
-class WorkoutTableData extends DataClass
-    implements Insertable<WorkoutTableData> {
+class Workout extends DataClass implements Insertable<Workout> {
   final int id;
   final String name;
   final int group;
-  const WorkoutTableData(
-      {required this.id, required this.name, required this.group});
+  const Workout({required this.id, required this.name, required this.group});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -319,18 +313,18 @@ class WorkoutTableData extends DataClass
     return map;
   }
 
-  WorkoutTableCompanion toCompanion(bool nullToAbsent) {
-    return WorkoutTableCompanion(
+  WorkoutsCompanion toCompanion(bool nullToAbsent) {
+    return WorkoutsCompanion(
       id: Value(id),
       name: Value(name),
       group: Value(group),
     );
   }
 
-  factory WorkoutTableData.fromJson(Map<String, dynamic> json,
+  factory Workout.fromJson(Map<String, dynamic> json,
       {ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
-    return WorkoutTableData(
+    return Workout(
       id: serializer.fromJson<int>(json['id']),
       name: serializer.fromJson<String>(json['name']),
       group: serializer.fromJson<int>(json['group']),
@@ -346,14 +340,13 @@ class WorkoutTableData extends DataClass
     };
   }
 
-  WorkoutTableData copyWith({int? id, String? name, int? group}) =>
-      WorkoutTableData(
+  Workout copyWith({int? id, String? name, int? group}) => Workout(
         id: id ?? this.id,
         name: name ?? this.name,
         group: group ?? this.group,
       );
-  WorkoutTableData copyWithCompanion(WorkoutTableCompanion data) {
-    return WorkoutTableData(
+  Workout copyWithCompanion(WorkoutsCompanion data) {
+    return Workout(
       id: data.id.present ? data.id.value : this.id,
       name: data.name.present ? data.name.value : this.name,
       group: data.group.present ? data.group.value : this.group,
@@ -362,7 +355,7 @@ class WorkoutTableData extends DataClass
 
   @override
   String toString() {
-    return (StringBuffer('WorkoutTableData(')
+    return (StringBuffer('Workout(')
           ..write('id: $id, ')
           ..write('name: $name, ')
           ..write('group: $group')
@@ -375,28 +368,28 @@ class WorkoutTableData extends DataClass
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is WorkoutTableData &&
+      (other is Workout &&
           other.id == this.id &&
           other.name == this.name &&
           other.group == this.group);
 }
 
-class WorkoutTableCompanion extends UpdateCompanion<WorkoutTableData> {
+class WorkoutsCompanion extends UpdateCompanion<Workout> {
   final Value<int> id;
   final Value<String> name;
   final Value<int> group;
-  const WorkoutTableCompanion({
+  const WorkoutsCompanion({
     this.id = const Value.absent(),
     this.name = const Value.absent(),
     this.group = const Value.absent(),
   });
-  WorkoutTableCompanion.insert({
+  WorkoutsCompanion.insert({
     this.id = const Value.absent(),
     required String name,
     required int group,
   })  : name = Value(name),
         group = Value(group);
-  static Insertable<WorkoutTableData> custom({
+  static Insertable<Workout> custom({
     Expression<int>? id,
     Expression<String>? name,
     Expression<int>? group,
@@ -408,9 +401,9 @@ class WorkoutTableCompanion extends UpdateCompanion<WorkoutTableData> {
     });
   }
 
-  WorkoutTableCompanion copyWith(
+  WorkoutsCompanion copyWith(
       {Value<int>? id, Value<String>? name, Value<int>? group}) {
-    return WorkoutTableCompanion(
+    return WorkoutsCompanion(
       id: id ?? this.id,
       name: name ?? this.name,
       group: group ?? this.group,
@@ -434,7 +427,7 @@ class WorkoutTableCompanion extends UpdateCompanion<WorkoutTableData> {
 
   @override
   String toString() {
-    return (StringBuffer('WorkoutTableCompanion(')
+    return (StringBuffer('WorkoutsCompanion(')
           ..write('id: $id, ')
           ..write('name: $name, ')
           ..write('group: $group')
@@ -443,12 +436,11 @@ class WorkoutTableCompanion extends UpdateCompanion<WorkoutTableData> {
   }
 }
 
-class $EntryTableTable extends EntryTable
-    with TableInfo<$EntryTableTable, EntryTableData> {
+class $EntriesTable extends Entries with TableInfo<$EntriesTable, Entry> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
-  $EntryTableTable(this.attachedDatabase, [this._alias]);
+  $EntriesTable(this.attachedDatabase, [this._alias]);
   static const VerificationMeta _idMeta = const VerificationMeta('id');
   @override
   late final GeneratedColumn<int> id = GeneratedColumn<int>(
@@ -466,7 +458,7 @@ class $EntryTableTable extends EntryTable
       type: DriftSqlType.int,
       requiredDuringInsert: true,
       defaultConstraints:
-          GeneratedColumn.constraintIsAlways('REFERENCES workout_table (id)'));
+          GeneratedColumn.constraintIsAlways('REFERENCES workouts (id)'));
   static const VerificationMeta _weightMeta = const VerificationMeta('weight');
   @override
   late final GeneratedColumn<int> weight = GeneratedColumn<int>(
@@ -495,9 +487,9 @@ class $EntryTableTable extends EntryTable
   String get aliasedName => _alias ?? actualTableName;
   @override
   String get actualTableName => $name;
-  static const String $name = 'entry_table';
+  static const String $name = 'entries';
   @override
-  VerificationContext validateIntegrity(Insertable<EntryTableData> instance,
+  VerificationContext validateIntegrity(Insertable<Entry> instance,
       {bool isInserting = false}) {
     final context = VerificationContext();
     final data = instance.toColumns(true);
@@ -538,9 +530,9 @@ class $EntryTableTable extends EntryTable
   @override
   Set<GeneratedColumn> get $primaryKey => {id};
   @override
-  EntryTableData map(Map<String, dynamic> data, {String? tablePrefix}) {
+  Entry map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return EntryTableData(
+    return Entry(
       id: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
       workout: attachedDatabase.typeMapping
@@ -557,19 +549,19 @@ class $EntryTableTable extends EntryTable
   }
 
   @override
-  $EntryTableTable createAlias(String alias) {
-    return $EntryTableTable(attachedDatabase, alias);
+  $EntriesTable createAlias(String alias) {
+    return $EntriesTable(attachedDatabase, alias);
   }
 }
 
-class EntryTableData extends DataClass implements Insertable<EntryTableData> {
+class Entry extends DataClass implements Insertable<Entry> {
   final int id;
   final int workout;
   final int weight;
   final int sets;
   final int reps;
   final DateTime date;
-  const EntryTableData(
+  const Entry(
       {required this.id,
       required this.workout,
       required this.weight,
@@ -588,8 +580,8 @@ class EntryTableData extends DataClass implements Insertable<EntryTableData> {
     return map;
   }
 
-  EntryTableCompanion toCompanion(bool nullToAbsent) {
-    return EntryTableCompanion(
+  EntriesCompanion toCompanion(bool nullToAbsent) {
+    return EntriesCompanion(
       id: Value(id),
       workout: Value(workout),
       weight: Value(weight),
@@ -599,10 +591,10 @@ class EntryTableData extends DataClass implements Insertable<EntryTableData> {
     );
   }
 
-  factory EntryTableData.fromJson(Map<String, dynamic> json,
+  factory Entry.fromJson(Map<String, dynamic> json,
       {ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
-    return EntryTableData(
+    return Entry(
       id: serializer.fromJson<int>(json['id']),
       workout: serializer.fromJson<int>(json['workout']),
       weight: serializer.fromJson<int>(json['weight']),
@@ -624,14 +616,14 @@ class EntryTableData extends DataClass implements Insertable<EntryTableData> {
     };
   }
 
-  EntryTableData copyWith(
+  Entry copyWith(
           {int? id,
           int? workout,
           int? weight,
           int? sets,
           int? reps,
           DateTime? date}) =>
-      EntryTableData(
+      Entry(
         id: id ?? this.id,
         workout: workout ?? this.workout,
         weight: weight ?? this.weight,
@@ -639,8 +631,8 @@ class EntryTableData extends DataClass implements Insertable<EntryTableData> {
         reps: reps ?? this.reps,
         date: date ?? this.date,
       );
-  EntryTableData copyWithCompanion(EntryTableCompanion data) {
-    return EntryTableData(
+  Entry copyWithCompanion(EntriesCompanion data) {
+    return Entry(
       id: data.id.present ? data.id.value : this.id,
       workout: data.workout.present ? data.workout.value : this.workout,
       weight: data.weight.present ? data.weight.value : this.weight,
@@ -652,7 +644,7 @@ class EntryTableData extends DataClass implements Insertable<EntryTableData> {
 
   @override
   String toString() {
-    return (StringBuffer('EntryTableData(')
+    return (StringBuffer('Entry(')
           ..write('id: $id, ')
           ..write('workout: $workout, ')
           ..write('weight: $weight, ')
@@ -668,7 +660,7 @@ class EntryTableData extends DataClass implements Insertable<EntryTableData> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is EntryTableData &&
+      (other is Entry &&
           other.id == this.id &&
           other.workout == this.workout &&
           other.weight == this.weight &&
@@ -677,14 +669,14 @@ class EntryTableData extends DataClass implements Insertable<EntryTableData> {
           other.date == this.date);
 }
 
-class EntryTableCompanion extends UpdateCompanion<EntryTableData> {
+class EntriesCompanion extends UpdateCompanion<Entry> {
   final Value<int> id;
   final Value<int> workout;
   final Value<int> weight;
   final Value<int> sets;
   final Value<int> reps;
   final Value<DateTime> date;
-  const EntryTableCompanion({
+  const EntriesCompanion({
     this.id = const Value.absent(),
     this.workout = const Value.absent(),
     this.weight = const Value.absent(),
@@ -692,7 +684,7 @@ class EntryTableCompanion extends UpdateCompanion<EntryTableData> {
     this.reps = const Value.absent(),
     this.date = const Value.absent(),
   });
-  EntryTableCompanion.insert({
+  EntriesCompanion.insert({
     this.id = const Value.absent(),
     required int workout,
     required int weight,
@@ -703,7 +695,7 @@ class EntryTableCompanion extends UpdateCompanion<EntryTableData> {
         weight = Value(weight),
         sets = Value(sets),
         reps = Value(reps);
-  static Insertable<EntryTableData> custom({
+  static Insertable<Entry> custom({
     Expression<int>? id,
     Expression<int>? workout,
     Expression<int>? weight,
@@ -721,14 +713,14 @@ class EntryTableCompanion extends UpdateCompanion<EntryTableData> {
     });
   }
 
-  EntryTableCompanion copyWith(
+  EntriesCompanion copyWith(
       {Value<int>? id,
       Value<int>? workout,
       Value<int>? weight,
       Value<int>? sets,
       Value<int>? reps,
       Value<DateTime>? date}) {
-    return EntryTableCompanion(
+    return EntriesCompanion(
       id: id ?? this.id,
       workout: workout ?? this.workout,
       weight: weight ?? this.weight,
@@ -764,7 +756,7 @@ class EntryTableCompanion extends UpdateCompanion<EntryTableData> {
 
   @override
   String toString() {
-    return (StringBuffer('EntryTableCompanion(')
+    return (StringBuffer('EntriesCompanion(')
           ..write('id: $id, ')
           ..write('workout: $workout, ')
           ..write('weight: $weight, ')
@@ -779,50 +771,50 @@ class EntryTableCompanion extends UpdateCompanion<EntryTableData> {
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
-  late final $GroupTableTable groupTable = $GroupTableTable(this);
-  late final $WorkoutTableTable workoutTable = $WorkoutTableTable(this);
-  late final $EntryTableTable entryTable = $EntryTableTable(this);
+  late final $GroupsTable groups = $GroupsTable(this);
+  late final $WorkoutsTable workouts = $WorkoutsTable(this);
+  late final $EntriesTable entries = $EntriesTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
   @override
   List<DatabaseSchemaEntity> get allSchemaEntities =>
-      [groupTable, workoutTable, entryTable];
+      [groups, workouts, entries];
 }
 
-typedef $$GroupTableTableCreateCompanionBuilder = GroupTableCompanion Function({
+typedef $$GroupsTableCreateCompanionBuilder = GroupsCompanion Function({
   Value<int> id,
   required String name,
   required String day,
 });
-typedef $$GroupTableTableUpdateCompanionBuilder = GroupTableCompanion Function({
+typedef $$GroupsTableUpdateCompanionBuilder = GroupsCompanion Function({
   Value<int> id,
   Value<String> name,
   Value<String> day,
 });
 
-class $$GroupTableTableTableManager extends RootTableManager<
+class $$GroupsTableTableManager extends RootTableManager<
     _$AppDatabase,
-    $GroupTableTable,
-    GroupTableData,
-    $$GroupTableTableFilterComposer,
-    $$GroupTableTableOrderingComposer,
-    $$GroupTableTableCreateCompanionBuilder,
-    $$GroupTableTableUpdateCompanionBuilder> {
-  $$GroupTableTableTableManager(_$AppDatabase db, $GroupTableTable table)
+    $GroupsTable,
+    Group,
+    $$GroupsTableFilterComposer,
+    $$GroupsTableOrderingComposer,
+    $$GroupsTableCreateCompanionBuilder,
+    $$GroupsTableUpdateCompanionBuilder> {
+  $$GroupsTableTableManager(_$AppDatabase db, $GroupsTable table)
       : super(TableManagerState(
           db: db,
           table: table,
           filteringComposer:
-              $$GroupTableTableFilterComposer(ComposerState(db, table)),
+              $$GroupsTableFilterComposer(ComposerState(db, table)),
           orderingComposer:
-              $$GroupTableTableOrderingComposer(ComposerState(db, table)),
+              $$GroupsTableOrderingComposer(ComposerState(db, table)),
           updateCompanionCallback: ({
             Value<int> id = const Value.absent(),
             Value<String> name = const Value.absent(),
             Value<String> day = const Value.absent(),
           }) =>
-              GroupTableCompanion(
+              GroupsCompanion(
             id: id,
             name: name,
             day: day,
@@ -832,7 +824,7 @@ class $$GroupTableTableTableManager extends RootTableManager<
             required String name,
             required String day,
           }) =>
-              GroupTableCompanion.insert(
+              GroupsCompanion.insert(
             id: id,
             name: name,
             day: day,
@@ -840,9 +832,9 @@ class $$GroupTableTableTableManager extends RootTableManager<
         ));
 }
 
-class $$GroupTableTableFilterComposer
-    extends FilterComposer<_$AppDatabase, $GroupTableTable> {
-  $$GroupTableTableFilterComposer(super.$state);
+class $$GroupsTableFilterComposer
+    extends FilterComposer<_$AppDatabase, $GroupsTable> {
+  $$GroupsTableFilterComposer(super.$state);
   ColumnFilters<int> get id => $state.composableBuilder(
       column: $state.table.id,
       builder: (column, joinBuilders) =>
@@ -858,23 +850,23 @@ class $$GroupTableTableFilterComposer
       builder: (column, joinBuilders) =>
           ColumnFilters(column, joinBuilders: joinBuilders));
 
-  ComposableFilter workoutTableRefs(
-      ComposableFilter Function($$WorkoutTableTableFilterComposer f) f) {
-    final $$WorkoutTableTableFilterComposer composer = $state.composerBuilder(
+  ComposableFilter workoutsRefs(
+      ComposableFilter Function($$WorkoutsTableFilterComposer f) f) {
+    final $$WorkoutsTableFilterComposer composer = $state.composerBuilder(
         composer: this,
         getCurrentColumn: (t) => t.id,
-        referencedTable: $state.db.workoutTable,
+        referencedTable: $state.db.workouts,
         getReferencedColumn: (t) => t.group,
         builder: (joinBuilder, parentComposers) =>
-            $$WorkoutTableTableFilterComposer(ComposerState($state.db,
-                $state.db.workoutTable, joinBuilder, parentComposers)));
+            $$WorkoutsTableFilterComposer(ComposerState(
+                $state.db, $state.db.workouts, joinBuilder, parentComposers)));
     return f(composer);
   }
 }
 
-class $$GroupTableTableOrderingComposer
-    extends OrderingComposer<_$AppDatabase, $GroupTableTable> {
-  $$GroupTableTableOrderingComposer(super.$state);
+class $$GroupsTableOrderingComposer
+    extends OrderingComposer<_$AppDatabase, $GroupsTable> {
+  $$GroupsTableOrderingComposer(super.$state);
   ColumnOrderings<int> get id => $state.composableBuilder(
       column: $state.table.id,
       builder: (column, joinBuilders) =>
@@ -891,41 +883,39 @@ class $$GroupTableTableOrderingComposer
           ColumnOrderings(column, joinBuilders: joinBuilders));
 }
 
-typedef $$WorkoutTableTableCreateCompanionBuilder = WorkoutTableCompanion
-    Function({
+typedef $$WorkoutsTableCreateCompanionBuilder = WorkoutsCompanion Function({
   Value<int> id,
   required String name,
   required int group,
 });
-typedef $$WorkoutTableTableUpdateCompanionBuilder = WorkoutTableCompanion
-    Function({
+typedef $$WorkoutsTableUpdateCompanionBuilder = WorkoutsCompanion Function({
   Value<int> id,
   Value<String> name,
   Value<int> group,
 });
 
-class $$WorkoutTableTableTableManager extends RootTableManager<
+class $$WorkoutsTableTableManager extends RootTableManager<
     _$AppDatabase,
-    $WorkoutTableTable,
-    WorkoutTableData,
-    $$WorkoutTableTableFilterComposer,
-    $$WorkoutTableTableOrderingComposer,
-    $$WorkoutTableTableCreateCompanionBuilder,
-    $$WorkoutTableTableUpdateCompanionBuilder> {
-  $$WorkoutTableTableTableManager(_$AppDatabase db, $WorkoutTableTable table)
+    $WorkoutsTable,
+    Workout,
+    $$WorkoutsTableFilterComposer,
+    $$WorkoutsTableOrderingComposer,
+    $$WorkoutsTableCreateCompanionBuilder,
+    $$WorkoutsTableUpdateCompanionBuilder> {
+  $$WorkoutsTableTableManager(_$AppDatabase db, $WorkoutsTable table)
       : super(TableManagerState(
           db: db,
           table: table,
           filteringComposer:
-              $$WorkoutTableTableFilterComposer(ComposerState(db, table)),
+              $$WorkoutsTableFilterComposer(ComposerState(db, table)),
           orderingComposer:
-              $$WorkoutTableTableOrderingComposer(ComposerState(db, table)),
+              $$WorkoutsTableOrderingComposer(ComposerState(db, table)),
           updateCompanionCallback: ({
             Value<int> id = const Value.absent(),
             Value<String> name = const Value.absent(),
             Value<int> group = const Value.absent(),
           }) =>
-              WorkoutTableCompanion(
+              WorkoutsCompanion(
             id: id,
             name: name,
             group: group,
@@ -935,7 +925,7 @@ class $$WorkoutTableTableTableManager extends RootTableManager<
             required String name,
             required int group,
           }) =>
-              WorkoutTableCompanion.insert(
+              WorkoutsCompanion.insert(
             id: id,
             name: name,
             group: group,
@@ -943,9 +933,9 @@ class $$WorkoutTableTableTableManager extends RootTableManager<
         ));
 }
 
-class $$WorkoutTableTableFilterComposer
-    extends FilterComposer<_$AppDatabase, $WorkoutTableTable> {
-  $$WorkoutTableTableFilterComposer(super.$state);
+class $$WorkoutsTableFilterComposer
+    extends FilterComposer<_$AppDatabase, $WorkoutsTable> {
+  $$WorkoutsTableFilterComposer(super.$state);
   ColumnFilters<int> get id => $state.composableBuilder(
       column: $state.table.id,
       builder: (column, joinBuilders) =>
@@ -956,35 +946,35 @@ class $$WorkoutTableTableFilterComposer
       builder: (column, joinBuilders) =>
           ColumnFilters(column, joinBuilders: joinBuilders));
 
-  $$GroupTableTableFilterComposer get group {
-    final $$GroupTableTableFilterComposer composer = $state.composerBuilder(
+  $$GroupsTableFilterComposer get group {
+    final $$GroupsTableFilterComposer composer = $state.composerBuilder(
         composer: this,
         getCurrentColumn: (t) => t.group,
-        referencedTable: $state.db.groupTable,
+        referencedTable: $state.db.groups,
         getReferencedColumn: (t) => t.id,
-        builder: (joinBuilder, parentComposers) =>
-            $$GroupTableTableFilterComposer(ComposerState($state.db,
-                $state.db.groupTable, joinBuilder, parentComposers)));
+        builder: (joinBuilder, parentComposers) => $$GroupsTableFilterComposer(
+            ComposerState(
+                $state.db, $state.db.groups, joinBuilder, parentComposers)));
     return composer;
   }
 
-  ComposableFilter entryTableRefs(
-      ComposableFilter Function($$EntryTableTableFilterComposer f) f) {
-    final $$EntryTableTableFilterComposer composer = $state.composerBuilder(
+  ComposableFilter entriesRefs(
+      ComposableFilter Function($$EntriesTableFilterComposer f) f) {
+    final $$EntriesTableFilterComposer composer = $state.composerBuilder(
         composer: this,
         getCurrentColumn: (t) => t.id,
-        referencedTable: $state.db.entryTable,
+        referencedTable: $state.db.entries,
         getReferencedColumn: (t) => t.workout,
-        builder: (joinBuilder, parentComposers) =>
-            $$EntryTableTableFilterComposer(ComposerState($state.db,
-                $state.db.entryTable, joinBuilder, parentComposers)));
+        builder: (joinBuilder, parentComposers) => $$EntriesTableFilterComposer(
+            ComposerState(
+                $state.db, $state.db.entries, joinBuilder, parentComposers)));
     return f(composer);
   }
 }
 
-class $$WorkoutTableTableOrderingComposer
-    extends OrderingComposer<_$AppDatabase, $WorkoutTableTable> {
-  $$WorkoutTableTableOrderingComposer(super.$state);
+class $$WorkoutsTableOrderingComposer
+    extends OrderingComposer<_$AppDatabase, $WorkoutsTable> {
+  $$WorkoutsTableOrderingComposer(super.$state);
   ColumnOrderings<int> get id => $state.composableBuilder(
       column: $state.table.id,
       builder: (column, joinBuilders) =>
@@ -995,20 +985,20 @@ class $$WorkoutTableTableOrderingComposer
       builder: (column, joinBuilders) =>
           ColumnOrderings(column, joinBuilders: joinBuilders));
 
-  $$GroupTableTableOrderingComposer get group {
-    final $$GroupTableTableOrderingComposer composer = $state.composerBuilder(
+  $$GroupsTableOrderingComposer get group {
+    final $$GroupsTableOrderingComposer composer = $state.composerBuilder(
         composer: this,
         getCurrentColumn: (t) => t.group,
-        referencedTable: $state.db.groupTable,
+        referencedTable: $state.db.groups,
         getReferencedColumn: (t) => t.id,
         builder: (joinBuilder, parentComposers) =>
-            $$GroupTableTableOrderingComposer(ComposerState($state.db,
-                $state.db.groupTable, joinBuilder, parentComposers)));
+            $$GroupsTableOrderingComposer(ComposerState(
+                $state.db, $state.db.groups, joinBuilder, parentComposers)));
     return composer;
   }
 }
 
-typedef $$EntryTableTableCreateCompanionBuilder = EntryTableCompanion Function({
+typedef $$EntriesTableCreateCompanionBuilder = EntriesCompanion Function({
   Value<int> id,
   required int workout,
   required int weight,
@@ -1016,7 +1006,7 @@ typedef $$EntryTableTableCreateCompanionBuilder = EntryTableCompanion Function({
   required int reps,
   Value<DateTime> date,
 });
-typedef $$EntryTableTableUpdateCompanionBuilder = EntryTableCompanion Function({
+typedef $$EntriesTableUpdateCompanionBuilder = EntriesCompanion Function({
   Value<int> id,
   Value<int> workout,
   Value<int> weight,
@@ -1025,22 +1015,22 @@ typedef $$EntryTableTableUpdateCompanionBuilder = EntryTableCompanion Function({
   Value<DateTime> date,
 });
 
-class $$EntryTableTableTableManager extends RootTableManager<
+class $$EntriesTableTableManager extends RootTableManager<
     _$AppDatabase,
-    $EntryTableTable,
-    EntryTableData,
-    $$EntryTableTableFilterComposer,
-    $$EntryTableTableOrderingComposer,
-    $$EntryTableTableCreateCompanionBuilder,
-    $$EntryTableTableUpdateCompanionBuilder> {
-  $$EntryTableTableTableManager(_$AppDatabase db, $EntryTableTable table)
+    $EntriesTable,
+    Entry,
+    $$EntriesTableFilterComposer,
+    $$EntriesTableOrderingComposer,
+    $$EntriesTableCreateCompanionBuilder,
+    $$EntriesTableUpdateCompanionBuilder> {
+  $$EntriesTableTableManager(_$AppDatabase db, $EntriesTable table)
       : super(TableManagerState(
           db: db,
           table: table,
           filteringComposer:
-              $$EntryTableTableFilterComposer(ComposerState(db, table)),
+              $$EntriesTableFilterComposer(ComposerState(db, table)),
           orderingComposer:
-              $$EntryTableTableOrderingComposer(ComposerState(db, table)),
+              $$EntriesTableOrderingComposer(ComposerState(db, table)),
           updateCompanionCallback: ({
             Value<int> id = const Value.absent(),
             Value<int> workout = const Value.absent(),
@@ -1049,7 +1039,7 @@ class $$EntryTableTableTableManager extends RootTableManager<
             Value<int> reps = const Value.absent(),
             Value<DateTime> date = const Value.absent(),
           }) =>
-              EntryTableCompanion(
+              EntriesCompanion(
             id: id,
             workout: workout,
             weight: weight,
@@ -1065,7 +1055,7 @@ class $$EntryTableTableTableManager extends RootTableManager<
             required int reps,
             Value<DateTime> date = const Value.absent(),
           }) =>
-              EntryTableCompanion.insert(
+              EntriesCompanion.insert(
             id: id,
             workout: workout,
             weight: weight,
@@ -1076,9 +1066,9 @@ class $$EntryTableTableTableManager extends RootTableManager<
         ));
 }
 
-class $$EntryTableTableFilterComposer
-    extends FilterComposer<_$AppDatabase, $EntryTableTable> {
-  $$EntryTableTableFilterComposer(super.$state);
+class $$EntriesTableFilterComposer
+    extends FilterComposer<_$AppDatabase, $EntriesTable> {
+  $$EntriesTableFilterComposer(super.$state);
   ColumnFilters<int> get id => $state.composableBuilder(
       column: $state.table.id,
       builder: (column, joinBuilders) =>
@@ -1104,22 +1094,22 @@ class $$EntryTableTableFilterComposer
       builder: (column, joinBuilders) =>
           ColumnFilters(column, joinBuilders: joinBuilders));
 
-  $$WorkoutTableTableFilterComposer get workout {
-    final $$WorkoutTableTableFilterComposer composer = $state.composerBuilder(
+  $$WorkoutsTableFilterComposer get workout {
+    final $$WorkoutsTableFilterComposer composer = $state.composerBuilder(
         composer: this,
         getCurrentColumn: (t) => t.workout,
-        referencedTable: $state.db.workoutTable,
+        referencedTable: $state.db.workouts,
         getReferencedColumn: (t) => t.id,
         builder: (joinBuilder, parentComposers) =>
-            $$WorkoutTableTableFilterComposer(ComposerState($state.db,
-                $state.db.workoutTable, joinBuilder, parentComposers)));
+            $$WorkoutsTableFilterComposer(ComposerState(
+                $state.db, $state.db.workouts, joinBuilder, parentComposers)));
     return composer;
   }
 }
 
-class $$EntryTableTableOrderingComposer
-    extends OrderingComposer<_$AppDatabase, $EntryTableTable> {
-  $$EntryTableTableOrderingComposer(super.$state);
+class $$EntriesTableOrderingComposer
+    extends OrderingComposer<_$AppDatabase, $EntriesTable> {
+  $$EntriesTableOrderingComposer(super.$state);
   ColumnOrderings<int> get id => $state.composableBuilder(
       column: $state.table.id,
       builder: (column, joinBuilders) =>
@@ -1145,15 +1135,15 @@ class $$EntryTableTableOrderingComposer
       builder: (column, joinBuilders) =>
           ColumnOrderings(column, joinBuilders: joinBuilders));
 
-  $$WorkoutTableTableOrderingComposer get workout {
-    final $$WorkoutTableTableOrderingComposer composer = $state.composerBuilder(
+  $$WorkoutsTableOrderingComposer get workout {
+    final $$WorkoutsTableOrderingComposer composer = $state.composerBuilder(
         composer: this,
         getCurrentColumn: (t) => t.workout,
-        referencedTable: $state.db.workoutTable,
+        referencedTable: $state.db.workouts,
         getReferencedColumn: (t) => t.id,
         builder: (joinBuilder, parentComposers) =>
-            $$WorkoutTableTableOrderingComposer(ComposerState($state.db,
-                $state.db.workoutTable, joinBuilder, parentComposers)));
+            $$WorkoutsTableOrderingComposer(ComposerState(
+                $state.db, $state.db.workouts, joinBuilder, parentComposers)));
     return composer;
   }
 }
@@ -1161,10 +1151,10 @@ class $$EntryTableTableOrderingComposer
 class $AppDatabaseManager {
   final _$AppDatabase _db;
   $AppDatabaseManager(this._db);
-  $$GroupTableTableTableManager get groupTable =>
-      $$GroupTableTableTableManager(_db, _db.groupTable);
-  $$WorkoutTableTableTableManager get workoutTable =>
-      $$WorkoutTableTableTableManager(_db, _db.workoutTable);
-  $$EntryTableTableTableManager get entryTable =>
-      $$EntryTableTableTableManager(_db, _db.entryTable);
+  $$GroupsTableTableManager get groups =>
+      $$GroupsTableTableManager(_db, _db.groups);
+  $$WorkoutsTableTableManager get workouts =>
+      $$WorkoutsTableTableManager(_db, _db.workouts);
+  $$EntriesTableTableManager get entries =>
+      $$EntriesTableTableManager(_db, _db.entries);
 }

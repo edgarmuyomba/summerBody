@@ -1,3 +1,4 @@
+import 'package:SummerBody/database/database.dart';
 import 'package:SummerBody/services/SharedPreferencesService.dart';
 import 'package:get_it/get_it.dart';
 
@@ -15,5 +16,7 @@ class DIService {
   void setupLocator() {
     locator.registerSingleton<SharedPreferencesService>(
         SharedPreferencesService());
+
+    locator.registerSingleton<AppDatabase>(AppDatabase());
   }
 }

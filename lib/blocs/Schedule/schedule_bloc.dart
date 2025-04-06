@@ -6,8 +6,14 @@ part 'schedule_state.dart';
 
 class ScheduleBloc extends Bloc<ScheduleEvent, ScheduleState> {
   ScheduleBloc() : super(ScheduleInitial()) {
-    on<ScheduleEvent>((event, emit) {
-      // TODO: implement event handler
-    });
+    on<Initialize>(_onInitialize);
+  }
+
+  Future<void> _onInitialize(Initialize event, Emitter emit) async {
+
+    // get the day today 
+    DateTime now = DateTime.now();
+    int dayToday = now.day;
+
   }
 }

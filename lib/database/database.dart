@@ -1,15 +1,14 @@
 import 'dart:io';
-
-import 'package:SummerBody/database/tables/Entry.dart';
-import 'package:SummerBody/database/tables/Group.dart';
-import 'package:SummerBody/database/tables/Workout.dart';
+import 'package:SummerBody/database/tables/Entries.dart';
+import 'package:SummerBody/database/tables/Groups.dart';
+import 'package:SummerBody/database/tables/Workouts.dart';
 import 'package:drift/drift.dart';
 import 'package:drift/native.dart';
 import 'package:path_provider/path_provider.dart';
 
 part 'database.g.dart';
 
-@DriftDatabase(tables: [GroupTable, WorkoutTable, EntryTable])
+@DriftDatabase(tables: [Groups, Workouts, Entries])
 class AppDatabase extends _$AppDatabase {
   AppDatabase([QueryExecutor? executor]) : super(executor ?? _openConnection());
 
