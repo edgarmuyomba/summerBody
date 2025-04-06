@@ -1,4 +1,4 @@
-import 'package:SummerBody/services/SharedPreferencesServices.dart';
+import 'package:SummerBody/services/SharedPreferencesService.dart';
 import 'package:get_it/get_it.dart';
 
 class DIService {
