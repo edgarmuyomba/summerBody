@@ -1,7 +1,14 @@
+import 'package:SummerBody/services/DIService.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  DIService().setupLocator();
   runApp(const MyApp());
+  runApp(ScreenUtilInit(
+      designSize: const Size(448.0, 973.34),
+      builder: (context, child) => const MyApp()));
 }
 
 class MyApp extends StatelessWidget {
