@@ -3,11 +3,12 @@
 part of 'database.dart';
 
 // ignore_for_file: type=lint
-class $GroupsTable extends Groups with TableInfo<$GroupsTable, Group> {
+class $MuscleGroupsTable extends MuscleGroups
+    with TableInfo<$MuscleGroupsTable, MuscleGroup> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
-  $GroupsTable(this.attachedDatabase, [this._alias]);
+  $MuscleGroupsTable(this.attachedDatabase, [this._alias]);
   static const VerificationMeta _idMeta = const VerificationMeta('id');
   @override
   late final GeneratedColumn<int> id = GeneratedColumn<int>(
@@ -36,9 +37,9 @@ class $GroupsTable extends Groups with TableInfo<$GroupsTable, Group> {
   String get aliasedName => _alias ?? actualTableName;
   @override
   String get actualTableName => $name;
-  static const String $name = 'groups';
+  static const String $name = 'muscle_groups';
   @override
-  VerificationContext validateIntegrity(Insertable<Group> instance,
+  VerificationContext validateIntegrity(Insertable<MuscleGroup> instance,
       {bool isInserting = false}) {
     final context = VerificationContext();
     final data = instance.toColumns(true);
@@ -63,9 +64,9 @@ class $GroupsTable extends Groups with TableInfo<$GroupsTable, Group> {
   @override
   Set<GeneratedColumn> get $primaryKey => {id};
   @override
-  Group map(Map<String, dynamic> data, {String? tablePrefix}) {
+  MuscleGroup map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return Group(
+    return MuscleGroup(
       id: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
       name: attachedDatabase.typeMapping
@@ -76,16 +77,16 @@ class $GroupsTable extends Groups with TableInfo<$GroupsTable, Group> {
   }
 
   @override
-  $GroupsTable createAlias(String alias) {
-    return $GroupsTable(attachedDatabase, alias);
+  $MuscleGroupsTable createAlias(String alias) {
+    return $MuscleGroupsTable(attachedDatabase, alias);
   }
 }
 
-class Group extends DataClass implements Insertable<Group> {
+class MuscleGroup extends DataClass implements Insertable<MuscleGroup> {
   final int id;
   final String name;
   final String day;
-  const Group({required this.id, required this.name, required this.day});
+  const MuscleGroup({required this.id, required this.name, required this.day});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -95,18 +96,18 @@ class Group extends DataClass implements Insertable<Group> {
     return map;
   }
 
-  GroupsCompanion toCompanion(bool nullToAbsent) {
-    return GroupsCompanion(
+  MuscleGroupsCompanion toCompanion(bool nullToAbsent) {
+    return MuscleGroupsCompanion(
       id: Value(id),
       name: Value(name),
       day: Value(day),
     );
   }
 
-  factory Group.fromJson(Map<String, dynamic> json,
+  factory MuscleGroup.fromJson(Map<String, dynamic> json,
       {ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
-    return Group(
+    return MuscleGroup(
       id: serializer.fromJson<int>(json['id']),
       name: serializer.fromJson<String>(json['name']),
       day: serializer.fromJson<String>(json['day']),
@@ -122,13 +123,13 @@ class Group extends DataClass implements Insertable<Group> {
     };
   }
 
-  Group copyWith({int? id, String? name, String? day}) => Group(
+  MuscleGroup copyWith({int? id, String? name, String? day}) => MuscleGroup(
         id: id ?? this.id,
         name: name ?? this.name,
         day: day ?? this.day,
       );
-  Group copyWithCompanion(GroupsCompanion data) {
-    return Group(
+  MuscleGroup copyWithCompanion(MuscleGroupsCompanion data) {
+    return MuscleGroup(
       id: data.id.present ? data.id.value : this.id,
       name: data.name.present ? data.name.value : this.name,
       day: data.day.present ? data.day.value : this.day,
@@ -137,7 +138,7 @@ class Group extends DataClass implements Insertable<Group> {
 
   @override
   String toString() {
-    return (StringBuffer('Group(')
+    return (StringBuffer('MuscleGroup(')
           ..write('id: $id, ')
           ..write('name: $name, ')
           ..write('day: $day')
@@ -150,28 +151,28 @@ class Group extends DataClass implements Insertable<Group> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is Group &&
+      (other is MuscleGroup &&
           other.id == this.id &&
           other.name == this.name &&
           other.day == this.day);
 }
 
-class GroupsCompanion extends UpdateCompanion<Group> {
+class MuscleGroupsCompanion extends UpdateCompanion<MuscleGroup> {
   final Value<int> id;
   final Value<String> name;
   final Value<String> day;
-  const GroupsCompanion({
+  const MuscleGroupsCompanion({
     this.id = const Value.absent(),
     this.name = const Value.absent(),
     this.day = const Value.absent(),
   });
-  GroupsCompanion.insert({
+  MuscleGroupsCompanion.insert({
     this.id = const Value.absent(),
     required String name,
     required String day,
   })  : name = Value(name),
         day = Value(day);
-  static Insertable<Group> custom({
+  static Insertable<MuscleGroup> custom({
     Expression<int>? id,
     Expression<String>? name,
     Expression<String>? day,
@@ -183,9 +184,9 @@ class GroupsCompanion extends UpdateCompanion<Group> {
     });
   }
 
-  GroupsCompanion copyWith(
+  MuscleGroupsCompanion copyWith(
       {Value<int>? id, Value<String>? name, Value<String>? day}) {
-    return GroupsCompanion(
+    return MuscleGroupsCompanion(
       id: id ?? this.id,
       name: name ?? this.name,
       day: day ?? this.day,
@@ -209,7 +210,7 @@ class GroupsCompanion extends UpdateCompanion<Group> {
 
   @override
   String toString() {
-    return (StringBuffer('GroupsCompanion(')
+    return (StringBuffer('MuscleGroupsCompanion(')
           ..write('id: $id, ')
           ..write('name: $name, ')
           ..write('day: $day')
@@ -247,7 +248,7 @@ class $WorkoutsTable extends Workouts with TableInfo<$WorkoutsTable, Workout> {
       type: DriftSqlType.int,
       requiredDuringInsert: true,
       defaultConstraints:
-          GeneratedColumn.constraintIsAlways('REFERENCES "groups" (id)'));
+          GeneratedColumn.constraintIsAlways('REFERENCES muscle_groups (id)'));
   @override
   List<GeneratedColumn> get $columns => [id, name, group];
   @override
@@ -771,7 +772,7 @@ class EntriesCompanion extends UpdateCompanion<Entry> {
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
-  late final $GroupsTable groups = $GroupsTable(this);
+  late final $MuscleGroupsTable muscleGroups = $MuscleGroupsTable(this);
   late final $WorkoutsTable workouts = $WorkoutsTable(this);
   late final $EntriesTable entries = $EntriesTable(this);
   @override
@@ -779,42 +780,44 @@ abstract class _$AppDatabase extends GeneratedDatabase {
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
   @override
   List<DatabaseSchemaEntity> get allSchemaEntities =>
-      [groups, workouts, entries];
+      [muscleGroups, workouts, entries];
 }
 
-typedef $$GroupsTableCreateCompanionBuilder = GroupsCompanion Function({
+typedef $$MuscleGroupsTableCreateCompanionBuilder = MuscleGroupsCompanion
+    Function({
   Value<int> id,
   required String name,
   required String day,
 });
-typedef $$GroupsTableUpdateCompanionBuilder = GroupsCompanion Function({
+typedef $$MuscleGroupsTableUpdateCompanionBuilder = MuscleGroupsCompanion
+    Function({
   Value<int> id,
   Value<String> name,
   Value<String> day,
 });
 
-class $$GroupsTableTableManager extends RootTableManager<
+class $$MuscleGroupsTableTableManager extends RootTableManager<
     _$AppDatabase,
-    $GroupsTable,
-    Group,
-    $$GroupsTableFilterComposer,
-    $$GroupsTableOrderingComposer,
-    $$GroupsTableCreateCompanionBuilder,
-    $$GroupsTableUpdateCompanionBuilder> {
-  $$GroupsTableTableManager(_$AppDatabase db, $GroupsTable table)
+    $MuscleGroupsTable,
+    MuscleGroup,
+    $$MuscleGroupsTableFilterComposer,
+    $$MuscleGroupsTableOrderingComposer,
+    $$MuscleGroupsTableCreateCompanionBuilder,
+    $$MuscleGroupsTableUpdateCompanionBuilder> {
+  $$MuscleGroupsTableTableManager(_$AppDatabase db, $MuscleGroupsTable table)
       : super(TableManagerState(
           db: db,
           table: table,
           filteringComposer:
-              $$GroupsTableFilterComposer(ComposerState(db, table)),
+              $$MuscleGroupsTableFilterComposer(ComposerState(db, table)),
           orderingComposer:
-              $$GroupsTableOrderingComposer(ComposerState(db, table)),
+              $$MuscleGroupsTableOrderingComposer(ComposerState(db, table)),
           updateCompanionCallback: ({
             Value<int> id = const Value.absent(),
             Value<String> name = const Value.absent(),
             Value<String> day = const Value.absent(),
           }) =>
-              GroupsCompanion(
+              MuscleGroupsCompanion(
             id: id,
             name: name,
             day: day,
@@ -824,7 +827,7 @@ class $$GroupsTableTableManager extends RootTableManager<
             required String name,
             required String day,
           }) =>
-              GroupsCompanion.insert(
+              MuscleGroupsCompanion.insert(
             id: id,
             name: name,
             day: day,
@@ -832,9 +835,9 @@ class $$GroupsTableTableManager extends RootTableManager<
         ));
 }
 
-class $$GroupsTableFilterComposer
-    extends FilterComposer<_$AppDatabase, $GroupsTable> {
-  $$GroupsTableFilterComposer(super.$state);
+class $$MuscleGroupsTableFilterComposer
+    extends FilterComposer<_$AppDatabase, $MuscleGroupsTable> {
+  $$MuscleGroupsTableFilterComposer(super.$state);
   ColumnFilters<int> get id => $state.composableBuilder(
       column: $state.table.id,
       builder: (column, joinBuilders) =>
@@ -864,9 +867,9 @@ class $$GroupsTableFilterComposer
   }
 }
 
-class $$GroupsTableOrderingComposer
-    extends OrderingComposer<_$AppDatabase, $GroupsTable> {
-  $$GroupsTableOrderingComposer(super.$state);
+class $$MuscleGroupsTableOrderingComposer
+    extends OrderingComposer<_$AppDatabase, $MuscleGroupsTable> {
+  $$MuscleGroupsTableOrderingComposer(super.$state);
   ColumnOrderings<int> get id => $state.composableBuilder(
       column: $state.table.id,
       builder: (column, joinBuilders) =>
@@ -946,15 +949,15 @@ class $$WorkoutsTableFilterComposer
       builder: (column, joinBuilders) =>
           ColumnFilters(column, joinBuilders: joinBuilders));
 
-  $$GroupsTableFilterComposer get group {
-    final $$GroupsTableFilterComposer composer = $state.composerBuilder(
+  $$MuscleGroupsTableFilterComposer get group {
+    final $$MuscleGroupsTableFilterComposer composer = $state.composerBuilder(
         composer: this,
         getCurrentColumn: (t) => t.group,
-        referencedTable: $state.db.groups,
+        referencedTable: $state.db.muscleGroups,
         getReferencedColumn: (t) => t.id,
-        builder: (joinBuilder, parentComposers) => $$GroupsTableFilterComposer(
-            ComposerState(
-                $state.db, $state.db.groups, joinBuilder, parentComposers)));
+        builder: (joinBuilder, parentComposers) =>
+            $$MuscleGroupsTableFilterComposer(ComposerState($state.db,
+                $state.db.muscleGroups, joinBuilder, parentComposers)));
     return composer;
   }
 
@@ -985,15 +988,15 @@ class $$WorkoutsTableOrderingComposer
       builder: (column, joinBuilders) =>
           ColumnOrderings(column, joinBuilders: joinBuilders));
 
-  $$GroupsTableOrderingComposer get group {
-    final $$GroupsTableOrderingComposer composer = $state.composerBuilder(
+  $$MuscleGroupsTableOrderingComposer get group {
+    final $$MuscleGroupsTableOrderingComposer composer = $state.composerBuilder(
         composer: this,
         getCurrentColumn: (t) => t.group,
-        referencedTable: $state.db.groups,
+        referencedTable: $state.db.muscleGroups,
         getReferencedColumn: (t) => t.id,
         builder: (joinBuilder, parentComposers) =>
-            $$GroupsTableOrderingComposer(ComposerState(
-                $state.db, $state.db.groups, joinBuilder, parentComposers)));
+            $$MuscleGroupsTableOrderingComposer(ComposerState($state.db,
+                $state.db.muscleGroups, joinBuilder, parentComposers)));
     return composer;
   }
 }
@@ -1151,8 +1154,8 @@ class $$EntriesTableOrderingComposer
 class $AppDatabaseManager {
   final _$AppDatabase _db;
   $AppDatabaseManager(this._db);
-  $$GroupsTableTableManager get groups =>
-      $$GroupsTableTableManager(_db, _db.groups);
+  $$MuscleGroupsTableTableManager get muscleGroups =>
+      $$MuscleGroupsTableTableManager(_db, _db.muscleGroups);
   $$WorkoutsTableTableManager get workouts =>
       $$WorkoutsTableTableManager(_db, _db.workouts);
   $$EntriesTableTableManager get entries =>

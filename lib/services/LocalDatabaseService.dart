@@ -1,9 +1,33 @@
-import 'package:SummerBody/database/database.dart';
-import 'package:SummerBody/services/DIService.dart';
+import 'package:summerbody/database/database.dart';
+import 'package:summerbody/services/DIService.dart';
 
 class LocalDatabaseService {
-  final AppDatabase appDatabase;
+  final AppDatabase _appDatabase;
 
   LocalDatabaseService({AppDatabase? appDatabase})
-      : appDatabase = appDatabase ?? DIService().locator.get<AppDatabase>();
+      : _appDatabase = appDatabase ?? DIService().locator.get<AppDatabase>();
+
+  Future<List<MuscleGroup>> getAllMuscleGroups() async {
+    return await _appDatabase.managers.muscleGroups.get();
+  }
+
+  Future<MuscleGroup?> getMuscleGroupByDay(String day) async {
+    return await _appDatabase.managers.muscleGroups
+        .filter((mg) => mg.day.equals(day))
+        .getSingleOrNull();
+  }
+
+  Future<void> seedMuscleGroups() async {
+    try {
+      await _appDatabase.managers.muscleGroups.bulkCreate((o) => [
+            const MuscleGroup(id: 1, name: "Chest", day: ""),
+            const MuscleGroup(id: 2, name: "Arms", day: ""),
+            const MuscleGroup(id: 3, name: "Shoulders", day: ""),
+            const MuscleGroup(id: 4, name: "Back", day: ""),
+            const MuscleGroup(id: 5, name: "Legs", day: "")
+          ]);
+    } catch (e) {
+      rethrow;
+    }
+  }
 }

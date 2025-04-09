@@ -1,4 +1,4 @@
-import 'package:SummerBody/database/tables/Workouts.dart';
+import 'package:summerbody/database/tables/Workouts.dart';
 import 'package:drift/drift.dart';
 
 @DataClassName("Entry")

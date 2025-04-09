@@ -1,19 +1,38 @@
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
+import 'package:summerbody/services/DIService.dart';
+import 'package:summerbody/services/LocalDatabaseService.dart';
 
 part 'schedule_event.dart';
 part 'schedule_state.dart';
 
 class ScheduleBloc extends Bloc<ScheduleEvent, ScheduleState> {
-  ScheduleBloc() : super(ScheduleInitial()) {
+  final LocalDatabaseService _localDatabaseService;
+
+  ScheduleBloc({LocalDatabaseService? localDatabaseService})
+      : _localDatabaseService =
+            localDatabaseService ?? DIService().locator<LocalDatabaseService>(),
+        super(ScheduleInitial()) {
     on<Initialize>(_onInitialize);
   }
 
   Future<void> _onInitialize(Initialize event, Emitter emit) async {
-
-    // get the day today 
+    // get the day today
     DateTime now = DateTime.now();
-    int dayToday = now.day;
+    String currentDay = now.weekday == DateTime.monday
+      ? 'monday'
+      : now.weekday == DateTime.tuesday
+        ? 'tuesday'
+        : now.weekday == DateTime.wednesday
+          ? 'wednesday'
+          : now.weekday == DateTime.thursday
+            ? 'thursday'
+            : now.weekday == DateTime.friday
+              ? 'friday'
+              : now.weekday == DateTime.saturday
+                ? 'saturday'
+                : 'sunday';
 
+    
   }
 }

@@ -1,6 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <application
-        android:label="summerbody"
+        android:label="Summer Body"
         android:name="${applicationName}"
         android:icon="@mipmap/launcher_icon">
         <activity
