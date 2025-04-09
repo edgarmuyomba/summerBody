@@ -1,6 +1,5 @@
 import 'package:summerbody/blocs/blocProviders.dart';
 import 'package:summerbody/routing/routeConfig.dart';
-import 'package:summerbody/screens/splash.dart';
 import 'package:summerbody/services/DIService.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
