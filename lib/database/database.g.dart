@@ -241,16 +241,17 @@ class $WorkoutsTable extends Workouts with TableInfo<$WorkoutsTable, Workout> {
           GeneratedColumn.checkTextLength(minTextLength: 6, maxTextLength: 32),
       type: DriftSqlType.string,
       requiredDuringInsert: true);
-  static const VerificationMeta _groupMeta = const VerificationMeta('group');
+  static const VerificationMeta _muscleGroupMeta =
+      const VerificationMeta('muscleGroup');
   @override
-  late final GeneratedColumn<int> group = GeneratedColumn<int>(
-      'group', aliasedName, false,
+  late final GeneratedColumn<int> muscleGroup = GeneratedColumn<int>(
+      'muscle_group', aliasedName, false,
       type: DriftSqlType.int,
       requiredDuringInsert: true,
       defaultConstraints:
           GeneratedColumn.constraintIsAlways('REFERENCES muscle_groups (id)'));
   @override
-  List<GeneratedColumn> get $columns => [id, name, group];
+  List<GeneratedColumn> get $columns => [id, name, muscleGroup];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -270,11 +271,13 @@ class $WorkoutsTable extends Workouts with TableInfo<$WorkoutsTable, Workout> {
     } else if (isInserting) {
       context.missing(_nameMeta);
     }
-    if (data.containsKey('group')) {
+    if (data.containsKey('muscle_group')) {
       context.handle(
-          _groupMeta, group.isAcceptableOrUnknown(data['group']!, _groupMeta));
+          _muscleGroupMeta,
+          muscleGroup.isAcceptableOrUnknown(
+              data['muscle_group']!, _muscleGroupMeta));
     } else if (isInserting) {
-      context.missing(_groupMeta);
+      context.missing(_muscleGroupMeta);
     }
     return context;
   }
@@ -289,8 +292,8 @@ class $WorkoutsTable extends Workouts with TableInfo<$WorkoutsTable, Workout> {
           .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
       name: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}name'])!,
-      group: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}group'])!,
+      muscleGroup: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}muscle_group'])!,
     );
   }
 
@@ -303,14 +306,15 @@ class $WorkoutsTable extends Workouts with TableInfo<$WorkoutsTable, Workout> {
 class Workout extends DataClass implements Insertable<Workout> {
   final int id;
   final String name;
-  final int group;
-  const Workout({required this.id, required this.name, required this.group});
+  final int muscleGroup;
+  const Workout(
+      {required this.id, required this.name, required this.muscleGroup});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['id'] = Variable<int>(id);
     map['name'] = Variable<String>(name);
-    map['group'] = Variable<int>(group);
+    map['muscle_group'] = Variable<int>(muscleGroup);
     return map;
   }
 
@@ -318,7 +322,7 @@ class Workout extends DataClass implements Insertable<Workout> {
     return WorkoutsCompanion(
       id: Value(id),
       name: Value(name),
-      group: Value(group),
+      muscleGroup: Value(muscleGroup),
     );
   }
 
@@ -328,7 +332,7 @@ class Workout extends DataClass implements Insertable<Workout> {
     return Workout(
       id: serializer.fromJson<int>(json['id']),
       name: serializer.fromJson<String>(json['name']),
-      group: serializer.fromJson<int>(json['group']),
+      muscleGroup: serializer.fromJson<int>(json['muscleGroup']),
     );
   }
   @override
@@ -337,20 +341,21 @@ class Workout extends DataClass implements Insertable<Workout> {
     return <String, dynamic>{
       'id': serializer.toJson<int>(id),
       'name': serializer.toJson<String>(name),
-      'group': serializer.toJson<int>(group),
+      'muscleGroup': serializer.toJson<int>(muscleGroup),
     };
   }
 
-  Workout copyWith({int? id, String? name, int? group}) => Workout(
+  Workout copyWith({int? id, String? name, int? muscleGroup}) => Workout(
         id: id ?? this.id,
         name: name ?? this.name,
-        group: group ?? this.group,
+        muscleGroup: muscleGroup ?? this.muscleGroup,
       );
   Workout copyWithCompanion(WorkoutsCompanion data) {
     return Workout(
       id: data.id.present ? data.id.value : this.id,
       name: data.name.present ? data.name.value : this.name,
-      group: data.group.present ? data.group.value : this.group,
+      muscleGroup:
+          data.muscleGroup.present ? data.muscleGroup.value : this.muscleGroup,
     );
   }
 
@@ -359,55 +364,55 @@ class Workout extends DataClass implements Insertable<Workout> {
     return (StringBuffer('Workout(')
           ..write('id: $id, ')
           ..write('name: $name, ')
-          ..write('group: $group')
+          ..write('muscleGroup: $muscleGroup')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(id, name, group);
+  int get hashCode => Object.hash(id, name, muscleGroup);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       (other is Workout &&
           other.id == this.id &&
           other.name == this.name &&
-          other.group == this.group);
+          other.muscleGroup == this.muscleGroup);
 }
 
 class WorkoutsCompanion extends UpdateCompanion<Workout> {
   final Value<int> id;
   final Value<String> name;
-  final Value<int> group;
+  final Value<int> muscleGroup;
   const WorkoutsCompanion({
     this.id = const Value.absent(),
     this.name = const Value.absent(),
-    this.group = const Value.absent(),
+    this.muscleGroup = const Value.absent(),
   });
   WorkoutsCompanion.insert({
     this.id = const Value.absent(),
     required String name,
-    required int group,
+    required int muscleGroup,
   })  : name = Value(name),
-        group = Value(group);
+        muscleGroup = Value(muscleGroup);
   static Insertable<Workout> custom({
     Expression<int>? id,
     Expression<String>? name,
-    Expression<int>? group,
+    Expression<int>? muscleGroup,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
       if (name != null) 'name': name,
-      if (group != null) 'group': group,
+      if (muscleGroup != null) 'muscle_group': muscleGroup,
     });
   }
 
   WorkoutsCompanion copyWith(
-      {Value<int>? id, Value<String>? name, Value<int>? group}) {
+      {Value<int>? id, Value<String>? name, Value<int>? muscleGroup}) {
     return WorkoutsCompanion(
       id: id ?? this.id,
       name: name ?? this.name,
-      group: group ?? this.group,
+      muscleGroup: muscleGroup ?? this.muscleGroup,
     );
   }
 
@@ -420,8 +425,8 @@ class WorkoutsCompanion extends UpdateCompanion<Workout> {
     if (name.present) {
       map['name'] = Variable<String>(name.value);
     }
-    if (group.present) {
-      map['group'] = Variable<int>(group.value);
+    if (muscleGroup.present) {
+      map['muscle_group'] = Variable<int>(muscleGroup.value);
     }
     return map;
   }
@@ -431,7 +436,7 @@ class WorkoutsCompanion extends UpdateCompanion<Workout> {
     return (StringBuffer('WorkoutsCompanion(')
           ..write('id: $id, ')
           ..write('name: $name, ')
-          ..write('group: $group')
+          ..write('muscleGroup: $muscleGroup')
           ..write(')'))
         .toString();
   }
@@ -859,7 +864,7 @@ class $$MuscleGroupsTableFilterComposer
         composer: this,
         getCurrentColumn: (t) => t.id,
         referencedTable: $state.db.workouts,
-        getReferencedColumn: (t) => t.group,
+        getReferencedColumn: (t) => t.muscleGroup,
         builder: (joinBuilder, parentComposers) =>
             $$WorkoutsTableFilterComposer(ComposerState(
                 $state.db, $state.db.workouts, joinBuilder, parentComposers)));
@@ -889,12 +894,12 @@ class $$MuscleGroupsTableOrderingComposer
 typedef $$WorkoutsTableCreateCompanionBuilder = WorkoutsCompanion Function({
   Value<int> id,
   required String name,
-  required int group,
+  required int muscleGroup,
 });
 typedef $$WorkoutsTableUpdateCompanionBuilder = WorkoutsCompanion Function({
   Value<int> id,
   Value<String> name,
-  Value<int> group,
+  Value<int> muscleGroup,
 });
 
 class $$WorkoutsTableTableManager extends RootTableManager<
@@ -916,22 +921,22 @@ class $$WorkoutsTableTableManager extends RootTableManager<
           updateCompanionCallback: ({
             Value<int> id = const Value.absent(),
             Value<String> name = const Value.absent(),
-            Value<int> group = const Value.absent(),
+            Value<int> muscleGroup = const Value.absent(),
           }) =>
               WorkoutsCompanion(
             id: id,
             name: name,
-            group: group,
+            muscleGroup: muscleGroup,
           ),
           createCompanionCallback: ({
             Value<int> id = const Value.absent(),
             required String name,
-            required int group,
+            required int muscleGroup,
           }) =>
               WorkoutsCompanion.insert(
             id: id,
             name: name,
-            group: group,
+            muscleGroup: muscleGroup,
           ),
         ));
 }
@@ -949,10 +954,10 @@ class $$WorkoutsTableFilterComposer
       builder: (column, joinBuilders) =>
           ColumnFilters(column, joinBuilders: joinBuilders));
 
-  $$MuscleGroupsTableFilterComposer get group {
+  $$MuscleGroupsTableFilterComposer get muscleGroup {
     final $$MuscleGroupsTableFilterComposer composer = $state.composerBuilder(
         composer: this,
-        getCurrentColumn: (t) => t.group,
+        getCurrentColumn: (t) => t.muscleGroup,
         referencedTable: $state.db.muscleGroups,
         getReferencedColumn: (t) => t.id,
         builder: (joinBuilder, parentComposers) =>
@@ -988,10 +993,10 @@ class $$WorkoutsTableOrderingComposer
       builder: (column, joinBuilders) =>
           ColumnOrderings(column, joinBuilders: joinBuilders));
 
-  $$MuscleGroupsTableOrderingComposer get group {
+  $$MuscleGroupsTableOrderingComposer get muscleGroup {
     final $$MuscleGroupsTableOrderingComposer composer = $state.composerBuilder(
         composer: this,
-        getCurrentColumn: (t) => t.group,
+        getCurrentColumn: (t) => t.muscleGroup,
         referencedTable: $state.db.muscleGroups,
         getReferencedColumn: (t) => t.id,
         builder: (joinBuilder, parentComposers) =>

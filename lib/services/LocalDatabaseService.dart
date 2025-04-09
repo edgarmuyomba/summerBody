@@ -17,6 +17,12 @@ class LocalDatabaseService {
         .getSingleOrNull();
   }
 
+  Future<List<Workout>> getWorkoutsByMuscleGroup(int id) async {
+    return await _appDatabase.managers.workouts
+        .filter((w) => w.muscleGroup.id(id))
+        .get();
+  }
+
   Future<void> seedMuscleGroups() async {
     try {
       await _appDatabase.managers.muscleGroups.bulkCreate((o) => [
