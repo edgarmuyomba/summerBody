@@ -35,8 +35,7 @@ class Splash extends StatelessWidget {
         if (state is ScheduleReady) {
           Future.delayed(
               const Duration(seconds: 2),
-              () => context.goNamed(Routes.day,
-                  pathParameters: {"currentDay": currentDay}));
+              () => context.goNamed(Routes.day));
         }
       },
       child: Padding(

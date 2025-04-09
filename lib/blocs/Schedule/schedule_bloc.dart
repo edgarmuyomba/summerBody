@@ -51,8 +51,8 @@ class ScheduleBloc extends Bloc<ScheduleEvent, ScheduleState> {
     Map<String, dynamic> muscleGroupAndWorkouts =
         await _getMuscleGroupAndWorkouts(currentDay);
 
-
     emit(ScheduleReady(
+        currentDay: currentDay,
         musclegroup: muscleGroupAndWorkouts["muscleGroup"],
         workouts: muscleGroupAndWorkouts["workouts"]));
   }
@@ -61,6 +61,7 @@ class ScheduleBloc extends Bloc<ScheduleEvent, ScheduleState> {
     Map<String, dynamic> muscleGroupAndWorkouts =
         await _getMuscleGroupAndWorkouts(event.day);
     emit(ScheduleReady(
+        currentDay: event.day,
         musclegroup: muscleGroupAndWorkouts["muscleGroup"],
         workouts: muscleGroupAndWorkouts["workouts"]));
   }
