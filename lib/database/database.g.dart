@@ -23,7 +23,7 @@ class $MuscleGroupsTable extends MuscleGroups
   late final GeneratedColumn<String> name = GeneratedColumn<String>(
       'name', aliasedName, false,
       additionalChecks:
-          GeneratedColumn.checkTextLength(minTextLength: 6, maxTextLength: 32),
+          GeneratedColumn.checkTextLength(minTextLength: 2, maxTextLength: 32),
       type: DriftSqlType.string,
       requiredDuringInsert: true);
   static const VerificationMeta _dayMeta = const VerificationMeta('day');
@@ -238,7 +238,7 @@ class $WorkoutsTable extends Workouts with TableInfo<$WorkoutsTable, Workout> {
   late final GeneratedColumn<String> name = GeneratedColumn<String>(
       'name', aliasedName, false,
       additionalChecks:
-          GeneratedColumn.checkTextLength(minTextLength: 6, maxTextLength: 32),
+          GeneratedColumn.checkTextLength(minTextLength: 3, maxTextLength: 32),
       type: DriftSqlType.string,
       requiredDuringInsert: true);
   static const VerificationMeta _muscleGroupMeta =

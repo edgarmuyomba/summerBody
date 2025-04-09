@@ -11,7 +11,7 @@ final GoRouter router = GoRouter(routes: [
       }),
   GoRoute(
       name: 'day',
-      path: 'day/:currentDay',
+      path: '/day/:currentDay',
       builder: (BuildContext context, GoRouterState state) {
         final currentDay = state.pathParameters["currentDay"] ?? "monday";
         return Day(currentDay: currentDay);

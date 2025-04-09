@@ -11,8 +11,8 @@ class Splash extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: BlocListener(
-      bloc: context.read<ScheduleBloc>(),
+        body: BlocListener<ScheduleBloc, ScheduleState>(
+      // bloc: context.read<ScheduleBloc>(),
       listener: (context, state) async {
         DateTime now = DateTime.now();
         String currentDay = now.weekday == DateTime.monday
@@ -32,7 +32,7 @@ class Splash extends StatelessWidget {
         if (state is ScheduleReady) {
           Future.delayed(
               const Duration(seconds: 2),
-              () => context.pushNamed(Routes.day,
+              () => context.goNamed(Routes.day,
                   pathParameters: {"currentDay": currentDay}));
         }
       },
