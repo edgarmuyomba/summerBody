@@ -4,3 +4,9 @@ part of 'schedule_bloc.dart';
 sealed class ScheduleEvent {}
 
 final class Initialize extends ScheduleEvent {}
+
+final class SetDay extends ScheduleEvent {
+  final String day;
+
+  SetDay({required this.day});
+}

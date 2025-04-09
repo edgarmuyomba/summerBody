@@ -4,6 +4,6 @@ import "package:flutter_bloc/flutter_bloc.dart";
 
 var blocProviders = [
   BlocProvider(
-    create: (BuildContext context) => ScheduleBloc(),
+    create: (BuildContext context) => ScheduleBloc()..add(Initialize()),
   )
 ];

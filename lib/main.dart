@@ -1,4 +1,5 @@
 import 'package:summerbody/blocs/blocProviders.dart';
+import 'package:summerbody/routing/routeConfig.dart';
 import 'package:summerbody/screens/splash.dart';
 import 'package:summerbody/services/DIService.dart';
 import 'package:flutter/material.dart';
@@ -20,10 +21,10 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
-      providers: blocProviders, 
-      child: const MaterialApp(
-        debugShowCheckedModeBanner: false,
-        home: Splash(),
-      ));
+        providers: blocProviders,
+        child: MaterialApp.router(
+          routerConfig: router,
+          debugShowCheckedModeBanner: false,
+        ));
   }
 }
