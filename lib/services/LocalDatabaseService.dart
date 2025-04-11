@@ -26,11 +26,19 @@ class LocalDatabaseService {
   Future<void> seedMuscleGroups() async {
     try {
       await _appDatabase.managers.muscleGroups.bulkCreate((o) => [
-            const MuscleGroup(id: 1, name: "Chest", day: ""),
-            const MuscleGroup(id: 2, name: "Arms", day: ""),
-            const MuscleGroup(id: 3, name: "Shoulders", day: ""),
-            const MuscleGroup(id: 4, name: "Back", day: ""),
-            const MuscleGroup(id: 5, name: "Legs", day: "")
+            const MuscleGroup(
+                id: 1, name: "Chest", day: "", icon: "assets/icons/chest.png"),
+            const MuscleGroup(
+                id: 2, name: "Arms", day: "", icon: "assets/icons/arms.png"),
+            const MuscleGroup(
+                id: 3,
+                name: "Shoulders",
+                day: "",
+                icon: "assets/icons/shoulders.png"),
+            const MuscleGroup(
+                id: 4, name: "Back", day: "", icon: "assets/icons/back.png"),
+            const MuscleGroup(
+                id: 5, name: "Legs", day: "", icon: "assets/icons/legs.png")
           ]);
     } catch (e) {
       rethrow;

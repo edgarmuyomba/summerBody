@@ -5,4 +5,5 @@ class MuscleGroups extends Table {
   IntColumn get id => integer().autoIncrement()();
   TextColumn get name => text().withLength(min: 2, max: 32)();
   TextColumn get day => text()();
+  TextColumn get icon => text()();
 }

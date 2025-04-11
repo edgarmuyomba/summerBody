@@ -13,6 +13,6 @@ final GoRouter router = GoRouter(routes: [
       name: 'day',
       path: '/day',
       builder: (BuildContext context, GoRouterState state) {
-        return const Day();
+        return Day();
       })
 ]);

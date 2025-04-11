@@ -31,8 +31,13 @@ class $MuscleGroupsTable extends MuscleGroups
   late final GeneratedColumn<String> day = GeneratedColumn<String>(
       'day', aliasedName, false,
       type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _iconMeta = const VerificationMeta('icon');
   @override
-  List<GeneratedColumn> get $columns => [id, name, day];
+  late final GeneratedColumn<String> icon = GeneratedColumn<String>(
+      'icon', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  @override
+  List<GeneratedColumn> get $columns => [id, name, day, icon];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -58,6 +63,12 @@ class $MuscleGroupsTable extends MuscleGroups
     } else if (isInserting) {
       context.missing(_dayMeta);
     }
+    if (data.containsKey('icon')) {
+      context.handle(
+          _iconMeta, icon.isAcceptableOrUnknown(data['icon']!, _iconMeta));
+    } else if (isInserting) {
+      context.missing(_iconMeta);
+    }
     return context;
   }
 
@@ -73,6 +84,8 @@ class $MuscleGroupsTable extends MuscleGroups
           .read(DriftSqlType.string, data['${effectivePrefix}name'])!,
       day: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}day'])!,
+      icon: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}icon'])!,
     );
   }
 
@@ -86,13 +99,19 @@ class MuscleGroup extends DataClass implements Insertable<MuscleGroup> {
   final int id;
   final String name;
   final String day;
-  const MuscleGroup({required this.id, required this.name, required this.day});
+  final String icon;
+  const MuscleGroup(
+      {required this.id,
+      required this.name,
+      required this.day,
+      required this.icon});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['id'] = Variable<int>(id);
     map['name'] = Variable<String>(name);
     map['day'] = Variable<String>(day);
+    map['icon'] = Variable<String>(icon);
     return map;
   }
 
@@ -101,6 +120,7 @@ class MuscleGroup extends DataClass implements Insertable<MuscleGroup> {
       id: Value(id),
       name: Value(name),
       day: Value(day),
+      icon: Value(icon),
     );
   }
 
@@ -111,6 +131,7 @@ class MuscleGroup extends DataClass implements Insertable<MuscleGroup> {
       id: serializer.fromJson<int>(json['id']),
       name: serializer.fromJson<String>(json['name']),
       day: serializer.fromJson<String>(json['day']),
+      icon: serializer.fromJson<String>(json['icon']),
     );
   }
   @override
@@ -120,19 +141,23 @@ class MuscleGroup extends DataClass implements Insertable<MuscleGroup> {
       'id': serializer.toJson<int>(id),
       'name': serializer.toJson<String>(name),
       'day': serializer.toJson<String>(day),
+      'icon': serializer.toJson<String>(icon),
     };
   }
 
-  MuscleGroup copyWith({int? id, String? name, String? day}) => MuscleGroup(
+  MuscleGroup copyWith({int? id, String? name, String? day, String? icon}) =>
+      MuscleGroup(
         id: id ?? this.id,
         name: name ?? this.name,
         day: day ?? this.day,
+        icon: icon ?? this.icon,
       );
   MuscleGroup copyWithCompanion(MuscleGroupsCompanion data) {
     return MuscleGroup(
       id: data.id.present ? data.id.value : this.id,
       name: data.name.present ? data.name.value : this.name,
       day: data.day.present ? data.day.value : this.day,
+      icon: data.icon.present ? data.icon.value : this.icon,
     );
   }
 
@@ -141,55 +166,67 @@ class MuscleGroup extends DataClass implements Insertable<MuscleGroup> {
     return (StringBuffer('MuscleGroup(')
           ..write('id: $id, ')
           ..write('name: $name, ')
-          ..write('day: $day')
+          ..write('day: $day, ')
+          ..write('icon: $icon')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(id, name, day);
+  int get hashCode => Object.hash(id, name, day, icon);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       (other is MuscleGroup &&
           other.id == this.id &&
           other.name == this.name &&
-          other.day == this.day);
+          other.day == this.day &&
+          other.icon == this.icon);
 }
 
 class MuscleGroupsCompanion extends UpdateCompanion<MuscleGroup> {
   final Value<int> id;
   final Value<String> name;
   final Value<String> day;
+  final Value<String> icon;
   const MuscleGroupsCompanion({
     this.id = const Value.absent(),
     this.name = const Value.absent(),
     this.day = const Value.absent(),
+    this.icon = const Value.absent(),
   });
   MuscleGroupsCompanion.insert({
     this.id = const Value.absent(),
     required String name,
     required String day,
+    required String icon,
   })  : name = Value(name),
-        day = Value(day);
+        day = Value(day),
+        icon = Value(icon);
   static Insertable<MuscleGroup> custom({
     Expression<int>? id,
     Expression<String>? name,
     Expression<String>? day,
+    Expression<String>? icon,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
       if (name != null) 'name': name,
       if (day != null) 'day': day,
+      if (icon != null) 'icon': icon,
     });
   }
 
   MuscleGroupsCompanion copyWith(
-      {Value<int>? id, Value<String>? name, Value<String>? day}) {
+      {Value<int>? id,
+      Value<String>? name,
+      Value<String>? day,
+      Value<String>? icon}) {
     return MuscleGroupsCompanion(
       id: id ?? this.id,
       name: name ?? this.name,
       day: day ?? this.day,
+      icon: icon ?? this.icon,
     );
   }
 
@@ -205,6 +242,9 @@ class MuscleGroupsCompanion extends UpdateCompanion<MuscleGroup> {
     if (day.present) {
       map['day'] = Variable<String>(day.value);
     }
+    if (icon.present) {
+      map['icon'] = Variable<String>(icon.value);
+    }
     return map;
   }
 
@@ -213,7 +253,8 @@ class MuscleGroupsCompanion extends UpdateCompanion<MuscleGroup> {
     return (StringBuffer('MuscleGroupsCompanion(')
           ..write('id: $id, ')
           ..write('name: $name, ')
-          ..write('day: $day')
+          ..write('day: $day, ')
+          ..write('icon: $icon')
           ..write(')'))
         .toString();
   }
@@ -793,12 +834,14 @@ typedef $$MuscleGroupsTableCreateCompanionBuilder = MuscleGroupsCompanion
   Value<int> id,
   required String name,
   required String day,
+  required String icon,
 });
 typedef $$MuscleGroupsTableUpdateCompanionBuilder = MuscleGroupsCompanion
     Function({
   Value<int> id,
   Value<String> name,
   Value<String> day,
+  Value<String> icon,
 });
 
 class $$MuscleGroupsTableTableManager extends RootTableManager<
@@ -821,21 +864,25 @@ class $$MuscleGroupsTableTableManager extends RootTableManager<
             Value<int> id = const Value.absent(),
             Value<String> name = const Value.absent(),
             Value<String> day = const Value.absent(),
+            Value<String> icon = const Value.absent(),
           }) =>
               MuscleGroupsCompanion(
             id: id,
             name: name,
             day: day,
+            icon: icon,
           ),
           createCompanionCallback: ({
             Value<int> id = const Value.absent(),
             required String name,
             required String day,
+            required String icon,
           }) =>
               MuscleGroupsCompanion.insert(
             id: id,
             name: name,
             day: day,
+            icon: icon,
           ),
         ));
 }
@@ -855,6 +902,11 @@ class $$MuscleGroupsTableFilterComposer
 
   ColumnFilters<String> get day => $state.composableBuilder(
       column: $state.table.day,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<String> get icon => $state.composableBuilder(
+      column: $state.table.icon,
       builder: (column, joinBuilders) =>
           ColumnFilters(column, joinBuilders: joinBuilders));
 
@@ -887,6 +939,11 @@ class $$MuscleGroupsTableOrderingComposer
 
   ColumnOrderings<String> get day => $state.composableBuilder(
       column: $state.table.day,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<String> get icon => $state.composableBuilder(
+      column: $state.table.icon,
       builder: (column, joinBuilders) =>
           ColumnOrderings(column, joinBuilders: joinBuilders));
 }

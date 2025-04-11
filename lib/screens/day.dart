@@ -5,9 +5,16 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:summerbody/blocs/Schedule/schedule_bloc.dart';
+import 'package:summerbody/database/database.dart';
+import 'package:summerbody/services/DIService.dart';
+import 'package:summerbody/services/LocalDatabaseService.dart';
 
 class Day extends StatefulWidget {
-  const Day({super.key});
+  final LocalDatabaseService _localDatabaseService;
+
+  Day({super.key, LocalDatabaseService? localDatabaseService})
+      : _localDatabaseService = localDatabaseService ??
+            DIService().locator.get<LocalDatabaseService>();
 
   @override
   State<Day> createState() => _DayState();
@@ -75,26 +82,31 @@ class _DayState extends State<Day> {
                     child: const Divider(),
                   ),
                   if (state.musclegroup == null) ...[
-                    Container(
-                      width: double.infinity,
-                      height: 75.h,
-                      alignment: Alignment.center,
-                      decoration: BoxDecoration(
-                          color: Colors.black87,
-                          borderRadius: BorderRadius.circular(5)),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          const Icon(
-                            Icons.add,
-                            color: Colors.white,
-                          ),
-                          SizedBox(width: 10.w),
-                          const Text(
-                            "Add Muscle Group",
-                            style: TextStyle(color: Colors.white),
-                          )
-                        ],
+                    GestureDetector(
+                      onTap: () async {
+                        await addMuscleGroup();
+                      },
+                      child: Container(
+                        width: double.infinity,
+                        height: 75.h,
+                        alignment: Alignment.center,
+                        decoration: BoxDecoration(
+                            color: Colors.black87,
+                            borderRadius: BorderRadius.circular(5)),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Icon(
+                              Icons.add,
+                              color: Colors.white,
+                            ),
+                            SizedBox(width: 10.w),
+                            const Text(
+                              "Add Muscle Group",
+                              style: TextStyle(color: Colors.white),
+                            )
+                          ],
+                        ),
                       ),
                     )
                   ]
@@ -166,5 +178,36 @@ class _DayState extends State<Day> {
       default:
         return "monday";
     }
+  }
+
+  addMuscleGroup() async {
+    await showModalBottomSheet(
+        context: context,
+        builder: (BuildContext context) {
+          return Padding(
+              padding: EdgeInsets.symmetric(
+                horizontal: 16.w,
+                vertical: 24.h,
+              ),
+              child: FutureBuilder(
+                  future: widget._localDatabaseService.getAllMuscleGroups(),
+                  builder: (BuildContext context, snapshot) {
+                    if (snapshot.hasData) {
+                      List<MuscleGroup> muscleGroups = snapshot.data!;
+                      return GridView.count(
+                        crossAxisCount: 2,
+                        children: List.generate(muscleGroups.length, (index) {
+                          return Container(
+                            child: Padding(
+                              padding: EdgeInsets.all(16.0),
+                              child: Image.asset(muscleGroups[index].icon),
+                            ),
+                          );
+                        }),
+                      );
+                    }
+                    return const SizedBox.shrink();
+                  }));
+        });
   }
 }
