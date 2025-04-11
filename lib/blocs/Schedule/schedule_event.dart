@@ -10,3 +10,9 @@ final class SetDay extends ScheduleEvent {
 
   SetDay({required this.day});
 }
+
+final class AddMuscleGroup extends ScheduleEvent {
+  final String day;
+
+  AddMuscleGroup({required this.day});
+}

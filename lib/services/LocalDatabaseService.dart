@@ -1,3 +1,4 @@
+import 'package:drift/drift.dart';
 import 'package:summerbody/database/database.dart';
 import 'package:summerbody/services/DIService.dart';
 
@@ -21,6 +22,12 @@ class LocalDatabaseService {
     return await _appDatabase.managers.workouts
         .filter((w) => w.muscleGroup.id(id))
         .get();
+  }
+
+  Future<void> addDayToMuscleGroup(int id, String day) async {
+    await _appDatabase.managers.muscleGroups
+        .filter((mg) => mg.id.equals(id))
+        .update((mg) => mg(day: Value(day)));
   }
 
   Future<void> seedMuscleGroups() async {

@@ -21,7 +21,7 @@ class Day extends StatefulWidget {
 }
 
 class _DayState extends State<Day> {
-  String? selectMuscleGroup;
+  String? selectMuscleGroupName;
 
   @override
   Widget build(BuildContext context) {
@@ -87,9 +87,9 @@ class _DayState extends State<Day> {
                     GestureDetector(
                       onTap: () async {
                         setState(() {
-                          selectMuscleGroup = null;
+                          selectMuscleGroupName = null;
                         });
-                        await addMuscleGroup();
+                        await addMuscleGroup(state.currentDay);
                       },
                       child: Container(
                         width: double.infinity,
@@ -185,7 +185,7 @@ class _DayState extends State<Day> {
     }
   }
 
-  addMuscleGroup() async {
+  addMuscleGroup(String day) async {
     String? result = await showModalBottomSheet(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
         context: context,
@@ -203,18 +203,25 @@ class _DayState extends State<Day> {
                       if (snapshot.hasData) {
                         List<MuscleGroup> muscleGroups = snapshot.data!;
                         return Column(children: [
-                          if (selectMuscleGroup != null) ...[
-                            Container(
-                                width: double.infinity,
-                                height: 50.h,
-                                alignment: Alignment.center,
-                                decoration: BoxDecoration(
-                                    color: Colors.black87,
-                                    borderRadius: BorderRadius.circular(50)),
-                                child: Text(
-                                  "Add ${selectMuscleGroup!}",
-                                  style: const TextStyle(color: Colors.white),
-                                )),
+                          if (selectMuscleGroupName != null) ...[
+                            GestureDetector(
+                              onTap: () {
+                                context
+                                    .read<ScheduleBloc>()
+                                    .add(AddMuscleGroup(day: day));
+                              },
+                              child: Container(
+                                  width: double.infinity,
+                                  height: 50.h,
+                                  alignment: Alignment.center,
+                                  decoration: BoxDecoration(
+                                      color: Colors.black87,
+                                      borderRadius: BorderRadius.circular(50)),
+                                  child: Text(
+                                    "Add ${selectMuscleGroupName!}",
+                                    style: const TextStyle(color: Colors.white),
+                                  )),
+                            ),
                             SizedBox(height: 20.h)
                           ],
                           Expanded(
@@ -226,7 +233,8 @@ class _DayState extends State<Day> {
                                   return GestureDetector(
                                     onTap: () {
                                       setModalState(() {
-                                        selectMuscleGroup = muscleGroup.name;
+                                        selectMuscleGroupName =
+                                            muscleGroup.name;
                                       });
                                       setState(() {});
                                     },
@@ -235,11 +243,11 @@ class _DayState extends State<Day> {
                                           borderRadius:
                                               BorderRadius.circular(20),
                                           border: Border.all(
-                                              color: selectMuscleGroup ==
+                                              color: selectMuscleGroupName ==
                                                       muscleGroup.name
                                                   ? Colors.black26
                                                   : Colors.transparent),
-                                          color: selectMuscleGroup ==
+                                          color: selectMuscleGroupName ==
                                                   muscleGroup.name
                                               ? Colors.black12
                                               : Colors.transparent),
@@ -261,7 +269,7 @@ class _DayState extends State<Day> {
         });
     if (result != null) {
       setState(() {
-        selectMuscleGroup = result;
+        selectMuscleGroupName = result;
       });
     }
   }

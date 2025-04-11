@@ -7,7 +7,7 @@ final class ScheduleInitial extends ScheduleState {}
 
 final class ScheduleReady extends ScheduleState {
   final String currentDay;
-  final String? musclegroup;
+  final MuscleGroup? musclegroup;
   final List<Workout> workouts;
 
   ScheduleReady({required this.currentDay, required this.musclegroup, required this.workouts});

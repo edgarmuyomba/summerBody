@@ -17,6 +17,7 @@ class ScheduleBloc extends Bloc<ScheduleEvent, ScheduleState> {
         super(ScheduleInitial()) {
     on<Initialize>(_onInitialize);
     on<SetDay>(_onSetDay);
+    on<AddMuscleGroup>(_onAddMuscleGroup);
   }
 
   Future<Map<String, dynamic>> _getMuscleGroupAndWorkouts(String day) async {
@@ -29,7 +30,7 @@ class ScheduleBloc extends Bloc<ScheduleEvent, ScheduleState> {
       List<Workout> workouts =
           await _localDatabaseService.getWorkoutsByMuscleGroup(muscleGroup.id);
 
-      return {"muscleGroup": muscleGroup.name, "workouts": workouts};
+      return {"muscleGroup": muscleGroup, "workouts": workouts};
     }
   }
 
@@ -64,5 +65,25 @@ class ScheduleBloc extends Bloc<ScheduleEvent, ScheduleState> {
         currentDay: event.day,
         musclegroup: muscleGroupAndWorkouts["muscleGroup"],
         workouts: muscleGroupAndWorkouts["workouts"]));
+  }
+
+  Future<void> _onAddMuscleGroup(AddMuscleGroup event, Emitter emit) async {
+    final state = this.state;
+    if (state is ScheduleReady) {
+      try {
+        await _localDatabaseService.addDayToMuscleGroup(
+            state.musclegroup!.id, event.day);
+
+        Map<String, dynamic> muscleGroupAndWorkouts =
+            await _getMuscleGroupAndWorkouts(event.day);
+        emit(ScheduleReady(
+            currentDay: event.day,
+            musclegroup: muscleGroupAndWorkouts["muscleGroup"],
+            workouts: muscleGroupAndWorkouts["workouts"]));
+      } catch (e) {
+        Logger().e(e);
+        emit(state);
+      }
+    }
   }
 }
