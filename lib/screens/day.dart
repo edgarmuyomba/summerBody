@@ -42,6 +42,7 @@ class _DayState extends State<Day> {
             return Padding(
               padding: EdgeInsets.all(16.0.h),
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -114,6 +115,67 @@ class _DayState extends State<Day> {
                         ),
                       ),
                     )
+                  ] else ...[
+                    SizedBox(height: 8.0.h),
+                    Center(
+                      child: Image(
+                          height: 300.h,
+                          image: AssetImage(
+                            state.musclegroup!.icon,
+                          )),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.symmetric(vertical: 8.0.h),
+                      child: const Divider(),
+                    ),
+                    Padding(
+                        padding: EdgeInsets.only(left: 16.0.w),
+                        child: Text(
+                          "Workouts",
+                          style: GoogleFonts.monda(
+                              fontSize: 18.sp,
+                              color: Colors.black87,
+                              fontWeight: FontWeight.bold),
+                        )),
+                    if (state.workouts.isEmpty) ...[
+                      Expanded(
+                          child: Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            RichText(
+                              text: TextSpan(
+                                text: "You have no workouts for the ",
+                                style: TextStyle(
+                                    fontSize: 12.sp, color: Colors.black87),
+                                children: [
+                                  TextSpan(
+                                    text:
+                                        "${state.musclegroup!.name.toLowerCase()}.",
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 12.sp,
+                                        color: Colors.black87),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            TextButton(
+                              onPressed: () {
+                                // Add your logic to navigate or add workouts
+                              },
+                              child: Text(
+                                "Add Some",
+                                style: TextStyle(
+                                    fontSize: 12.sp,
+                                    color: Colors.blue,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ))
+                    ]
                   ]
                 ],
               ),
