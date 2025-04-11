@@ -22,7 +22,7 @@ class ScheduleBloc extends Bloc<ScheduleEvent, ScheduleState> {
 
   Future<Map<String, dynamic>> _getMuscleGroupAndWorkouts(String day) async {
     MuscleGroup? muscleGroup =
-        await _localDatabaseService.getMuscleGroupByDay(day);
+        await _localDatabaseService.getMuscleGroupByKey("day", day);
 
     if (muscleGroup == null) {
       return {"muscleGroup": null, "workouts": [].cast<Workout>()};
@@ -71,15 +71,23 @@ class ScheduleBloc extends Bloc<ScheduleEvent, ScheduleState> {
     final state = this.state;
     if (state is ScheduleReady) {
       try {
-        await _localDatabaseService.addDayToMuscleGroup(
-            state.musclegroup!.id, event.day);
+        MuscleGroup? muscleGroup = await _localDatabaseService
+            .getMuscleGroupByKey("name", event.muscleGroupName);
 
-        Map<String, dynamic> muscleGroupAndWorkouts =
-            await _getMuscleGroupAndWorkouts(event.day);
-        emit(ScheduleReady(
-            currentDay: event.day,
-            musclegroup: muscleGroupAndWorkouts["muscleGroup"],
-            workouts: muscleGroupAndWorkouts["workouts"]));
+        if (muscleGroup != null) {
+          await _localDatabaseService.addDayToMuscleGroup(
+              muscleGroup.id, event.day);
+
+          Map<String, dynamic> muscleGroupAndWorkouts =
+              await _getMuscleGroupAndWorkouts(event.day);
+          emit(ScheduleReady(
+              currentDay: event.day,
+              musclegroup: muscleGroupAndWorkouts["muscleGroup"],
+              workouts: muscleGroupAndWorkouts["workouts"]));
+        } else {
+          throw Exception(
+              "MuscleGroup with name ${event.muscleGroupName} not found!");
+        }
       } catch (e) {
         Logger().e(e);
         emit(state);

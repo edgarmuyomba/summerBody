@@ -12,10 +12,17 @@ class LocalDatabaseService {
     return await _appDatabase.managers.muscleGroups.get();
   }
 
-  Future<MuscleGroup?> getMuscleGroupByDay(String day) async {
-    return await _appDatabase.managers.muscleGroups
-        .filter((mg) => mg.day.equals(day))
-        .getSingleOrNull();
+  Future<MuscleGroup?> getMuscleGroupByKey(String key, dynamic value) async {
+    return await _appDatabase.managers.muscleGroups.filter((mg) {
+      switch (key) {
+        case "day":
+          return mg.day.equals(value);
+        case "name":
+          return mg.name.equals(value);
+        default:
+          return mg.id.equals(value);
+      }
+    }).getSingleOrNull();
   }
 
   Future<List<Workout>> getWorkoutsByMuscleGroup(int id) async {

@@ -206,9 +206,10 @@ class _DayState extends State<Day> {
                           if (selectMuscleGroupName != null) ...[
                             GestureDetector(
                               onTap: () {
-                                context
-                                    .read<ScheduleBloc>()
-                                    .add(AddMuscleGroup(day: day));
+                                Navigator.pop(context);
+                                context.read<ScheduleBloc>().add(AddMuscleGroup(
+                                    muscleGroupName: selectMuscleGroupName!,
+                                    day: day));
                               },
                               child: Container(
                                   width: double.infinity,

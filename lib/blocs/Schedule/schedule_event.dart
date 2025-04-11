@@ -12,7 +12,8 @@ final class SetDay extends ScheduleEvent {
 }
 
 final class AddMuscleGroup extends ScheduleEvent {
+  final String muscleGroupName;
   final String day;
 
-  AddMuscleGroup({required this.day});
+  AddMuscleGroup({required this.muscleGroupName, required this.day});
 }
