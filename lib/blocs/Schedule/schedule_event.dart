@@ -17,3 +17,16 @@ final class AddMuscleGroup extends ScheduleEvent {
 
   AddMuscleGroup({required this.muscleGroupName, required this.day});
 }
+
+final class AddWorkout extends ScheduleEvent {
+  final String workoutName;
+  final int weight;
+  final int sets;
+  final int reps;
+
+  AddWorkout(
+      {required this.workoutName,
+      required this.weight,
+      required this.sets,
+      required this.reps});
+}

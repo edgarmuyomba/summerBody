@@ -268,6 +268,7 @@ class _WorkoutsState extends State<Workouts> {
 
     Map<String, dynamic> parsedDate = parseDate(latestEntry?["date"]);
 
+    // make clickable to edit
     return Row(
       children: [
         Container(

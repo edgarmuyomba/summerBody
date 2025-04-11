@@ -37,6 +37,17 @@ class LocalDatabaseService {
         .update((mg) => mg(day: Value(day)));
   }
 
+  Future<int> createWorkout(int muscleGroupId, String workoutName) async {
+    return await _appDatabase.managers.workouts
+        .create((o) => o(muscleGroup: muscleGroupId, name: workoutName));
+  }
+
+  Future<int> createEntry(
+      int workoutId, int weight, int sets, int reps) async {
+    return await _appDatabase.managers.entries.create(
+        (o) => o(workout: workoutId, weight: weight, sets: sets, reps: reps));
+  }
+
   Future<void> seedMuscleGroups() async {
     try {
       await _appDatabase.managers.muscleGroups.bulkCreate((o) => [
