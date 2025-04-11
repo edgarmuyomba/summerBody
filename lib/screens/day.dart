@@ -3,9 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:summerbody/blocs/Schedule/schedule_bloc.dart';
 import 'package:summerbody/database/database.dart';
+import 'package:summerbody/routing/routes.dart';
 import 'package:summerbody/services/DIService.dart';
 import 'package:summerbody/services/LocalDatabaseService.dart';
 
@@ -162,7 +164,7 @@ class _DayState extends State<Day> {
                             ),
                             TextButton(
                               onPressed: () {
-                                // Add your logic to navigate or add workouts
+                                context.pushNamed(Routes.workouts);
                               },
                               child: Text(
                                 "Add Some",
@@ -171,7 +173,7 @@ class _DayState extends State<Day> {
                                     color: Colors.blue,
                                     fontWeight: FontWeight.bold),
                               ),
-                            ),
+                            ), 
                           ],
                         ),
                       ))
