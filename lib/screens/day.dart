@@ -164,7 +164,10 @@ class _DayState extends State<Day> {
                             ),
                             TextButton(
                               onPressed: () {
-                                context.pushNamed(Routes.workouts);
+                                context.pushNamed(Routes.workouts,
+                                    pathParameters: {
+                                      "muscleGroupName": state.musclegroup!.name
+                                    });
                               },
                               child: Text(
                                 "Add Some",
@@ -173,7 +176,7 @@ class _DayState extends State<Day> {
                                     color: Colors.blue,
                                     fontWeight: FontWeight.bold),
                               ),
-                            ), 
+                            ),
                           ],
                         ),
                       ))
