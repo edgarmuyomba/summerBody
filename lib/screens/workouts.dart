@@ -5,6 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:summerbody/blocs/Schedule/schedule_bloc.dart';
 import 'package:reactive_forms/reactive_forms.dart';
+import 'package:summerbody/widgets/workoutWidget.dart';
 
 class Workouts extends StatefulWidget {
   final String muscleGroupName;
@@ -15,22 +16,7 @@ class Workouts extends StatefulWidget {
 }
 
 class _WorkoutsState extends State<Workouts> {
-  List<Map<String, dynamic>> workouts = [
-    {
-      "name": "Bench Press",
-      "entries": [
-        {
-          "weight": 15,
-          "sets": 7,
-          "reps": 15,
-          "date": "2025-04-11 21:23:44.376237"
-        }
-      ]
-    }
-  ];
-
   bool newWorkout = false;
-
 
   final form = FormGroup({
     "name": FormControl<String>(validators: [Validators.required]),
@@ -65,6 +51,12 @@ class _WorkoutsState extends State<Workouts> {
                     setState(() {
                       newWorkout = !newWorkout;
                     });
+                    if (newWorkout == false) {
+                      form.control('name').reset();
+                      form.control('weight').reset();
+                      form.control('sets').reset();
+                      form.control('reps').reset();
+                    }
                   },
                   child: Container(
                     width: double.infinity,
@@ -145,8 +137,8 @@ class _WorkoutsState extends State<Workouts> {
                                           borderRadius:
                                               BorderRadius.circular(5))),
                                   onChanged: (control) {
-                                    form.control('weight').value = int.parse(
-                                        (control.value ?? 0).toString());
+                                    form.control('weight').value =
+                                        (control.value ?? 0).toString();
                                   },
                                   style: GoogleFonts.monda(
                                       fontSize: 20.sp, color: Colors.black87),
@@ -168,8 +160,8 @@ class _WorkoutsState extends State<Workouts> {
                                           borderRadius:
                                               BorderRadius.circular(5))),
                                   onChanged: (control) {
-                                    form.control('sets').value = int.parse(
-                                        (control.value ?? 0).toString());
+                                    form.control('sets').value =
+                                        (control.value ?? 0).toString();
                                   },
                                   style: GoogleFonts.monda(
                                       fontSize: 20.sp, color: Colors.black87),
@@ -191,8 +183,8 @@ class _WorkoutsState extends State<Workouts> {
                                           borderRadius:
                                               BorderRadius.circular(5))),
                                   onChanged: (control) {
-                                    form.control('reps').value = int.parse(
-                                        (control.value ?? 0).toString());
+                                    form.control('reps').value =
+                                        (control.value ?? 0).toString();
                                   },
                                   style: GoogleFonts.monda(
                                       fontSize: 20.sp, color: Colors.black87),
@@ -205,7 +197,23 @@ class _WorkoutsState extends State<Workouts> {
                             if (form.valid) {
                               return ElevatedButton(
                                   onPressed: () {
-                                    // save the workout
+                                    context.read<ScheduleBloc>().add(AddWorkout(
+                                        workoutName: form.control('name').value,
+                                        weight: int.parse(
+                                            form.control('weight').value),
+                                        sets: int.parse(
+                                            form.control('sets').value),
+                                        reps: int.parse(
+                                            form.control('reps').value)));
+                                    setState(() {
+                                      newWorkout = !newWorkout;
+                                    });
+                                    if (newWorkout == false) {
+                                      form.control('name').reset();
+                                      form.control('weight').reset();
+                                      form.control('sets').reset();
+                                      form.control('reps').reset();
+                                    }
                                   },
                                   style: ElevatedButton.styleFrom(
                                       backgroundColor: Colors.black87,
@@ -232,99 +240,26 @@ class _WorkoutsState extends State<Workouts> {
                     child: const Divider(),
                   ),
                 ],
-                ...workouts.map((entry) => workoutWidget(entry))
+                ...state.workouts.map((workout) {
+                  Map<String, dynamic> workoutMap = {
+                    "name": workout.name,
+                    "entries": (state.entries[workout.id] ?? []).map((entry) {
+                      return {
+                        "weight": entry.weight,
+                        "sets": entry.sets,
+                        "reps": entry.reps,
+                        "date": entry.date.toString()
+                      };
+                    }).toList()
+                  };
+                  return workoutWidget(workoutMap);
+                })
               ],
             ),
           );
         }
         return const SizedBox.shrink();
       }),
-    );
-  }
-
-  Map<String, String> parseDate(String dateString) {
-    DateTime date = DateTime.parse(dateString);
-    String day = date.day.toString();
-    String month = date.month.toString().padLeft(2, '0');
-    String shortMonth = {
-      '01': 'Jan',
-      '02': 'Feb',
-      '03': 'Mar',
-      '04': 'Apr',
-      '05': 'May',
-      '06': 'Jun',
-      '07': 'Jul',
-      '08': 'Aug',
-      '09': 'Sep',
-      '10': 'Oct',
-      '11': 'Nov',
-      '12': 'Dec',
-    }[month]!;
-    return {'date': day, 'month': shortMonth};
-  }
-
-  Widget workoutWidget(Map<String, dynamic> workout) {
-    Map<String, dynamic>? latestEntry = workout["entries"][0];
-
-    Map<String, dynamic> parsedDate = parseDate(latestEntry?["date"]);
-
-    // make clickable to edit
-    return Row(
-      children: [
-        Container(
-          height: 75,
-          width: 70,
-          decoration: const BoxDecoration(color: Colors.black87),
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Text(
-                  parsedDate["date"],
-                  style: GoogleFonts.monda(
-                      fontSize: 24.sp,
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold),
-                ),
-                Text(
-                  parsedDate["month"],
-                  style: const TextStyle(color: Colors.white),
-                ),
-              ],
-            ),
-          ),
-        ),
-        SizedBox(width: 10.w),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              workout["name"],
-              style: GoogleFonts.monda(
-                  fontSize: 20.sp,
-                  color: Colors.black87,
-                  fontWeight: FontWeight.bold),
-            ),
-            Text(
-              "${latestEntry?["weight"]}Kg, ${latestEntry?["reps"] * latestEntry?["sets"]} reps",
-              style: TextStyle(
-                fontSize: 15.sp,
-                color: Colors.black87,
-              ),
-            ),
-          ],
-        ),
-        const Expanded(child: SizedBox()),
-        IconButton(
-            onPressed: () {
-              // delete the workout
-            },
-            icon: const Icon(
-              Icons.delete_outline,
-              color: Colors.red,
-            ))
-      ],
     );
   }
 }

@@ -31,7 +31,19 @@ class ScheduleBloc extends Bloc<ScheduleEvent, ScheduleState> {
       List<Workout> workouts =
           await _localDatabaseService.getWorkoutsByMuscleGroup(muscleGroup.id);
 
-      return {"muscleGroup": muscleGroup, "workouts": workouts};
+      Map<int, List<Entry>> entries = {};
+
+      for (var workout in workouts) {
+        List<Entry> workoutEntries =
+            await _localDatabaseService.getAllEntries(workout.id);
+        entries[workout.id] = workoutEntries;
+      }
+
+      return {
+        "muscleGroup": muscleGroup,
+        "workouts": workouts,
+        "entries": entries
+      };
     }
   }
 
@@ -56,7 +68,8 @@ class ScheduleBloc extends Bloc<ScheduleEvent, ScheduleState> {
     emit(ScheduleReady(
         currentDay: currentDay,
         musclegroup: muscleGroupAndWorkouts["muscleGroup"],
-        workouts: muscleGroupAndWorkouts["workouts"]));
+        workouts: muscleGroupAndWorkouts["workouts"],
+        entries: muscleGroupAndWorkouts["entries"]));
   }
 
   Future<void> _onSetDay(SetDay event, Emitter emit) async {
@@ -65,7 +78,8 @@ class ScheduleBloc extends Bloc<ScheduleEvent, ScheduleState> {
     emit(ScheduleReady(
         currentDay: event.day,
         musclegroup: muscleGroupAndWorkouts["muscleGroup"],
-        workouts: muscleGroupAndWorkouts["workouts"]));
+        workouts: muscleGroupAndWorkouts["workouts"],
+        entries: muscleGroupAndWorkouts["entries"]));
   }
 
   Future<void> _onAddMuscleGroup(AddMuscleGroup event, Emitter emit) async {
@@ -84,7 +98,8 @@ class ScheduleBloc extends Bloc<ScheduleEvent, ScheduleState> {
           emit(ScheduleReady(
               currentDay: event.day,
               musclegroup: muscleGroupAndWorkouts["muscleGroup"],
-              workouts: muscleGroupAndWorkouts["workouts"]));
+              workouts: muscleGroupAndWorkouts["workouts"],
+              entries: muscleGroupAndWorkouts["entries"]));
         } else {
           throw Exception(
               "MuscleGroup with name ${event.muscleGroupName} not found!");
@@ -111,7 +126,8 @@ class ScheduleBloc extends Bloc<ScheduleEvent, ScheduleState> {
         emit(ScheduleReady(
             currentDay: state.currentDay,
             musclegroup: muscleGroupAndWorkouts["muscleGroup"],
-            workouts: muscleGroupAndWorkouts["workouts"]));
+            workouts: muscleGroupAndWorkouts["workouts"],
+            entries: muscleGroupAndWorkouts["entries"]));
       } catch (e) {
         Logger().e(e);
         emit(state);

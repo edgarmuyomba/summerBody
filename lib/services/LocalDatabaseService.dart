@@ -42,10 +42,15 @@ class LocalDatabaseService {
         .create((o) => o(muscleGroup: muscleGroupId, name: workoutName));
   }
 
-  Future<int> createEntry(
-      int workoutId, int weight, int sets, int reps) async {
+  Future<int> createEntry(int workoutId, int weight, int sets, int reps) async {
     return await _appDatabase.managers.entries.create(
         (o) => o(workout: workoutId, weight: weight, sets: sets, reps: reps));
+  }
+
+  Future<List<Entry>> getAllEntries(int workoutId) async {
+    return await _appDatabase.managers.entries
+        .filter((e) => e.workout.id.equals(workoutId))
+        .get();
   }
 
   Future<void> seedMuscleGroups() async {

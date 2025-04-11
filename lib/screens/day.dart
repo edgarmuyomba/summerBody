@@ -132,12 +132,31 @@ class _DayState extends State<Day> {
                     ),
                     Padding(
                         padding: EdgeInsets.only(left: 16.0.w),
-                        child: Text(
-                          "Workouts",
-                          style: GoogleFonts.monda(
-                              fontSize: 18.sp,
-                              color: Colors.black87,
-                              fontWeight: FontWeight.bold),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              "Workouts",
+                              style: GoogleFonts.monda(
+                                  fontSize: 18.sp,
+                                  color: Colors.black87,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                            if (state.workouts.isNotEmpty) ...[
+                              IconButton(
+                                  onPressed: () {
+                                    context.pushNamed(Routes.workouts,
+                                        pathParameters: {
+                                          "muscleGroupName":
+                                              state.musclegroup!.name
+                                        });
+                                  },
+                                  icon: const Icon(
+                                    Icons.menu,
+                                    color: Colors.black87,
+                                  ))
+                            ]
+                          ],
                         )),
                     if (state.workouts.isEmpty) ...[
                       Expanded(
