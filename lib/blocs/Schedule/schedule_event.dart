@@ -30,3 +30,9 @@ final class AddWorkout extends ScheduleEvent {
       required this.sets,
       required this.reps});
 }
+
+final class DeleteWorkout extends ScheduleEvent {
+  final int workoutId;
+
+  DeleteWorkout({required this.workoutId});
+}

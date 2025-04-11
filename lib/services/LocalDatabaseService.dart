@@ -53,6 +53,15 @@ class LocalDatabaseService {
         .get();
   }
 
+  Future<void> deleteWorkout(int workoutId) async {
+    await _appDatabase.managers.entries
+        .filter((e) => e.workout.id.equals(workoutId))
+        .delete();
+    await _appDatabase.managers.workouts
+        .filter((w) => w.id.equals(workoutId))
+        .delete();
+  }
+
   Future<void> seedMuscleGroups() async {
     try {
       await _appDatabase.managers.muscleGroups.bulkCreate((o) => [

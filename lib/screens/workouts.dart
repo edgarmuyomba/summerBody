@@ -242,6 +242,7 @@ class _WorkoutsState extends State<Workouts> {
                 ],
                 ...state.workouts.map((workout) {
                   Map<String, dynamic> workoutMap = {
+                    "id": workout.id,
                     "name": workout.name,
                     "entries": (state.entries[workout.id] ?? []).map((entry) {
                       return {
@@ -252,7 +253,7 @@ class _WorkoutsState extends State<Workouts> {
                       };
                     }).toList()
                   };
-                  return workoutWidget(workoutMap);
+                  return WorkoutWidget(workout: workoutMap);
                 })
               ],
             ),

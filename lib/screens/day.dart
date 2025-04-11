@@ -10,6 +10,7 @@ import 'package:summerbody/database/database.dart';
 import 'package:summerbody/routing/routes.dart';
 import 'package:summerbody/services/DIService.dart';
 import 'package:summerbody/services/LocalDatabaseService.dart';
+import 'package:summerbody/widgets/workoutWidget.dart';
 
 class Day extends StatefulWidget {
   final LocalDatabaseService _localDatabaseService;
@@ -130,34 +131,31 @@ class _DayState extends State<Day> {
                       padding: EdgeInsets.symmetric(vertical: 8.0.h),
                       child: const Divider(),
                     ),
-                    Padding(
-                        padding: EdgeInsets.only(left: 16.0.w),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              "Workouts",
-                              style: GoogleFonts.monda(
-                                  fontSize: 18.sp,
-                                  color: Colors.black87,
-                                  fontWeight: FontWeight.bold),
-                            ),
-                            if (state.workouts.isNotEmpty) ...[
-                              IconButton(
-                                  onPressed: () {
-                                    context.pushNamed(Routes.workouts,
-                                        pathParameters: {
-                                          "muscleGroupName":
-                                              state.musclegroup!.name
-                                        });
-                                  },
-                                  icon: const Icon(
-                                    Icons.menu,
-                                    color: Colors.black87,
-                                  ))
-                            ]
-                          ],
-                        )),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          "Workouts",
+                          style: GoogleFonts.monda(
+                              fontSize: 18.sp,
+                              color: Colors.black87,
+                              fontWeight: FontWeight.bold),
+                        ),
+                        if (state.workouts.isNotEmpty) ...[
+                          IconButton(
+                              onPressed: () {
+                                context.pushNamed(Routes.workouts,
+                                    pathParameters: {
+                                      "muscleGroupName": state.musclegroup!.name
+                                    });
+                              },
+                              icon: const Icon(
+                                Icons.menu,
+                                color: Colors.black87,
+                              ))
+                        ]
+                      ],
+                    ),
                     if (state.workouts.isEmpty) ...[
                       Expanded(
                           child: Center(
@@ -199,7 +197,23 @@ class _DayState extends State<Day> {
                           ],
                         ),
                       ))
-                    ]
+                    ] else
+                      ...state.workouts.map((workout) {
+                        Map<String, dynamic> workoutMap = {
+                          "id": workout.id,
+                          "name": workout.name,
+                          "entries":
+                              (state.entries[workout.id] ?? []).map((entry) {
+                            return {
+                              "weight": entry.weight,
+                              "sets": entry.sets,
+                              "reps": entry.reps,
+                              "date": entry.date.toString()
+                            };
+                          }).toList()
+                        };
+                        return WorkoutWidget(workout: workoutMap);
+                      })
                   ]
                 ],
               ),

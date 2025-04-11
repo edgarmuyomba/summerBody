@@ -19,6 +19,7 @@ class ScheduleBloc extends Bloc<ScheduleEvent, ScheduleState> {
     on<SetDay>(_onSetDay);
     on<AddMuscleGroup>(_onAddMuscleGroup);
     on<AddWorkout>(_onAddWorkout);
+    on<DeleteWorkout>(_onDeleteWorkout);
   }
 
   Future<Map<String, dynamic>> _getMuscleGroupAndWorkouts(String day) async {
@@ -26,7 +27,7 @@ class ScheduleBloc extends Bloc<ScheduleEvent, ScheduleState> {
         await _localDatabaseService.getMuscleGroupByKey("day", day);
 
     if (muscleGroup == null) {
-      return {"muscleGroup": null, "workouts": [].cast<Workout>()};
+        return {"muscleGroup": null, "workouts": [].cast<Workout>(), "entries": {}.cast<int, List<Entry>>()};
     } else {
       List<Workout> workouts =
           await _localDatabaseService.getWorkoutsByMuscleGroup(muscleGroup.id);
@@ -120,6 +121,27 @@ class ScheduleBloc extends Bloc<ScheduleEvent, ScheduleState> {
             state.musclegroup!.id, event.workoutName);
         await _localDatabaseService.createEntry(
             workoutId, event.weight, event.sets, event.reps);
+
+        Map<String, dynamic> muscleGroupAndWorkouts =
+            await _getMuscleGroupAndWorkouts(state.currentDay);
+        emit(ScheduleReady(
+            currentDay: state.currentDay,
+            musclegroup: muscleGroupAndWorkouts["muscleGroup"],
+            workouts: muscleGroupAndWorkouts["workouts"],
+            entries: muscleGroupAndWorkouts["entries"]));
+      } catch (e) {
+        Logger().e(e);
+        emit(state);
+      }
+    }
+  }
+
+  Future<void> _onDeleteWorkout(DeleteWorkout event, Emitter emit) async {
+    final state = this.state;
+
+    if (state is ScheduleReady) {
+      try {
+        await _localDatabaseService.deleteWorkout(event.workoutId);
 
         Map<String, dynamic> muscleGroupAndWorkouts =
             await _getMuscleGroupAndWorkouts(state.currentDay);
