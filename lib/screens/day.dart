@@ -21,6 +21,8 @@ class Day extends StatefulWidget {
 }
 
 class _DayState extends State<Day> {
+  String? selectMuscleGroup;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -84,6 +86,9 @@ class _DayState extends State<Day> {
                   if (state.musclegroup == null) ...[
                     GestureDetector(
                       onTap: () async {
+                        setState(() {
+                          selectMuscleGroup = null;
+                        });
                         await addMuscleGroup();
                       },
                       child: Container(
@@ -181,33 +186,83 @@ class _DayState extends State<Day> {
   }
 
   addMuscleGroup() async {
-    await showModalBottomSheet(
+    String? result = await showModalBottomSheet(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
         context: context,
         builder: (BuildContext context) {
-          return Padding(
-              padding: EdgeInsets.symmetric(
-                horizontal: 16.w,
-                vertical: 24.h,
-              ),
-              child: FutureBuilder(
-                  future: widget._localDatabaseService.getAllMuscleGroups(),
-                  builder: (BuildContext context, snapshot) {
-                    if (snapshot.hasData) {
-                      List<MuscleGroup> muscleGroups = snapshot.data!;
-                      return GridView.count(
-                        crossAxisCount: 2,
-                        children: List.generate(muscleGroups.length, (index) {
-                          return Container(
-                            child: Padding(
-                              padding: EdgeInsets.all(16.0),
-                              child: Image.asset(muscleGroups[index].icon),
-                            ),
-                          );
-                        }),
-                      );
-                    }
-                    return const SizedBox.shrink();
-                  }));
+          return StatefulBuilder(
+              builder: (BuildContext context, StateSetter setModalState) {
+            return Padding(
+                padding: EdgeInsets.symmetric(
+                  horizontal: 16.w,
+                  vertical: 24.h,
+                ),
+                child: FutureBuilder(
+                    future: widget._localDatabaseService.getAllMuscleGroups(),
+                    builder: (BuildContext context, snapshot) {
+                      if (snapshot.hasData) {
+                        List<MuscleGroup> muscleGroups = snapshot.data!;
+                        return Column(children: [
+                          if (selectMuscleGroup != null) ...[
+                            Container(
+                                width: double.infinity,
+                                height: 50.h,
+                                alignment: Alignment.center,
+                                decoration: BoxDecoration(
+                                    color: Colors.black87,
+                                    borderRadius: BorderRadius.circular(50)),
+                                child: Text(
+                                  "Add ${selectMuscleGroup!}",
+                                  style: const TextStyle(color: Colors.white),
+                                )),
+                            SizedBox(height: 20.h)
+                          ],
+                          Expanded(
+                            child: GridView.count(
+                                crossAxisCount: 2,
+                                children:
+                                    List.generate(muscleGroups.length, (index) {
+                                  MuscleGroup muscleGroup = muscleGroups[index];
+                                  return GestureDetector(
+                                    onTap: () {
+                                      setModalState(() {
+                                        selectMuscleGroup = muscleGroup.name;
+                                      });
+                                      setState(() {});
+                                    },
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(20),
+                                          border: Border.all(
+                                              color: selectMuscleGroup ==
+                                                      muscleGroup.name
+                                                  ? Colors.black26
+                                                  : Colors.transparent),
+                                          color: selectMuscleGroup ==
+                                                  muscleGroup.name
+                                              ? Colors.black12
+                                              : Colors.transparent),
+                                      child: Padding(
+                                        padding: EdgeInsets.all(24.0.h),
+                                        child: Image.asset(
+                                          muscleGroup.icon,
+                                        ),
+                                      ),
+                                    ),
+                                  );
+                                })),
+                          ),
+                        ]);
+                      }
+                      return const SizedBox.shrink();
+                    }));
+          });
         });
+    if (result != null) {
+      setState(() {
+        selectMuscleGroup = result;
+      });
+    }
   }
 }
