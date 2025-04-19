@@ -21,6 +21,7 @@ class ScheduleBloc extends Bloc<ScheduleEvent, ScheduleState> {
     on<LoadWorkout>(_onLoadWorkout);
     on<AddWorkout>(_onAddWorkout);
     on<DeleteWorkout>(_onDeleteWorkout);
+    on<EditWorkout>(_onEditWorkout);
   }
 
   String? selectDay;
@@ -178,6 +179,14 @@ class ScheduleBloc extends Bloc<ScheduleEvent, ScheduleState> {
         Logger().e(e);
         emit(state);
       }
+    }
+  }
+
+  Future<void> _onEditWorkout(EditWorkout event, Emitter emit) async {
+    final state = this.state;
+
+    if (state is WorkoutReady) {
+      
     }
   }
 }

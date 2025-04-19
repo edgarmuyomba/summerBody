@@ -52,6 +52,20 @@ class LocalDatabaseService {
         reps2: Value(reps2)));
   }
 
+  Future<int> editEntry(
+      int workoutId, int? weight1, int? reps1, int? weight2, int? reps2) async {
+    return await _appDatabase.managers.entries
+        .filter((e) => e.workout.id.equals(workoutId))
+        .update((o) {
+      return o(
+        weight1: weight1 != null ? Value(weight1) : const Value.absent(),
+        reps1: reps1 != null ? Value(reps1) : const Value.absent(),
+        weight2: weight2 != null ? Value(weight2) : const Value.absent(),
+        reps2: reps2 != null ? Value(reps2) : const Value.absent(),
+      );
+    });
+  }
+
   Future<List<Entry>> getAllEntries(int workoutId) async {
     return await _appDatabase.managers.entries
         .filter((e) => e.workout.id.equals(workoutId))
@@ -65,6 +79,12 @@ class LocalDatabaseService {
     await _appDatabase.managers.workouts
         .filter((w) => w.id.equals(workoutId))
         .delete();
+  }
+
+  Future<int> editWorkout(int workoutId, String name) async {
+    return await _appDatabase.managers.workouts
+        .filter((w) => w.id.equals(workoutId))
+        .update((w) => w(name: Value(name)));
   }
 
   Future<void> seedMuscleGroups() async {
