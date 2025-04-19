@@ -24,6 +24,7 @@ class ScheduleBloc extends Bloc<ScheduleEvent, ScheduleState> {
     on<AddWorkout>(_onAddWorkout);
     on<DeleteWorkout>(_onDeleteWorkout);
     on<EditWorkout>(_onEditWorkout);
+    on<CreateEntry>(_onCreateEntry);
   }
 
   String? selectDay;
@@ -191,8 +192,8 @@ class ScheduleBloc extends Bloc<ScheduleEvent, ScheduleState> {
       try {
         await _localDatabaseService.editWorkout(
             event.workoutId, event.workoutName);
-        await _localDatabaseService.editEntry(event.workoutId, event.weight1,
-            event.reps1, event.weight2, event.reps2);
+        await _localDatabaseService.editEntry(event.workoutId, event.entryId,
+            event.weight1, event.reps1, event.weight2, event.reps2);
 
         Workout? workout =
             await _localDatabaseService.getWorkoutByKey("id", event.workoutId);
@@ -207,8 +208,32 @@ class ScheduleBloc extends Bloc<ScheduleEvent, ScheduleState> {
       } catch (e) {
         Logger().e(e);
         Utilities.showSnackBar(
-            "Failed to update the workout", event.context, Colors.green);
+            "Failed to update the workout", event.context, Colors.red);
 
+        emit(state);
+      }
+    }
+  }
+
+  Future<void> _onCreateEntry(CreateEntry event, Emitter emit) async {
+    final state = this.state;
+
+    if (state is WorkoutReady) {
+      try {
+        await _localDatabaseService.createEntry(event.workoutId, event.weight1,
+            event.reps1, event.weight2, event.reps2);
+
+        List<Entry> entries =
+            await _localDatabaseService.getAllEntries(event.workoutId);
+
+        Utilities.showSnackBar(
+            "Successfully created the entry", event.context, Colors.green);
+
+        emit(WorkoutReady(workout: state.workout, entries: entries));
+      } catch (e) {
+        Logger().e(e);
+        Utilities.showSnackBar(
+            "Failed to create entry", event.context, Colors.red);
         emit(state);
       }
     }

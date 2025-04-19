@@ -48,6 +48,7 @@ final class DeleteWorkout extends ScheduleEvent {
 final class EditWorkout extends ScheduleEvent {
   final int workoutId;
   final String workoutName;
+  final int entryId;
   final double weight1;
   final int reps1;
   final double? weight2;
@@ -58,6 +59,24 @@ final class EditWorkout extends ScheduleEvent {
   EditWorkout(
       {required this.workoutId,
       required this.workoutName,
+      required this.entryId,
+      required this.weight1,
+      required this.reps1,
+      this.weight2,
+      this.reps2,
+      required this.context});
+}
+
+final class CreateEntry extends ScheduleEvent {
+  final int workoutId;
+  final double weight1;
+  final int reps1;
+  final double? weight2;
+  final int? reps2;
+  final BuildContext context;
+
+  CreateEntry(
+      {required this.workoutId,
       required this.weight1,
       required this.reps1,
       this.weight2,

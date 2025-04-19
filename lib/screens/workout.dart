@@ -307,7 +307,8 @@ class _WorkoutState extends State<Workout> {
                             children: [
                               Expanded(
                                 child: ElevatedButton(
-                                  onPressed: () => addEntryBottomSheet(),
+                                  onPressed: () =>
+                                      addEntryDialog(state.workout.id),
                                   style: ElevatedButton.styleFrom(
                                       backgroundColor: Colors.white,
                                       foregroundColor: Colors.black87,
@@ -341,6 +342,7 @@ class _WorkoutState extends State<Workout> {
                                             workoutId: widget.workoutId,
                                             workoutName:
                                                 form.control("name").value,
+                                            entryId: state.entries[0].id,
                                             weight1: double.parse(
                                                 form.control("weight1").value),
                                             reps1: int.parse(
@@ -382,7 +384,6 @@ class _WorkoutState extends State<Workout> {
                                     return const SizedBox.shrink();
                                   }
                                 }),
-                              
                               ),
                             ],
                           )
@@ -438,7 +439,7 @@ class _WorkoutState extends State<Workout> {
     );
   }
 
-  addEntryBottomSheet() async {
+  addEntryDialog(int workoutId) async {
     final form = FormGroup({
       "weight1": FormControl<String>(validators: [Validators.required]),
       "reps1": FormControl<String>(validators: [Validators.required]),
@@ -669,6 +670,53 @@ class _WorkoutState extends State<Workout> {
                                 ],
                               ),
                             ],
+                            ReactiveFormConsumer(
+                                builder: (context, form, child) {
+                              if (form.valid) {
+                                return ElevatedButton(
+                                  onPressed: () {
+                                    // save the entry
+                                    context.read<ScheduleBloc>().add(
+                                        CreateEntry(
+                                            workoutId: workoutId,
+                                            weight1: double.parse(
+                                                form.control('weight1').value),
+                                            reps1: int.parse(
+                                                form.control('reps1').value),
+                                            weight2:
+                                                form.control('weight2').value !=
+                                                        null
+                                                    ? double.parse(form
+                                                        .control('weight2')
+                                                        .value)
+                                                    : null,
+                                            reps2: form
+                                                        .control('reps2')
+                                                        .value !=
+                                                    null
+                                                ? int.parse(
+                                                    form.control('reps2').value)
+                                                : null,
+                                            context: context));
+
+                                    context.pop();
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                      backgroundColor: Colors.black87,
+                                      foregroundColor: Colors.white,
+                                      shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(5))),
+                                  child: const Center(
+                                    child: Text(
+                                      "Save",
+                                    ),
+                                  ),
+                                );
+                              } else {
+                                return const SizedBox.shrink();
+                              }
+                            }),
                           ],
                         ))
                   ],

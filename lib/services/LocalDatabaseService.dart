@@ -63,10 +63,11 @@ class LocalDatabaseService {
         reps2: Value(reps2)));
   }
 
-  Future<int> editEntry(int workoutId, double weight1, int reps1,
+  Future<int> editEntry(int workoutId, int entryId, double weight1, int reps1,
       double? weight2, int? reps2) async {
     return await _appDatabase.managers.entries
         .filter((e) => e.workout.id.equals(workoutId))
+        .filter((e) => e.id.equals(entryId))
         .update((o) {
       return o(
         weight1: Value(weight1),
@@ -80,6 +81,7 @@ class LocalDatabaseService {
   Future<List<Entry>> getAllEntries(int workoutId) async {
     return await _appDatabase.managers.entries
         .filter((e) => e.workout.id.equals(workoutId))
+        .orderBy((o) => o.date.desc())
         .get();
   }
 
