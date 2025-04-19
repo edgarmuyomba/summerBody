@@ -186,7 +186,23 @@ class ScheduleBloc extends Bloc<ScheduleEvent, ScheduleState> {
     final state = this.state;
 
     if (state is WorkoutReady) {
-      
+      try {
+        await _localDatabaseService.editWorkout(
+            event.workoutId, event.workoutName);
+        await _localDatabaseService.editEntry(event.workoutId, event.weight1,
+            event.reps1, event.weight2, event.reps2);
+
+        Workout? workout =
+            await _localDatabaseService.getWorkoutByKey("id", event.workoutId);
+
+        List<Entry> entries =
+            await _localDatabaseService.getAllEntries(event.workoutId);
+
+        emit(WorkoutReady(workout: workout!, entries: entries));
+      } catch (e) {
+        Logger().e(e);
+        emit(state);
+      }
     }
   }
 }

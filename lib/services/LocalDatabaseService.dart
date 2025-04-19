@@ -16,11 +16,11 @@ class LocalDatabaseService {
     return await _appDatabase.managers.muscleGroups.filter((mg) {
       switch (key) {
         case "day":
-          return mg.day.equals(value);
+          return mg.day.equals(value as String);
         case "name":
-          return mg.name.equals(value);
+          return mg.name.equals(value as String);
         default:
-          return mg.id.equals(value);
+          return mg.id.equals(value as int);
       }
     }).getSingleOrNull();
   }
@@ -42,6 +42,19 @@ class LocalDatabaseService {
         .create((o) => o(muscleGroup: muscleGroupId, name: workoutName));
   }
 
+  Future<Workout?> getWorkoutByKey(String key, dynamic value) async {
+    return await _appDatabase.managers.workouts
+        .filter((w) {
+          switch (key) {
+            case "name":
+              return w.name.equals(value as String);
+            default:
+              return w.id.equals(value as int);
+          }
+        })
+        .getSingleOrNull();
+  }
+
   Future<int> createEntry(
       int workoutId, int weight1, int reps1, int? weight2, int? reps2) async {
     return await _appDatabase.managers.entries.create((o) => o(
@@ -53,13 +66,13 @@ class LocalDatabaseService {
   }
 
   Future<int> editEntry(
-      int workoutId, int? weight1, int? reps1, int? weight2, int? reps2) async {
+      int workoutId, int weight1, int reps1, int? weight2, int? reps2) async {
     return await _appDatabase.managers.entries
         .filter((e) => e.workout.id.equals(workoutId))
         .update((o) {
       return o(
-        weight1: weight1 != null ? Value(weight1) : const Value.absent(),
-        reps1: reps1 != null ? Value(reps1) : const Value.absent(),
+        weight1: Value(weight1),
+        reps1: Value(reps1),
         weight2: weight2 != null ? Value(weight2) : const Value.absent(),
         reps2: reps2 != null ? Value(reps2) : const Value.absent(),
       );

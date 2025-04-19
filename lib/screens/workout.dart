@@ -2,8 +2,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:logger/logger.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 import 'package:summerbody/blocs/Schedule/schedule_bloc.dart';
 
@@ -20,6 +22,8 @@ class _WorkoutState extends State<Workout> {
 
   bool firstEntryValid = false;
   bool secondEntryEnabled = false;
+
+  bool loading = false;
 
   final form = FormGroup({
     "name": FormControl<String>(validators: [Validators.required]),
@@ -55,6 +59,8 @@ class _WorkoutState extends State<Workout> {
         listener: (context, state) {
           if (state is WorkoutReady) {
             setState(() {
+              loading = false;
+
               workoutName = state.workout.name;
 
               form.control('name').value = state.workout.name;
@@ -297,23 +303,46 @@ class _WorkoutState extends State<Workout> {
                           ReactiveFormConsumer(builder: (context, form, child) {
                             if (form.valid) {
                               return ElevatedButton(
-                                  onPressed: () {
-                                    // edit the workout
-                                  },
-                                  style: ElevatedButton.styleFrom(
-                                      backgroundColor: Colors.black87,
-                                      foregroundColor: Colors.white,
-                                      shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(5))),
-                                  child: const Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Text(
-                                        "Edit",
-                                      ),
-                                    ],
+                                onPressed: () {
+                                  setState(() {
+                                    loading = true;
+                                  });
+
+                                  // edit the workout
+                                  bloc.add(EditWorkout(
+                                    workoutId: widget.workoutId,
+                                    workoutName: form.control("name").value,
+                                    weight1: int.parse(
+                                        form.control("weight1").value),
+                                    reps1:
+                                        int.parse(form.control("reps1").value),
+                                    weight2:
+                                        form.control("weight2").value != null
+                                            ? int.parse(
+                                                form.control("weight2").value)
+                                            : null,
+                                    reps2: form.control("reps2").value != null
+                                        ? int.parse(form.control("reps2").value)
+                                        : null,
                                   ));
+                                },
+                                style: ElevatedButton.styleFrom(
+                                    backgroundColor: Colors.black87,
+                                    foregroundColor: Colors.white,
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(5))),
+                                child: Center(
+                                  child: loading
+                                      ? SpinKitFadingCircle(
+                                          color: Colors.white,
+                                          size: 20.0.h,
+                                        )
+                                      : const Text(
+                                          "Edit",
+                                        ),
+                                ),
+                              );
                             } else {
                               return const SizedBox.shrink();
                             }
