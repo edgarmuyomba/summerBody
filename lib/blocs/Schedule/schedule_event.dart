@@ -83,3 +83,12 @@ final class CreateEntry extends ScheduleEvent {
       this.reps2,
       required this.context});
 }
+
+final class DeleteEntry extends ScheduleEvent {
+  final int workoutId;
+  final int entryId;
+  final BuildContext context;
+
+  DeleteEntry(
+      {required this.workoutId, required this.entryId, required this.context});
+}

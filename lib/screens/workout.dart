@@ -415,26 +415,48 @@ class _WorkoutState extends State<Workout> {
                             borderRadius: BorderRadius.circular(5)),
                         child: Padding(
                           padding: EdgeInsets.all(8.0.h),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                entryString,
-                                style: GoogleFonts.monda(
-                                    fontSize: 20.sp,
+                          child: IntrinsicHeight(
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      entryString,
+                                      style: GoogleFonts.monda(
+                                          fontSize: 20.sp,
+                                          color: first
+                                              ? Colors.green[900]
+                                              : Colors.red[900]),
+                                    ),
+                                    Text(
+                                      Utilities.dateToString(entry.date),
+                                      style: TextStyle(
+                                          fontSize: 13.sp,
+                                          color: first
+                                              ? Colors.green[900]
+                                              : Colors.red[900]),
+                                    )
+                                  ],
+                                ),
+                                GestureDetector(
+                                  onTap: () {
+                                    context.read<ScheduleBloc>().add(
+                                        DeleteEntry(
+                                            workoutId: widget.workoutId,
+                                            entryId: entry.id,
+                                            context: context));
+                                  },
+                                  child: Icon(
+                                    Icons.delete_outline,
                                     color: first
                                         ? Colors.green[900]
-                                        : Colors.red[900]),
-                              ),
-                              Text(
-                                Utilities.dateToString(entry.date),
-                                style: TextStyle(
-                                    fontSize: 13.sp,
-                                    color: first
-                                        ? Colors.green[900]
-                                        : Colors.red[900]),
-                              )
-                            ],
+                                        : Colors.red[900],
+                                  ),
+                                )
+                              ],
+                            ),
                           ),
                         ),
                       ),

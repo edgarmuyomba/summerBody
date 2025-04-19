@@ -100,6 +100,13 @@ class LocalDatabaseService {
         .update((w) => w(name: Value(name)));
   }
 
+  Future<int> deleteEntry(int workoutId, int entryId) async {
+    return await _appDatabase.managers.entries
+        .filter((e) => e.workout.id.equals(workoutId))
+        .filter((e) => e.id.equals(entryId))
+        .delete();
+  }
+
   Future<void> seedMuscleGroups() async {
     try {
       await _appDatabase.managers.muscleGroups.bulkCreate((o) => [

@@ -25,6 +25,7 @@ class ScheduleBloc extends Bloc<ScheduleEvent, ScheduleState> {
     on<DeleteWorkout>(_onDeleteWorkout);
     on<EditWorkout>(_onEditWorkout);
     on<CreateEntry>(_onCreateEntry);
+    on<DeleteEntry>(_onDeleteEntry);
   }
 
   String? selectDay;
@@ -234,6 +235,29 @@ class ScheduleBloc extends Bloc<ScheduleEvent, ScheduleState> {
         Logger().e(e);
         Utilities.showSnackBar(
             "Failed to create entry", event.context, Colors.red);
+        emit(state);
+      }
+    }
+  }
+
+  Future<void> _onDeleteEntry(DeleteEntry event, Emitter emit) async {
+    final state = this.state;
+
+    if (state is WorkoutReady) {
+      try {
+        await _localDatabaseService.deleteEntry(event.workoutId, event.entryId);
+
+        List<Entry> entries =
+            await _localDatabaseService.getAllEntries(event.workoutId);
+
+        Utilities.showSnackBar(
+            "Successfully deleted the entry", event.context, Colors.green);
+
+        emit(WorkoutReady(workout: state.workout, entries: entries));
+      } catch (e) {
+        Logger().e(e);
+        Utilities.showSnackBar(
+            "Failed to delete entry", event.context, Colors.red);
         emit(state);
       }
     }
