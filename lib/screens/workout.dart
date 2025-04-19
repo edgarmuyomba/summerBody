@@ -2,22 +2,22 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:summerbody/blocs/Schedule/schedule_bloc.dart';
 import 'package:reactive_forms/reactive_forms.dart';
-import 'package:summerbody/widgets/workoutWidget.dart';
+import 'package:summerbody/blocs/Schedule/schedule_bloc.dart';
 
-class Workouts extends StatefulWidget {
-  final String muscleGroupName;
-  const Workouts({super.key, required this.muscleGroupName});
+class Workout extends StatefulWidget {
+  final int workoutId;
+  const Workout({super.key, required this.workoutId});
 
   @override
-  State<Workouts> createState() => _WorkoutsState();
+  State<Workout> createState() => _WorkoutState();
 }
 
-class _WorkoutsState extends State<Workouts> {
-  bool newWorkout = false;
+class _WorkoutState extends State<Workout> {
+  String workoutName = "";
+
   bool firstEntryValid = false;
   bool secondEntryEnabled = false;
 
@@ -31,72 +31,57 @@ class _WorkoutsState extends State<Workouts> {
 
   @override
   Widget build(BuildContext context) {
+    final bloc = context.read<ScheduleBloc>();
+    bloc.add(LoadWorkout(workoutId: widget.workoutId));
+
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
+        leading: IconButton(
+            onPressed: () {
+              bloc.add(SetDay(day: bloc.selectDay!));
+              context.pop();
+            },
+            icon: const Icon(Icons.arrow_back)),
         title: Text(
-          "${widget.muscleGroupName} Workouts",
+          workoutName,
           style: GoogleFonts.monda(
               fontSize: 24.sp,
               color: Colors.black87,
               fontWeight: FontWeight.bold),
         ),
       ),
-      body: BlocBuilder<ScheduleBloc, ScheduleState>(
-          builder: (BuildContext context, state) {
-        if (state is ScheduleReady) {
-          return Padding(
-            padding: EdgeInsets.all(16.0.h),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      newWorkout = !newWorkout;
-                      secondEntryEnabled = false;
-                      firstEntryValid = false;
-                    });
-                    if (newWorkout == false) {
-                      form.control('name').reset();
-                      form.control('weight1').reset();
-                      form.control('reps1').reset();
-                      form.control('weight2').reset();
-                      form.control('reps2').reset();
-                    }
-                  },
-                  child: Container(
-                    width: double.infinity,
-                    height: 50.h,
-                    alignment: Alignment.center,
-                    decoration: BoxDecoration(
-                        border: Border.all(color: Colors.black87, width: 2.0),
-                        borderRadius: BorderRadius.circular(5)),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        if (!newWorkout) ...[
-                          const Icon(
-                            Icons.add,
-                            color: Colors.black87,
-                          ),
-                          SizedBox(width: 10.w)
-                        ],
-                        Text(
-                          newWorkout ? "Cancel" : "Add Workout",
-                          style: const TextStyle(
-                              color: Colors.black87,
-                              fontWeight: FontWeight.bold),
-                        )
-                      ],
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: EdgeInsets.symmetric(vertical: 8.0.h),
-                  child: const Divider(),
-                ),
-                if (newWorkout) ...[
+      body: BlocConsumer<ScheduleBloc, ScheduleState>(
+        listener: (context, state) {
+          if (state is WorkoutReady) {
+            setState(() {
+              workoutName = state.workout.name;
+
+              form.control('name').value = state.workout.name;
+              form.control('weight1').value =
+                  state.entries[0].weight1.toString();
+              form.control('reps1').value = state.entries[0].reps1.toString();
+              form.control('weight2').value =
+                  state.entries[0].weight2?.toString();
+              form.control('reps2').value = state.entries[0].reps2?.toString();
+
+              if (form.control('weight2').value != null &&
+                  form.control('weight2').value != "" &&
+                  form.control('reps2').value != null &&
+                  form.control('reps2').value != "") {
+                firstEntryValid = true;
+                secondEntryEnabled = true;
+              }
+            });
+          }
+        },
+        builder: (context, state) {
+          if (state is WorkoutReady) {
+            return Padding(
+              padding: EdgeInsets.all(16.0.h),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
                   ReactiveForm(
                       formGroup: form,
                       child: Column(
@@ -313,42 +298,7 @@ class _WorkoutsState extends State<Workouts> {
                             if (form.valid) {
                               return ElevatedButton(
                                   onPressed: () {
-                                    context.read<ScheduleBloc>().add(AddWorkout(
-                                        workoutName: form.control('name').value,
-                                        weight1: int.parse(
-                                            form.control('weight1').value),
-                                        reps1: int.parse(
-                                            form.control('reps1').value),
-                                        weight2: form
-                                                        .control('weight2')
-                                                        .value !=
-                                                    null &&
-                                                form
-                                                    .control('weight2')
-                                                    .value
-                                                    .isNotEmpty
-                                            ? int.parse(
-                                                form.control('weight2').value)
-                                            : null,
-                                        reps2: form.control('reps2').value !=
-                                                    null &&
-                                                form
-                                                    .control('reps2')
-                                                    .value
-                                                    .isNotEmpty
-                                            ? int.parse(
-                                                form.control('reps2').value)
-                                            : null));
-                                    setState(() {
-                                      newWorkout = !newWorkout;
-                                    });
-                                    if (newWorkout == false) {
-                                      form.control('name').reset();
-                                      form.control('weight1').reset();
-                                      form.control('reps1').reset();
-                                      form.control('weight2').reset();
-                                      form.control('reps2').reset();
-                                    }
+                                    // edit the workout
                                   },
                                   style: ElevatedButton.styleFrom(
                                       backgroundColor: Colors.black87,
@@ -360,7 +310,7 @@ class _WorkoutsState extends State<Workouts> {
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
                                       Text(
-                                        "Save",
+                                        "Edit",
                                       ),
                                     ],
                                   ));
@@ -375,37 +325,13 @@ class _WorkoutsState extends State<Workouts> {
                     child: const Divider(),
                   ),
                 ],
-                ...state.workouts.map((workout) {
-                  Map<String, dynamic> workoutMap = {
-                    "id": workout.id,
-                    "name": workout.name,
-                    "entries": (state.entries[workout.id] ?? []).map((entry) {
-                      return {
-                        "weight1": entry.weight1,
-                        "reps1": entry.reps1,
-                        "weight2": entry.weight2,
-                        "reps2": entry.reps2,
-                        "date": entry.date.toString()
-                      };
-                    }).toList()
-                  };
-                  return WorkoutWidget(
-                    workout: workoutMap,
-                    editable: true,
-                  );
-                })
-              ],
-            ),
-          );
-        }
-        return Center(
-          child: SpinKitFadingCircle(
-            color: Colors.black,
-            size: 40.0.h,
-          ),
-        );
-        
-      }),
+              ),
+            );
+          } else {
+            return const Center(child: CircularProgressIndicator());
+          }
+        },
+      ),
     );
   }
 }

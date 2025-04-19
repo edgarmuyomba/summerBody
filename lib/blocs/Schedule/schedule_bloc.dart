@@ -18,9 +18,12 @@ class ScheduleBloc extends Bloc<ScheduleEvent, ScheduleState> {
     on<Initialize>(_onInitialize);
     on<SetDay>(_onSetDay);
     on<AddMuscleGroup>(_onAddMuscleGroup);
+    on<LoadWorkout>(_onLoadWorkout);
     on<AddWorkout>(_onAddWorkout);
     on<DeleteWorkout>(_onDeleteWorkout);
   }
+
+  String? selectDay;
 
   Future<Map<String, dynamic>> _getMuscleGroupAndWorkouts(String day) async {
     MuscleGroup? muscleGroup =
@@ -70,6 +73,8 @@ class ScheduleBloc extends Bloc<ScheduleEvent, ScheduleState> {
     Map<String, dynamic> muscleGroupAndWorkouts =
         await _getMuscleGroupAndWorkouts(currentDay);
 
+    selectDay = currentDay;
+
     emit(ScheduleReady(
         currentDay: currentDay,
         musclegroup: muscleGroupAndWorkouts["muscleGroup"],
@@ -80,6 +85,9 @@ class ScheduleBloc extends Bloc<ScheduleEvent, ScheduleState> {
   Future<void> _onSetDay(SetDay event, Emitter emit) async {
     Map<String, dynamic> muscleGroupAndWorkouts =
         await _getMuscleGroupAndWorkouts(event.day);
+
+    selectDay = event.day;
+
     emit(ScheduleReady(
         currentDay: event.day,
         musclegroup: muscleGroupAndWorkouts["muscleGroup"],
@@ -113,6 +121,18 @@ class ScheduleBloc extends Bloc<ScheduleEvent, ScheduleState> {
         Logger().e(e);
         emit(state);
       }
+    }
+  }
+
+  Future<void> _onLoadWorkout(LoadWorkout event, Emitter emit) async {
+    final state = this.state;
+
+    if (state is ScheduleReady) {
+      Workout workout =
+          state.workouts.firstWhere((w) => w.id == event.workoutId);
+      List<Entry> entries = state.entries[workout.id] ?? [];
+
+      emit(WorkoutReady(workout: workout, entries: entries));
     }
   }
 

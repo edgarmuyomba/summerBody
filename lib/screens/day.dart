@@ -213,7 +213,7 @@ class _DayState extends State<Day> {
                             };
                           }).toList()
                         };
-                        return WorkoutWidget(workout: workoutMap);
+                        return WorkoutWidget(workout: workoutMap, editable: false,);
                       })
                   ]
                 ],

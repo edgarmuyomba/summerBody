@@ -1,14 +1,19 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:summerbody/blocs/Schedule/schedule_bloc.dart';
+import 'package:summerbody/routing/routes.dart';
 import 'package:summerbody/utils/utilities.dart';
 
 class WorkoutWidget extends StatelessWidget {
   final Map<String, dynamic> workout;
-  const WorkoutWidget({super.key, required this.workout});
+  final bool editable;
+  const WorkoutWidget(
+      {super.key, required this.workout, required this.editable});
 
   @override
   Widget build(BuildContext context) {
@@ -53,36 +58,47 @@ class WorkoutWidget extends StatelessWidget {
             ),
           ),
           SizedBox(width: 10.w),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                workout["name"],
-                style: GoogleFonts.monda(
-                    fontSize: 20.sp,
-                    color: Colors.black87,
-                    fontWeight: FontWeight.bold),
-              ),
-              Text(
-                entryString,
-                style: TextStyle(
-                  fontSize: 15.sp,
-                  color: Colors.black87,
+          GestureDetector(
+            onTap: !editable
+                ? null
+                : () {
+                    context.pushNamed(Routes.workout, pathParameters: {
+                      "workoutId": workout["id"].toString()
+                    });
+                  },
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  workout["name"],
+                  style: GoogleFonts.monda(
+                      fontSize: 20.sp,
+                      color: Colors.black87,
+                      fontWeight: FontWeight.bold),
                 ),
-              ),
-            ],
+                Text(
+                  entryString,
+                  style: TextStyle(
+                    fontSize: 15.sp,
+                    color: Colors.black87,
+                  ),
+                ),
+              ],
+            ),
           ),
-          const Expanded(child: SizedBox()),
-          IconButton(
-              onPressed: () {
-                context
-                    .read<ScheduleBloc>()
-                    .add(DeleteWorkout(workoutId: workout["id"]));
-              },
-              icon: const Icon(
-                Icons.delete_outline,
-                color: Colors.red,
-              ))
+          if (editable) ...[
+            const Expanded(child: SizedBox()),
+            IconButton(
+                onPressed: () {
+                  context
+                      .read<ScheduleBloc>()
+                      .add(DeleteWorkout(workoutId: workout["id"]));
+                },
+                icon: const Icon(
+                  Icons.delete_outline,
+                  color: Colors.red,
+                ))
+          ]
         ],
       ),
     );

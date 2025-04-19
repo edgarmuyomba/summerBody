@@ -17,3 +17,10 @@ final class ScheduleReady extends ScheduleState {
       required this.workouts,
       required this.entries});
 }
+
+final class WorkoutReady extends ScheduleState {
+  final Workout workout;
+  final List<Entry> entries;
+
+  WorkoutReady({required this.workout, required this.entries});
+}

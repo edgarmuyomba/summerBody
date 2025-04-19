@@ -18,6 +18,12 @@ final class AddMuscleGroup extends ScheduleEvent {
   AddMuscleGroup({required this.muscleGroupName, required this.day});
 }
 
+final class LoadWorkout extends ScheduleEvent {
+  final int workoutId;
+
+  LoadWorkout({required this.workoutId});
+}
+
 final class AddWorkout extends ScheduleEvent {
   final String workoutName;
   final int weight1;
@@ -37,4 +43,21 @@ final class DeleteWorkout extends ScheduleEvent {
   final int workoutId;
 
   DeleteWorkout({required this.workoutId});
+}
+
+final class EditWorkout extends ScheduleEvent {
+  final int workoutId;
+  final String workoutName;
+  final int weight1;
+  final int reps1;
+  final int? weight2;
+  final int? reps2;
+
+  EditWorkout(
+      {required this.workoutId,
+      required this.workoutName,
+      required this.weight1,
+      required this.reps1,
+      this.weight2,
+      this.reps2});
 }

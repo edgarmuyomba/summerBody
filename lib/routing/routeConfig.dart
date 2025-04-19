@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:summerbody/screens/day.dart';
 import 'package:summerbody/screens/splash.dart';
+import 'package:summerbody/screens/workout.dart';
 import 'package:summerbody/screens/workouts.dart';
 
 final GoRouter router = GoRouter(routes: [
@@ -17,11 +18,19 @@ final GoRouter router = GoRouter(routes: [
         return Day();
       }),
   GoRoute(
-      name: 'workouts',
-      path: '/workouts/:muscleGroupName',
+    name: 'workouts',
+    path: '/workouts/:muscleGroupName',
+    builder: (BuildContext context, GoRouterState state) {
+      final String muscleGroupName =
+          state.pathParameters["muscleGroupName"] ?? "";
+      return Workouts(muscleGroupName: muscleGroupName);
+    },
+  ),
+  GoRoute(
+      name: 'workout',
+      path: '/workout/:workoutId',
       builder: (BuildContext context, GoRouterState state) {
-        final String muscleGroupName =
-            state.pathParameters["muscleGroupName"] ?? "";
-        return Workouts(muscleGroupName: muscleGroupName);
-      }),
+        final String workoutId = state.pathParameters["workoutId"] ?? "";
+        return Workout(workoutId: int.parse(workoutId));
+      })
 ]);
