@@ -7,6 +7,7 @@ import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 import 'package:summerbody/blocs/Schedule/schedule_bloc.dart';
+import 'package:summerbody/database/database.dart';
 import 'package:summerbody/utils/utilities.dart';
 
 class Workout extends StatefulWidget {
@@ -393,7 +394,12 @@ class _WorkoutState extends State<Workout> {
                     padding: EdgeInsets.all(8.0.h),
                     child: const Divider(),
                   ),
-                  ...state.entries.map((entry) {
+                  ...state.entries.asMap().entries.map((entryMap) {
+                    int index = entryMap.key;
+                    Entry entry = entryMap.value;
+
+                    bool first = index == 0;
+
                     String entryString =
                         "${entry.weight1}Kg/${entry.reps1} reps";
 
@@ -405,7 +411,7 @@ class _WorkoutState extends State<Workout> {
                       child: Container(
                         width: double.infinity,
                         decoration: BoxDecoration(
-                            color: Colors.green[50],
+                            color: first ? Colors.green[50] : Colors.red[50],
                             borderRadius: BorderRadius.circular(5)),
                         child: Padding(
                           padding: EdgeInsets.all(8.0.h),
@@ -415,12 +421,18 @@ class _WorkoutState extends State<Workout> {
                               Text(
                                 entryString,
                                 style: GoogleFonts.monda(
-                                    fontSize: 20.sp, color: Colors.green[900]),
+                                    fontSize: 20.sp,
+                                    color: first
+                                        ? Colors.green[900]
+                                        : Colors.red[900]),
                               ),
                               Text(
                                 Utilities.dateToString(entry.date),
                                 style: TextStyle(
-                                    fontSize: 13.sp, color: Colors.green[900]),
+                                    fontSize: 13.sp,
+                                    color: first
+                                        ? Colors.green[900]
+                                        : Colors.red[900]),
                               )
                             ],
                           ),
