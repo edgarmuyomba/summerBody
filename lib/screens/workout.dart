@@ -399,6 +399,7 @@ class _WorkoutState extends State<Workout> {
                     Entry entry = entryMap.value;
 
                     bool first = index == 0;
+                    bool last = index == state.entries.length - 1;
 
                     String entryString =
                         "${entry.weight1}Kg/${entry.reps1} reps";
@@ -441,13 +442,20 @@ class _WorkoutState extends State<Workout> {
                                   ],
                                 ),
                                 GestureDetector(
-                                  onTap: () {
-                                    context.read<ScheduleBloc>().add(
-                                        DeleteEntry(
-                                            workoutId: widget.workoutId,
-                                            entryId: entry.id,
-                                            context: context));
-                                  },
+                                  onTap: first == last
+                                      ? () {
+                                          Utilities.showSnackBar(
+                                              "Cannot delete the last entry",
+                                              context,
+                                              Colors.red);
+                                        }
+                                      : () {
+                                          context.read<ScheduleBloc>().add(
+                                              DeleteEntry(
+                                                  workoutId: widget.workoutId,
+                                                  entryId: entry.id,
+                                                  context: context));
+                                        },
                                   child: Icon(
                                     Icons.delete_outline,
                                     color: first

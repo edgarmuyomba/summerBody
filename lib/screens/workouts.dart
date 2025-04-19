@@ -391,7 +391,7 @@ class _WorkoutsState extends State<Workouts> {
                   };
                   return WorkoutWidget(
                     workout: workoutMap,
-                    editable: true,
+                    canDelete: true,
                   );
                 })
               ],

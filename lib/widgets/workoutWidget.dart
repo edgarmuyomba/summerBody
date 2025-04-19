@@ -12,8 +12,12 @@ import 'package:summerbody/utils/utilities.dart';
 class WorkoutWidget extends StatelessWidget {
   final Map<String, dynamic> workout;
   final bool editable;
+  final bool canDelete;
   const WorkoutWidget(
-      {super.key, required this.workout, required this.editable});
+      {super.key,
+      required this.workout,
+      this.editable = true,
+      this.canDelete = false});
 
   @override
   Widget build(BuildContext context) {
@@ -86,7 +90,7 @@ class WorkoutWidget extends StatelessWidget {
               ],
             ),
           ),
-          if (editable) ...[
+          if (canDelete) ...[
             const Expanded(child: SizedBox()),
             IconButton(
                 onPressed: () {
