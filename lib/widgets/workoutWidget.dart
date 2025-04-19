@@ -15,11 +15,11 @@ class WorkoutWidget extends StatelessWidget {
     Map<String, dynamic>? latestEntry = workout["entries"][0];
 
     String entryString =
-        "${latestEntry?["weight1"]}Kg, ${latestEntry?["reps1"]} reps";
+        "${latestEntry?["weight1"]}Kg/${latestEntry?["reps1"]} reps";
 
     if (latestEntry?["weight2"] != null) {
       entryString +=
-          ", ${latestEntry?["weight2"]}Kg, ${latestEntry?["reps2"]} reps";
+          ", ${latestEntry?["weight2"]}Kg/${latestEntry?["reps2"]} reps";
     }
 
     Map<String, dynamic> parsedDate = Utilities.parseDate(latestEntry?["date"]);

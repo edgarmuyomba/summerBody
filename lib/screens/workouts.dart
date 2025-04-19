@@ -24,8 +24,8 @@ class _WorkoutsState extends State<Workouts> {
     "name": FormControl<String>(validators: [Validators.required]),
     "weight1": FormControl<String>(validators: [Validators.required]),
     "reps1": FormControl<String>(validators: [Validators.required]),
-    "weight2": FormControl<String>(),
-    "reps2": FormControl<String>(),
+    "weight2": FormControl<String?>(),
+    "reps2": FormControl<String?>(),
   });
 
   @override
@@ -318,10 +318,26 @@ class _WorkoutsState extends State<Workouts> {
                                             form.control('weight1').value),
                                         reps1: int.parse(
                                             form.control('reps1').value),
-                                        weight2: int.parse(
-                                            form.control('weight2').value),
-                                        reps2: int.parse(
-                                            form.control('reps2').value)));
+                                        weight2: form
+                                                        .control('weight2')
+                                                        .value !=
+                                                    null &&
+                                                form
+                                                    .control('weight2')
+                                                    .value
+                                                    .isNotEmpty
+                                            ? int.parse(
+                                                form.control('weight2').value)
+                                            : null,
+                                        reps2: form.control('reps2').value !=
+                                                    null &&
+                                                form
+                                                    .control('reps2')
+                                                    .value
+                                                    .isNotEmpty
+                                            ? int.parse(
+                                                form.control('reps2').value)
+                                            : null));
                                     setState(() {
                                       newWorkout = !newWorkout;
                                     });
