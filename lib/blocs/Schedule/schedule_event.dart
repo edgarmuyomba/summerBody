@@ -20,15 +20,17 @@ final class AddMuscleGroup extends ScheduleEvent {
 
 final class AddWorkout extends ScheduleEvent {
   final String workoutName;
-  final int weight;
-  final int sets;
-  final int reps;
+  final int weight1;
+  final int reps1;
+  final int? weight2;
+  final int? reps2;
 
   AddWorkout(
       {required this.workoutName,
-      required this.weight,
-      required this.sets,
-      required this.reps});
+      required this.weight1,
+      required this.reps1,
+      this.weight2,
+      this.reps2});
 }
 
 final class DeleteWorkout extends ScheduleEvent {

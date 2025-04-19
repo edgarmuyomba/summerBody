@@ -17,12 +17,15 @@ class Workouts extends StatefulWidget {
 
 class _WorkoutsState extends State<Workouts> {
   bool newWorkout = false;
+  bool firstEntryValid = false;
+  bool secondEntryEnabled = false;
 
   final form = FormGroup({
     "name": FormControl<String>(validators: [Validators.required]),
-    "weight": FormControl<String>(validators: [Validators.required]),
-    "sets": FormControl<String>(validators: [Validators.required]),
-    "reps": FormControl<String>(validators: [Validators.required]),
+    "weight1": FormControl<String>(validators: [Validators.required]),
+    "reps1": FormControl<String>(validators: [Validators.required]),
+    "weight2": FormControl<String>(),
+    "reps2": FormControl<String>(),
   });
 
   @override
@@ -50,12 +53,15 @@ class _WorkoutsState extends State<Workouts> {
                   onTap: () {
                     setState(() {
                       newWorkout = !newWorkout;
+                      secondEntryEnabled = false;
+                      firstEntryValid = false;
                     });
                     if (newWorkout == false) {
                       form.control('name').reset();
-                      form.control('weight').reset();
-                      form.control('sets').reset();
-                      form.control('reps').reset();
+                      form.control('weight1').reset();
+                      form.control('reps1').reset();
+                      form.control('weight2').reset();
+                      form.control('reps2').reset();
                     }
                   },
                   child: Container(
@@ -119,12 +125,18 @@ class _WorkoutsState extends State<Workouts> {
                           ),
                           SizedBox(height: 10.h),
                           Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            mainAxisAlignment:
+                                firstEntryValid && !secondEntryEnabled
+                                    ? MainAxisAlignment.start
+                                    : MainAxisAlignment.spaceBetween,
                             children: [
                               SizedBox(
-                                width: MediaQuery.of(context).size.width / 3.5,
+                                width: MediaQuery.of(context).size.width /
+                                    (firstEntryValid && !secondEntryEnabled
+                                        ? 2.75
+                                        : 2.2),
                                 child: ReactiveTextField(
-                                  formControlName: 'weight',
+                                  formControlName: 'weight1',
                                   keyboardType: TextInputType.number,
                                   decoration: InputDecoration(
                                       hintText: "Weight",
@@ -137,40 +149,29 @@ class _WorkoutsState extends State<Workouts> {
                                           borderRadius:
                                               BorderRadius.circular(5))),
                                   onChanged: (control) {
-                                    form.control('weight').value =
+                                    form.control('weight1').value =
                                         (control.value ?? 0).toString();
+                                    if (form.control('weight1').valid &&
+                                        form.control('reps1').valid) {
+                                      setState(() {
+                                        firstEntryValid = true;
+                                      });
+                                    }
                                   },
                                   style: GoogleFonts.monda(
                                       fontSize: 20.sp, color: Colors.black87),
                                 ),
                               ),
+                              if (firstEntryValid && !secondEntryEnabled) ...[
+                                SizedBox(width: 10.w),
+                              ],
                               SizedBox(
-                                width: MediaQuery.of(context).size.width / 3.5,
+                                width: MediaQuery.of(context).size.width /
+                                    (firstEntryValid && !secondEntryEnabled
+                                        ? 2.75
+                                        : 2.2),
                                 child: ReactiveTextField(
-                                  formControlName: 'sets',
-                                  keyboardType: TextInputType.number,
-                                  decoration: InputDecoration(
-                                      hintText: "Sets",
-                                      fillColor: Colors.grey[100],
-                                      filled: true,
-                                      contentPadding: EdgeInsets.symmetric(
-                                          horizontal: 16.0.w, vertical: 12.0.h),
-                                      border: OutlineInputBorder(
-                                          borderSide: BorderSide.none,
-                                          borderRadius:
-                                              BorderRadius.circular(5))),
-                                  onChanged: (control) {
-                                    form.control('sets').value =
-                                        (control.value ?? 0).toString();
-                                  },
-                                  style: GoogleFonts.monda(
-                                      fontSize: 20.sp, color: Colors.black87),
-                                ),
-                              ),
-                              SizedBox(
-                                width: MediaQuery.of(context).size.width / 3.5,
-                                child: ReactiveTextField(
-                                  formControlName: 'reps',
+                                  formControlName: 'reps1',
                                   keyboardType: TextInputType.number,
                                   decoration: InputDecoration(
                                       hintText: "Reps",
@@ -183,15 +184,129 @@ class _WorkoutsState extends State<Workouts> {
                                           borderRadius:
                                               BorderRadius.circular(5))),
                                   onChanged: (control) {
-                                    form.control('reps').value =
+                                    form.control('reps1').value =
                                         (control.value ?? 0).toString();
+                                    if (form.control('weight1').valid &&
+                                        form.control('reps1').valid) {
+                                      setState(() {
+                                        firstEntryValid = true;
+                                      });
+                                    }
                                   },
                                   style: GoogleFonts.monda(
                                       fontSize: 20.sp, color: Colors.black87),
                                 ),
                               ),
+                              if (firstEntryValid && !secondEntryEnabled) ...[
+                                SizedBox(
+                                  width: 10.w,
+                                ),
+                                Expanded(
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      setState(() {
+                                        secondEntryEnabled = true;
+                                      });
+                                    },
+                                    child: Container(
+                                      height: 50.h,
+                                      decoration: BoxDecoration(
+                                          color: Colors.black87,
+                                          borderRadius:
+                                              BorderRadius.circular(5)),
+                                      child: const Icon(
+                                        Icons.add,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  ),
+                                )
+                              ]
                             ],
                           ),
+                          if (secondEntryEnabled) ...[
+                            SizedBox(height: 10.h),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                SizedBox(
+                                  width:
+                                      MediaQuery.of(context).size.width / 2.75,
+                                  child: ReactiveTextField(
+                                    formControlName: 'weight2',
+                                    keyboardType: TextInputType.number,
+                                    decoration: InputDecoration(
+                                        hintText: "Weight",
+                                        fillColor: Colors.grey[100],
+                                        filled: true,
+                                        contentPadding: EdgeInsets.symmetric(
+                                            horizontal: 16.0.w,
+                                            vertical: 12.0.h),
+                                        border: OutlineInputBorder(
+                                            borderSide: BorderSide.none,
+                                            borderRadius:
+                                                BorderRadius.circular(5))),
+                                    onChanged: (control) {
+                                      form.control('weight2').value =
+                                          (control.value ?? 0).toString();
+                                    },
+                                    style: GoogleFonts.monda(
+                                        fontSize: 20.sp, color: Colors.black87),
+                                  ),
+                                ),
+                                SizedBox(width: 10.w),
+                                SizedBox(
+                                  width:
+                                      MediaQuery.of(context).size.width / 2.75,
+                                  child: ReactiveTextField(
+                                    formControlName: 'reps2',
+                                    keyboardType: TextInputType.number,
+                                    decoration: InputDecoration(
+                                        hintText: "Reps",
+                                        fillColor: Colors.grey[100],
+                                        filled: true,
+                                        contentPadding: EdgeInsets.symmetric(
+                                            horizontal: 16.0.w,
+                                            vertical: 12.0.h),
+                                        border: OutlineInputBorder(
+                                            borderSide: BorderSide.none,
+                                            borderRadius:
+                                                BorderRadius.circular(5))),
+                                    onChanged: (control) {
+                                      form.control('reps2').value =
+                                          (control.value ?? 0).toString();
+                                    },
+                                    style: GoogleFonts.monda(
+                                        fontSize: 20.sp, color: Colors.black87),
+                                  ),
+                                ),
+                                SizedBox(
+                                  width: 10.w,
+                                ),
+                                Expanded(
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      setState(() {
+                                        secondEntryEnabled = false;
+                                        form.control('weight2').reset();
+                                        form.control('reps2').reset();
+                                      });
+                                    },
+                                    child: Container(
+                                      height: 50.h,
+                                      decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(5)),
+                                      child: const Icon(
+                                        Icons.delete_outline,
+                                        color: Colors.red,
+                                      ),
+                                    ),
+                                  ),
+                                )
+                              ],
+                            ),
+                          ],
                           SizedBox(height: 10.h),
                           ReactiveFormConsumer(builder: (context, form, child) {
                             if (form.valid) {
@@ -199,20 +314,23 @@ class _WorkoutsState extends State<Workouts> {
                                   onPressed: () {
                                     context.read<ScheduleBloc>().add(AddWorkout(
                                         workoutName: form.control('name').value,
-                                        weight: int.parse(
-                                            form.control('weight').value),
-                                        sets: int.parse(
-                                            form.control('sets').value),
-                                        reps: int.parse(
-                                            form.control('reps').value)));
+                                        weight1: int.parse(
+                                            form.control('weight1').value),
+                                        reps1: int.parse(
+                                            form.control('reps1').value),
+                                        weight2: int.parse(
+                                            form.control('weight2').value),
+                                        reps2: int.parse(
+                                            form.control('reps2').value)));
                                     setState(() {
                                       newWorkout = !newWorkout;
                                     });
                                     if (newWorkout == false) {
                                       form.control('name').reset();
-                                      form.control('weight').reset();
-                                      form.control('sets').reset();
-                                      form.control('reps').reset();
+                                      form.control('weight1').reset();
+                                      form.control('reps1').reset();
+                                      form.control('weight2').reset();
+                                      form.control('reps2').reset();
                                     }
                                   },
                                   style: ElevatedButton.styleFrom(
@@ -246,9 +364,10 @@ class _WorkoutsState extends State<Workouts> {
                     "name": workout.name,
                     "entries": (state.entries[workout.id] ?? []).map((entry) {
                       return {
-                        "weight": entry.weight,
-                        "sets": entry.sets,
-                        "reps": entry.reps,
+                        "weight1": entry.weight1,
+                        "reps1": entry.reps1,
+                        "weight2": entry.weight2,
+                        "reps2": entry.reps2,
                         "date": entry.date.toString()
                       };
                     }).toList()

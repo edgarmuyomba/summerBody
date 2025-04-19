@@ -14,6 +14,14 @@ class WorkoutWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     Map<String, dynamic>? latestEntry = workout["entries"][0];
 
+    String entryString =
+        "${latestEntry?["weight1"]}Kg, ${latestEntry?["reps1"]} reps";
+
+    if (latestEntry?["weight2"] != null) {
+      entryString +=
+          ", ${latestEntry?["weight2"]}Kg, ${latestEntry?["reps2"]} reps";
+    }
+
     Map<String, dynamic> parsedDate = Utilities.parseDate(latestEntry?["date"]);
 
     return Padding(
@@ -56,7 +64,7 @@ class WorkoutWidget extends StatelessWidget {
                     fontWeight: FontWeight.bold),
               ),
               Text(
-                "${latestEntry?["weight"]}Kg, ${latestEntry?["reps"] * latestEntry?["sets"]} reps",
+                entryString,
                 style: TextStyle(
                   fontSize: 15.sp,
                   color: Colors.black87,

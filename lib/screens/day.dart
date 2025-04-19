@@ -205,9 +205,10 @@ class _DayState extends State<Day> {
                           "entries":
                               (state.entries[workout.id] ?? []).map((entry) {
                             return {
-                              "weight": entry.weight,
-                              "sets": entry.sets,
-                              "reps": entry.reps,
+                              "weight1": entry.weight1,
+                              "reps1": entry.reps1,
+                              "weight2": entry.weight2,
+                              "reps2": entry.reps2,
                               "date": entry.date.toString()
                             };
                           }).toList()

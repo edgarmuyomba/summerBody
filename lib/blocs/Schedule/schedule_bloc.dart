@@ -27,7 +27,11 @@ class ScheduleBloc extends Bloc<ScheduleEvent, ScheduleState> {
         await _localDatabaseService.getMuscleGroupByKey("day", day);
 
     if (muscleGroup == null) {
-        return {"muscleGroup": null, "workouts": [].cast<Workout>(), "entries": {}.cast<int, List<Entry>>()};
+      return {
+        "muscleGroup": null,
+        "workouts": [].cast<Workout>(),
+        "entries": {}.cast<int, List<Entry>>()
+      };
     } else {
       List<Workout> workouts =
           await _localDatabaseService.getWorkoutsByMuscleGroup(muscleGroup.id);
@@ -120,7 +124,7 @@ class ScheduleBloc extends Bloc<ScheduleEvent, ScheduleState> {
         int workoutId = await _localDatabaseService.createWorkout(
             state.musclegroup!.id, event.workoutName);
         await _localDatabaseService.createEntry(
-            workoutId, event.weight, event.sets, event.reps);
+            workoutId, event.weight1, event.reps1, event.weight2, event.reps2);
 
         Map<String, dynamic> muscleGroupAndWorkouts =
             await _getMuscleGroupAndWorkouts(state.currentDay);

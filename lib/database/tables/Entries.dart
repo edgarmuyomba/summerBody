@@ -5,8 +5,9 @@ import 'package:drift/drift.dart';
 class Entries extends Table {
   IntColumn get id => integer().autoIncrement()();
   IntColumn get workout => integer().references(Workouts, #id, onDelete: KeyAction.cascade)();
-  IntColumn get weight => integer()();
-  IntColumn get sets => integer()();
-  IntColumn get reps => integer()();
+  IntColumn get weight1 => integer()();
+  IntColumn get reps1 => integer()();
+  IntColumn get weight2 => integer().nullable()();
+  IntColumn get reps2 => integer().nullable()();
   DateTimeColumn get date => dateTime().withDefault(currentDateAndTime)();
 }

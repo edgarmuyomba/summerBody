@@ -289,8 +289,8 @@ class $WorkoutsTable extends Workouts with TableInfo<$WorkoutsTable, Workout> {
       'muscle_group', aliasedName, false,
       type: DriftSqlType.int,
       requiredDuringInsert: true,
-      defaultConstraints:
-          GeneratedColumn.constraintIsAlways('REFERENCES muscle_groups (id)'));
+      defaultConstraints: GeneratedColumn.constraintIsAlways(
+          'REFERENCES muscle_groups (id) ON DELETE CASCADE'));
   @override
   List<GeneratedColumn> get $columns => [id, name, muscleGroup];
   @override
@@ -504,23 +504,30 @@ class $EntriesTable extends Entries with TableInfo<$EntriesTable, Entry> {
       'workout', aliasedName, false,
       type: DriftSqlType.int,
       requiredDuringInsert: true,
-      defaultConstraints:
-          GeneratedColumn.constraintIsAlways('REFERENCES workouts (id)'));
-  static const VerificationMeta _weightMeta = const VerificationMeta('weight');
+      defaultConstraints: GeneratedColumn.constraintIsAlways(
+          'REFERENCES workouts (id) ON DELETE CASCADE'));
+  static const VerificationMeta _weight1Meta =
+      const VerificationMeta('weight1');
   @override
-  late final GeneratedColumn<int> weight = GeneratedColumn<int>(
-      'weight', aliasedName, false,
+  late final GeneratedColumn<int> weight1 = GeneratedColumn<int>(
+      'weight1', aliasedName, false,
       type: DriftSqlType.int, requiredDuringInsert: true);
-  static const VerificationMeta _setsMeta = const VerificationMeta('sets');
+  static const VerificationMeta _reps1Meta = const VerificationMeta('reps1');
   @override
-  late final GeneratedColumn<int> sets = GeneratedColumn<int>(
-      'sets', aliasedName, false,
+  late final GeneratedColumn<int> reps1 = GeneratedColumn<int>(
+      'reps1', aliasedName, false,
       type: DriftSqlType.int, requiredDuringInsert: true);
-  static const VerificationMeta _repsMeta = const VerificationMeta('reps');
+  static const VerificationMeta _weight2Meta =
+      const VerificationMeta('weight2');
   @override
-  late final GeneratedColumn<int> reps = GeneratedColumn<int>(
-      'reps', aliasedName, false,
-      type: DriftSqlType.int, requiredDuringInsert: true);
+  late final GeneratedColumn<int> weight2 = GeneratedColumn<int>(
+      'weight2', aliasedName, true,
+      type: DriftSqlType.int, requiredDuringInsert: false);
+  static const VerificationMeta _reps2Meta = const VerificationMeta('reps2');
+  @override
+  late final GeneratedColumn<int> reps2 = GeneratedColumn<int>(
+      'reps2', aliasedName, true,
+      type: DriftSqlType.int, requiredDuringInsert: false);
   static const VerificationMeta _dateMeta = const VerificationMeta('date');
   @override
   late final GeneratedColumn<DateTime> date = GeneratedColumn<DateTime>(
@@ -529,7 +536,8 @@ class $EntriesTable extends Entries with TableInfo<$EntriesTable, Entry> {
       requiredDuringInsert: false,
       defaultValue: currentDateAndTime);
   @override
-  List<GeneratedColumn> get $columns => [id, workout, weight, sets, reps, date];
+  List<GeneratedColumn> get $columns =>
+      [id, workout, weight1, reps1, weight2, reps2, date];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -549,23 +557,25 @@ class $EntriesTable extends Entries with TableInfo<$EntriesTable, Entry> {
     } else if (isInserting) {
       context.missing(_workoutMeta);
     }
-    if (data.containsKey('weight')) {
-      context.handle(_weightMeta,
-          weight.isAcceptableOrUnknown(data['weight']!, _weightMeta));
+    if (data.containsKey('weight1')) {
+      context.handle(_weight1Meta,
+          weight1.isAcceptableOrUnknown(data['weight1']!, _weight1Meta));
     } else if (isInserting) {
-      context.missing(_weightMeta);
+      context.missing(_weight1Meta);
     }
-    if (data.containsKey('sets')) {
+    if (data.containsKey('reps1')) {
       context.handle(
-          _setsMeta, sets.isAcceptableOrUnknown(data['sets']!, _setsMeta));
+          _reps1Meta, reps1.isAcceptableOrUnknown(data['reps1']!, _reps1Meta));
     } else if (isInserting) {
-      context.missing(_setsMeta);
+      context.missing(_reps1Meta);
     }
-    if (data.containsKey('reps')) {
+    if (data.containsKey('weight2')) {
+      context.handle(_weight2Meta,
+          weight2.isAcceptableOrUnknown(data['weight2']!, _weight2Meta));
+    }
+    if (data.containsKey('reps2')) {
       context.handle(
-          _repsMeta, reps.isAcceptableOrUnknown(data['reps']!, _repsMeta));
-    } else if (isInserting) {
-      context.missing(_repsMeta);
+          _reps2Meta, reps2.isAcceptableOrUnknown(data['reps2']!, _reps2Meta));
     }
     if (data.containsKey('date')) {
       context.handle(
@@ -584,12 +594,14 @@ class $EntriesTable extends Entries with TableInfo<$EntriesTable, Entry> {
           .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
       workout: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}workout'])!,
-      weight: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}weight'])!,
-      sets: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}sets'])!,
-      reps: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}reps'])!,
+      weight1: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}weight1'])!,
+      reps1: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}reps1'])!,
+      weight2: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}weight2']),
+      reps2: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}reps2']),
       date: attachedDatabase.typeMapping
           .read(DriftSqlType.dateTime, data['${effectivePrefix}date'])!,
     );
@@ -604,25 +616,32 @@ class $EntriesTable extends Entries with TableInfo<$EntriesTable, Entry> {
 class Entry extends DataClass implements Insertable<Entry> {
   final int id;
   final int workout;
-  final int weight;
-  final int sets;
-  final int reps;
+  final int weight1;
+  final int reps1;
+  final int? weight2;
+  final int? reps2;
   final DateTime date;
   const Entry(
       {required this.id,
       required this.workout,
-      required this.weight,
-      required this.sets,
-      required this.reps,
+      required this.weight1,
+      required this.reps1,
+      this.weight2,
+      this.reps2,
       required this.date});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['id'] = Variable<int>(id);
     map['workout'] = Variable<int>(workout);
-    map['weight'] = Variable<int>(weight);
-    map['sets'] = Variable<int>(sets);
-    map['reps'] = Variable<int>(reps);
+    map['weight1'] = Variable<int>(weight1);
+    map['reps1'] = Variable<int>(reps1);
+    if (!nullToAbsent || weight2 != null) {
+      map['weight2'] = Variable<int>(weight2);
+    }
+    if (!nullToAbsent || reps2 != null) {
+      map['reps2'] = Variable<int>(reps2);
+    }
     map['date'] = Variable<DateTime>(date);
     return map;
   }
@@ -631,9 +650,13 @@ class Entry extends DataClass implements Insertable<Entry> {
     return EntriesCompanion(
       id: Value(id),
       workout: Value(workout),
-      weight: Value(weight),
-      sets: Value(sets),
-      reps: Value(reps),
+      weight1: Value(weight1),
+      reps1: Value(reps1),
+      weight2: weight2 == null && nullToAbsent
+          ? const Value.absent()
+          : Value(weight2),
+      reps2:
+          reps2 == null && nullToAbsent ? const Value.absent() : Value(reps2),
       date: Value(date),
     );
   }
@@ -644,9 +667,10 @@ class Entry extends DataClass implements Insertable<Entry> {
     return Entry(
       id: serializer.fromJson<int>(json['id']),
       workout: serializer.fromJson<int>(json['workout']),
-      weight: serializer.fromJson<int>(json['weight']),
-      sets: serializer.fromJson<int>(json['sets']),
-      reps: serializer.fromJson<int>(json['reps']),
+      weight1: serializer.fromJson<int>(json['weight1']),
+      reps1: serializer.fromJson<int>(json['reps1']),
+      weight2: serializer.fromJson<int?>(json['weight2']),
+      reps2: serializer.fromJson<int?>(json['reps2']),
       date: serializer.fromJson<DateTime>(json['date']),
     );
   }
@@ -656,9 +680,10 @@ class Entry extends DataClass implements Insertable<Entry> {
     return <String, dynamic>{
       'id': serializer.toJson<int>(id),
       'workout': serializer.toJson<int>(workout),
-      'weight': serializer.toJson<int>(weight),
-      'sets': serializer.toJson<int>(sets),
-      'reps': serializer.toJson<int>(reps),
+      'weight1': serializer.toJson<int>(weight1),
+      'reps1': serializer.toJson<int>(reps1),
+      'weight2': serializer.toJson<int?>(weight2),
+      'reps2': serializer.toJson<int?>(reps2),
       'date': serializer.toJson<DateTime>(date),
     };
   }
@@ -666,25 +691,28 @@ class Entry extends DataClass implements Insertable<Entry> {
   Entry copyWith(
           {int? id,
           int? workout,
-          int? weight,
-          int? sets,
-          int? reps,
+          int? weight1,
+          int? reps1,
+          Value<int?> weight2 = const Value.absent(),
+          Value<int?> reps2 = const Value.absent(),
           DateTime? date}) =>
       Entry(
         id: id ?? this.id,
         workout: workout ?? this.workout,
-        weight: weight ?? this.weight,
-        sets: sets ?? this.sets,
-        reps: reps ?? this.reps,
+        weight1: weight1 ?? this.weight1,
+        reps1: reps1 ?? this.reps1,
+        weight2: weight2.present ? weight2.value : this.weight2,
+        reps2: reps2.present ? reps2.value : this.reps2,
         date: date ?? this.date,
       );
   Entry copyWithCompanion(EntriesCompanion data) {
     return Entry(
       id: data.id.present ? data.id.value : this.id,
       workout: data.workout.present ? data.workout.value : this.workout,
-      weight: data.weight.present ? data.weight.value : this.weight,
-      sets: data.sets.present ? data.sets.value : this.sets,
-      reps: data.reps.present ? data.reps.value : this.reps,
+      weight1: data.weight1.present ? data.weight1.value : this.weight1,
+      reps1: data.reps1.present ? data.reps1.value : this.reps1,
+      weight2: data.weight2.present ? data.weight2.value : this.weight2,
+      reps2: data.reps2.present ? data.reps2.value : this.reps2,
       date: data.date.present ? data.date.value : this.date,
     );
   }
@@ -694,68 +722,75 @@ class Entry extends DataClass implements Insertable<Entry> {
     return (StringBuffer('Entry(')
           ..write('id: $id, ')
           ..write('workout: $workout, ')
-          ..write('weight: $weight, ')
-          ..write('sets: $sets, ')
-          ..write('reps: $reps, ')
+          ..write('weight1: $weight1, ')
+          ..write('reps1: $reps1, ')
+          ..write('weight2: $weight2, ')
+          ..write('reps2: $reps2, ')
           ..write('date: $date')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(id, workout, weight, sets, reps, date);
+  int get hashCode =>
+      Object.hash(id, workout, weight1, reps1, weight2, reps2, date);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       (other is Entry &&
           other.id == this.id &&
           other.workout == this.workout &&
-          other.weight == this.weight &&
-          other.sets == this.sets &&
-          other.reps == this.reps &&
+          other.weight1 == this.weight1 &&
+          other.reps1 == this.reps1 &&
+          other.weight2 == this.weight2 &&
+          other.reps2 == this.reps2 &&
           other.date == this.date);
 }
 
 class EntriesCompanion extends UpdateCompanion<Entry> {
   final Value<int> id;
   final Value<int> workout;
-  final Value<int> weight;
-  final Value<int> sets;
-  final Value<int> reps;
+  final Value<int> weight1;
+  final Value<int> reps1;
+  final Value<int?> weight2;
+  final Value<int?> reps2;
   final Value<DateTime> date;
   const EntriesCompanion({
     this.id = const Value.absent(),
     this.workout = const Value.absent(),
-    this.weight = const Value.absent(),
-    this.sets = const Value.absent(),
-    this.reps = const Value.absent(),
+    this.weight1 = const Value.absent(),
+    this.reps1 = const Value.absent(),
+    this.weight2 = const Value.absent(),
+    this.reps2 = const Value.absent(),
     this.date = const Value.absent(),
   });
   EntriesCompanion.insert({
     this.id = const Value.absent(),
     required int workout,
-    required int weight,
-    required int sets,
-    required int reps,
+    required int weight1,
+    required int reps1,
+    this.weight2 = const Value.absent(),
+    this.reps2 = const Value.absent(),
     this.date = const Value.absent(),
   })  : workout = Value(workout),
-        weight = Value(weight),
-        sets = Value(sets),
-        reps = Value(reps);
+        weight1 = Value(weight1),
+        reps1 = Value(reps1);
   static Insertable<Entry> custom({
     Expression<int>? id,
     Expression<int>? workout,
-    Expression<int>? weight,
-    Expression<int>? sets,
-    Expression<int>? reps,
+    Expression<int>? weight1,
+    Expression<int>? reps1,
+    Expression<int>? weight2,
+    Expression<int>? reps2,
     Expression<DateTime>? date,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
       if (workout != null) 'workout': workout,
-      if (weight != null) 'weight': weight,
-      if (sets != null) 'sets': sets,
-      if (reps != null) 'reps': reps,
+      if (weight1 != null) 'weight1': weight1,
+      if (reps1 != null) 'reps1': reps1,
+      if (weight2 != null) 'weight2': weight2,
+      if (reps2 != null) 'reps2': reps2,
       if (date != null) 'date': date,
     });
   }
@@ -763,16 +798,18 @@ class EntriesCompanion extends UpdateCompanion<Entry> {
   EntriesCompanion copyWith(
       {Value<int>? id,
       Value<int>? workout,
-      Value<int>? weight,
-      Value<int>? sets,
-      Value<int>? reps,
+      Value<int>? weight1,
+      Value<int>? reps1,
+      Value<int?>? weight2,
+      Value<int?>? reps2,
       Value<DateTime>? date}) {
     return EntriesCompanion(
       id: id ?? this.id,
       workout: workout ?? this.workout,
-      weight: weight ?? this.weight,
-      sets: sets ?? this.sets,
-      reps: reps ?? this.reps,
+      weight1: weight1 ?? this.weight1,
+      reps1: reps1 ?? this.reps1,
+      weight2: weight2 ?? this.weight2,
+      reps2: reps2 ?? this.reps2,
       date: date ?? this.date,
     );
   }
@@ -786,14 +823,17 @@ class EntriesCompanion extends UpdateCompanion<Entry> {
     if (workout.present) {
       map['workout'] = Variable<int>(workout.value);
     }
-    if (weight.present) {
-      map['weight'] = Variable<int>(weight.value);
+    if (weight1.present) {
+      map['weight1'] = Variable<int>(weight1.value);
     }
-    if (sets.present) {
-      map['sets'] = Variable<int>(sets.value);
+    if (reps1.present) {
+      map['reps1'] = Variable<int>(reps1.value);
     }
-    if (reps.present) {
-      map['reps'] = Variable<int>(reps.value);
+    if (weight2.present) {
+      map['weight2'] = Variable<int>(weight2.value);
+    }
+    if (reps2.present) {
+      map['reps2'] = Variable<int>(reps2.value);
     }
     if (date.present) {
       map['date'] = Variable<DateTime>(date.value);
@@ -806,9 +846,10 @@ class EntriesCompanion extends UpdateCompanion<Entry> {
     return (StringBuffer('EntriesCompanion(')
           ..write('id: $id, ')
           ..write('workout: $workout, ')
-          ..write('weight: $weight, ')
-          ..write('sets: $sets, ')
-          ..write('reps: $reps, ')
+          ..write('weight1: $weight1, ')
+          ..write('reps1: $reps1, ')
+          ..write('weight2: $weight2, ')
+          ..write('reps2: $reps2, ')
           ..write('date: $date')
           ..write(')'))
         .toString();
@@ -827,6 +868,25 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   @override
   List<DatabaseSchemaEntity> get allSchemaEntities =>
       [muscleGroups, workouts, entries];
+  @override
+  StreamQueryUpdateRules get streamUpdateRules => const StreamQueryUpdateRules(
+        [
+          WritePropagation(
+            on: TableUpdateQuery.onTableName('muscle_groups',
+                limitUpdateKind: UpdateKind.delete),
+            result: [
+              TableUpdate('workouts', kind: UpdateKind.delete),
+            ],
+          ),
+          WritePropagation(
+            on: TableUpdateQuery.onTableName('workouts',
+                limitUpdateKind: UpdateKind.delete),
+            result: [
+              TableUpdate('entries', kind: UpdateKind.delete),
+            ],
+          ),
+        ],
+      );
 }
 
 typedef $$MuscleGroupsTableCreateCompanionBuilder = MuscleGroupsCompanion
@@ -1066,17 +1126,19 @@ class $$WorkoutsTableOrderingComposer
 typedef $$EntriesTableCreateCompanionBuilder = EntriesCompanion Function({
   Value<int> id,
   required int workout,
-  required int weight,
-  required int sets,
-  required int reps,
+  required int weight1,
+  required int reps1,
+  Value<int?> weight2,
+  Value<int?> reps2,
   Value<DateTime> date,
 });
 typedef $$EntriesTableUpdateCompanionBuilder = EntriesCompanion Function({
   Value<int> id,
   Value<int> workout,
-  Value<int> weight,
-  Value<int> sets,
-  Value<int> reps,
+  Value<int> weight1,
+  Value<int> reps1,
+  Value<int?> weight2,
+  Value<int?> reps2,
   Value<DateTime> date,
 });
 
@@ -1099,33 +1161,37 @@ class $$EntriesTableTableManager extends RootTableManager<
           updateCompanionCallback: ({
             Value<int> id = const Value.absent(),
             Value<int> workout = const Value.absent(),
-            Value<int> weight = const Value.absent(),
-            Value<int> sets = const Value.absent(),
-            Value<int> reps = const Value.absent(),
+            Value<int> weight1 = const Value.absent(),
+            Value<int> reps1 = const Value.absent(),
+            Value<int?> weight2 = const Value.absent(),
+            Value<int?> reps2 = const Value.absent(),
             Value<DateTime> date = const Value.absent(),
           }) =>
               EntriesCompanion(
             id: id,
             workout: workout,
-            weight: weight,
-            sets: sets,
-            reps: reps,
+            weight1: weight1,
+            reps1: reps1,
+            weight2: weight2,
+            reps2: reps2,
             date: date,
           ),
           createCompanionCallback: ({
             Value<int> id = const Value.absent(),
             required int workout,
-            required int weight,
-            required int sets,
-            required int reps,
+            required int weight1,
+            required int reps1,
+            Value<int?> weight2 = const Value.absent(),
+            Value<int?> reps2 = const Value.absent(),
             Value<DateTime> date = const Value.absent(),
           }) =>
               EntriesCompanion.insert(
             id: id,
             workout: workout,
-            weight: weight,
-            sets: sets,
-            reps: reps,
+            weight1: weight1,
+            reps1: reps1,
+            weight2: weight2,
+            reps2: reps2,
             date: date,
           ),
         ));
@@ -1139,18 +1205,23 @@ class $$EntriesTableFilterComposer
       builder: (column, joinBuilders) =>
           ColumnFilters(column, joinBuilders: joinBuilders));
 
-  ColumnFilters<int> get weight => $state.composableBuilder(
-      column: $state.table.weight,
+  ColumnFilters<int> get weight1 => $state.composableBuilder(
+      column: $state.table.weight1,
       builder: (column, joinBuilders) =>
           ColumnFilters(column, joinBuilders: joinBuilders));
 
-  ColumnFilters<int> get sets => $state.composableBuilder(
-      column: $state.table.sets,
+  ColumnFilters<int> get reps1 => $state.composableBuilder(
+      column: $state.table.reps1,
       builder: (column, joinBuilders) =>
           ColumnFilters(column, joinBuilders: joinBuilders));
 
-  ColumnFilters<int> get reps => $state.composableBuilder(
-      column: $state.table.reps,
+  ColumnFilters<int> get weight2 => $state.composableBuilder(
+      column: $state.table.weight2,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<int> get reps2 => $state.composableBuilder(
+      column: $state.table.reps2,
       builder: (column, joinBuilders) =>
           ColumnFilters(column, joinBuilders: joinBuilders));
 
@@ -1180,18 +1251,23 @@ class $$EntriesTableOrderingComposer
       builder: (column, joinBuilders) =>
           ColumnOrderings(column, joinBuilders: joinBuilders));
 
-  ColumnOrderings<int> get weight => $state.composableBuilder(
-      column: $state.table.weight,
+  ColumnOrderings<int> get weight1 => $state.composableBuilder(
+      column: $state.table.weight1,
       builder: (column, joinBuilders) =>
           ColumnOrderings(column, joinBuilders: joinBuilders));
 
-  ColumnOrderings<int> get sets => $state.composableBuilder(
-      column: $state.table.sets,
+  ColumnOrderings<int> get reps1 => $state.composableBuilder(
+      column: $state.table.reps1,
       builder: (column, joinBuilders) =>
           ColumnOrderings(column, joinBuilders: joinBuilders));
 
-  ColumnOrderings<int> get reps => $state.composableBuilder(
-      column: $state.table.reps,
+  ColumnOrderings<int> get weight2 => $state.composableBuilder(
+      column: $state.table.weight2,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<int> get reps2 => $state.composableBuilder(
+      column: $state.table.reps2,
       builder: (column, joinBuilders) =>
           ColumnOrderings(column, joinBuilders: joinBuilders));
 
