@@ -310,21 +310,22 @@ class _WorkoutState extends State<Workout> {
 
                                   // edit the workout
                                   bloc.add(EditWorkout(
-                                    workoutId: widget.workoutId,
-                                    workoutName: form.control("name").value,
-                                    weight1: int.parse(
-                                        form.control("weight1").value),
-                                    reps1:
-                                        int.parse(form.control("reps1").value),
-                                    weight2:
-                                        form.control("weight2").value != null
-                                            ? int.parse(
-                                                form.control("weight2").value)
-                                            : null,
-                                    reps2: form.control("reps2").value != null
-                                        ? int.parse(form.control("reps2").value)
-                                        : null,
-                                  ));
+                                      workoutId: widget.workoutId,
+                                      workoutName: form.control("name").value,
+                                      weight1: double.parse(
+                                          form.control("weight1").value),
+                                      reps1: int.parse(
+                                          form.control("reps1").value),
+                                      weight2:
+                                          form.control("weight2").value != null
+                                              ? double.parse(
+                                                  form.control("weight2").value)
+                                              : null,
+                                      reps2: form.control("reps2").value != null
+                                          ? int.parse(
+                                              form.control("reps2").value)
+                                          : null,
+                                      context: context));
                                 },
                                 style: ElevatedButton.styleFrom(
                                     backgroundColor: Colors.black87,

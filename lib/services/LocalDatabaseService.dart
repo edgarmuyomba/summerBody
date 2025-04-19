@@ -43,20 +43,18 @@ class LocalDatabaseService {
   }
 
   Future<Workout?> getWorkoutByKey(String key, dynamic value) async {
-    return await _appDatabase.managers.workouts
-        .filter((w) {
-          switch (key) {
-            case "name":
-              return w.name.equals(value as String);
-            default:
-              return w.id.equals(value as int);
-          }
-        })
-        .getSingleOrNull();
+    return await _appDatabase.managers.workouts.filter((w) {
+      switch (key) {
+        case "name":
+          return w.name.equals(value as String);
+        default:
+          return w.id.equals(value as int);
+      }
+    }).getSingleOrNull();
   }
 
-  Future<int> createEntry(
-      int workoutId, int weight1, int reps1, int? weight2, int? reps2) async {
+  Future<int> createEntry(int workoutId, double weight1, int reps1,
+      double? weight2, int? reps2) async {
     return await _appDatabase.managers.entries.create((o) => o(
         workout: workoutId,
         weight1: weight1,
@@ -65,16 +63,16 @@ class LocalDatabaseService {
         reps2: Value(reps2)));
   }
 
-  Future<int> editEntry(
-      int workoutId, int weight1, int reps1, int? weight2, int? reps2) async {
+  Future<int> editEntry(int workoutId, double weight1, int reps1,
+      double? weight2, int? reps2) async {
     return await _appDatabase.managers.entries
         .filter((e) => e.workout.id.equals(workoutId))
         .update((o) {
       return o(
         weight1: Value(weight1),
         reps1: Value(reps1),
-        weight2: weight2 != null ? Value(weight2) : const Value.absent(),
-        reps2: reps2 != null ? Value(reps2) : const Value.absent(),
+        weight2: Value(weight2),
+        reps2: Value(reps2),
       );
     });
   }

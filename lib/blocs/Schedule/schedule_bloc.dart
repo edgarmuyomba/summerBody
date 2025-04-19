@@ -1,9 +1,11 @@
 import 'package:bloc/bloc.dart';
+import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
 import 'package:summerbody/database/database.dart';
 import 'package:summerbody/services/DIService.dart';
 import 'package:summerbody/services/LocalDatabaseService.dart';
 import 'package:logger/logger.dart';
+import 'package:summerbody/utils/utilities.dart';
 
 part 'schedule_event.dart';
 part 'schedule_state.dart';
@@ -198,9 +200,15 @@ class ScheduleBloc extends Bloc<ScheduleEvent, ScheduleState> {
         List<Entry> entries =
             await _localDatabaseService.getAllEntries(event.workoutId);
 
+        Utilities.showSnackBar(
+            "Successfully updated the workout", event.context, Colors.green);
+
         emit(WorkoutReady(workout: workout!, entries: entries));
       } catch (e) {
         Logger().e(e);
+        Utilities.showSnackBar(
+            "Failed to update the workout", event.context, Colors.green);
+
         emit(state);
       }
     }

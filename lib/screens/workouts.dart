@@ -315,7 +315,7 @@ class _WorkoutsState extends State<Workouts> {
                                   onPressed: () {
                                     context.read<ScheduleBloc>().add(AddWorkout(
                                         workoutName: form.control('name').value,
-                                        weight1: int.parse(
+                                        weight1: double.parse(
                                             form.control('weight1').value),
                                         reps1: int.parse(
                                             form.control('reps1').value),
@@ -327,7 +327,7 @@ class _WorkoutsState extends State<Workouts> {
                                                     .control('weight2')
                                                     .value
                                                     .isNotEmpty
-                                            ? int.parse(
+                                            ? double.parse(
                                                 form.control('weight2').value)
                                             : null,
                                         reps2: form.control('reps2').value !=
@@ -404,7 +404,6 @@ class _WorkoutsState extends State<Workouts> {
             size: 40.0.h,
           ),
         );
-        
       }),
     );
   }

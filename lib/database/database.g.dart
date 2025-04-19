@@ -509,9 +509,9 @@ class $EntriesTable extends Entries with TableInfo<$EntriesTable, Entry> {
   static const VerificationMeta _weight1Meta =
       const VerificationMeta('weight1');
   @override
-  late final GeneratedColumn<int> weight1 = GeneratedColumn<int>(
+  late final GeneratedColumn<double> weight1 = GeneratedColumn<double>(
       'weight1', aliasedName, false,
-      type: DriftSqlType.int, requiredDuringInsert: true);
+      type: DriftSqlType.double, requiredDuringInsert: true);
   static const VerificationMeta _reps1Meta = const VerificationMeta('reps1');
   @override
   late final GeneratedColumn<int> reps1 = GeneratedColumn<int>(
@@ -520,9 +520,9 @@ class $EntriesTable extends Entries with TableInfo<$EntriesTable, Entry> {
   static const VerificationMeta _weight2Meta =
       const VerificationMeta('weight2');
   @override
-  late final GeneratedColumn<int> weight2 = GeneratedColumn<int>(
+  late final GeneratedColumn<double> weight2 = GeneratedColumn<double>(
       'weight2', aliasedName, true,
-      type: DriftSqlType.int, requiredDuringInsert: false);
+      type: DriftSqlType.double, requiredDuringInsert: false);
   static const VerificationMeta _reps2Meta = const VerificationMeta('reps2');
   @override
   late final GeneratedColumn<int> reps2 = GeneratedColumn<int>(
@@ -595,11 +595,11 @@ class $EntriesTable extends Entries with TableInfo<$EntriesTable, Entry> {
       workout: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}workout'])!,
       weight1: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}weight1'])!,
+          .read(DriftSqlType.double, data['${effectivePrefix}weight1'])!,
       reps1: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}reps1'])!,
       weight2: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}weight2']),
+          .read(DriftSqlType.double, data['${effectivePrefix}weight2']),
       reps2: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}reps2']),
       date: attachedDatabase.typeMapping
@@ -616,9 +616,9 @@ class $EntriesTable extends Entries with TableInfo<$EntriesTable, Entry> {
 class Entry extends DataClass implements Insertable<Entry> {
   final int id;
   final int workout;
-  final int weight1;
+  final double weight1;
   final int reps1;
-  final int? weight2;
+  final double? weight2;
   final int? reps2;
   final DateTime date;
   const Entry(
@@ -634,10 +634,10 @@ class Entry extends DataClass implements Insertable<Entry> {
     final map = <String, Expression>{};
     map['id'] = Variable<int>(id);
     map['workout'] = Variable<int>(workout);
-    map['weight1'] = Variable<int>(weight1);
+    map['weight1'] = Variable<double>(weight1);
     map['reps1'] = Variable<int>(reps1);
     if (!nullToAbsent || weight2 != null) {
-      map['weight2'] = Variable<int>(weight2);
+      map['weight2'] = Variable<double>(weight2);
     }
     if (!nullToAbsent || reps2 != null) {
       map['reps2'] = Variable<int>(reps2);
@@ -667,9 +667,9 @@ class Entry extends DataClass implements Insertable<Entry> {
     return Entry(
       id: serializer.fromJson<int>(json['id']),
       workout: serializer.fromJson<int>(json['workout']),
-      weight1: serializer.fromJson<int>(json['weight1']),
+      weight1: serializer.fromJson<double>(json['weight1']),
       reps1: serializer.fromJson<int>(json['reps1']),
-      weight2: serializer.fromJson<int?>(json['weight2']),
+      weight2: serializer.fromJson<double?>(json['weight2']),
       reps2: serializer.fromJson<int?>(json['reps2']),
       date: serializer.fromJson<DateTime>(json['date']),
     );
@@ -680,9 +680,9 @@ class Entry extends DataClass implements Insertable<Entry> {
     return <String, dynamic>{
       'id': serializer.toJson<int>(id),
       'workout': serializer.toJson<int>(workout),
-      'weight1': serializer.toJson<int>(weight1),
+      'weight1': serializer.toJson<double>(weight1),
       'reps1': serializer.toJson<int>(reps1),
-      'weight2': serializer.toJson<int?>(weight2),
+      'weight2': serializer.toJson<double?>(weight2),
       'reps2': serializer.toJson<int?>(reps2),
       'date': serializer.toJson<DateTime>(date),
     };
@@ -691,9 +691,9 @@ class Entry extends DataClass implements Insertable<Entry> {
   Entry copyWith(
           {int? id,
           int? workout,
-          int? weight1,
+          double? weight1,
           int? reps1,
-          Value<int?> weight2 = const Value.absent(),
+          Value<double?> weight2 = const Value.absent(),
           Value<int?> reps2 = const Value.absent(),
           DateTime? date}) =>
       Entry(
@@ -750,9 +750,9 @@ class Entry extends DataClass implements Insertable<Entry> {
 class EntriesCompanion extends UpdateCompanion<Entry> {
   final Value<int> id;
   final Value<int> workout;
-  final Value<int> weight1;
+  final Value<double> weight1;
   final Value<int> reps1;
-  final Value<int?> weight2;
+  final Value<double?> weight2;
   final Value<int?> reps2;
   final Value<DateTime> date;
   const EntriesCompanion({
@@ -767,7 +767,7 @@ class EntriesCompanion extends UpdateCompanion<Entry> {
   EntriesCompanion.insert({
     this.id = const Value.absent(),
     required int workout,
-    required int weight1,
+    required double weight1,
     required int reps1,
     this.weight2 = const Value.absent(),
     this.reps2 = const Value.absent(),
@@ -778,9 +778,9 @@ class EntriesCompanion extends UpdateCompanion<Entry> {
   static Insertable<Entry> custom({
     Expression<int>? id,
     Expression<int>? workout,
-    Expression<int>? weight1,
+    Expression<double>? weight1,
     Expression<int>? reps1,
-    Expression<int>? weight2,
+    Expression<double>? weight2,
     Expression<int>? reps2,
     Expression<DateTime>? date,
   }) {
@@ -798,9 +798,9 @@ class EntriesCompanion extends UpdateCompanion<Entry> {
   EntriesCompanion copyWith(
       {Value<int>? id,
       Value<int>? workout,
-      Value<int>? weight1,
+      Value<double>? weight1,
       Value<int>? reps1,
-      Value<int?>? weight2,
+      Value<double?>? weight2,
       Value<int?>? reps2,
       Value<DateTime>? date}) {
     return EntriesCompanion(
@@ -824,13 +824,13 @@ class EntriesCompanion extends UpdateCompanion<Entry> {
       map['workout'] = Variable<int>(workout.value);
     }
     if (weight1.present) {
-      map['weight1'] = Variable<int>(weight1.value);
+      map['weight1'] = Variable<double>(weight1.value);
     }
     if (reps1.present) {
       map['reps1'] = Variable<int>(reps1.value);
     }
     if (weight2.present) {
-      map['weight2'] = Variable<int>(weight2.value);
+      map['weight2'] = Variable<double>(weight2.value);
     }
     if (reps2.present) {
       map['reps2'] = Variable<int>(reps2.value);
@@ -1126,18 +1126,18 @@ class $$WorkoutsTableOrderingComposer
 typedef $$EntriesTableCreateCompanionBuilder = EntriesCompanion Function({
   Value<int> id,
   required int workout,
-  required int weight1,
+  required double weight1,
   required int reps1,
-  Value<int?> weight2,
+  Value<double?> weight2,
   Value<int?> reps2,
   Value<DateTime> date,
 });
 typedef $$EntriesTableUpdateCompanionBuilder = EntriesCompanion Function({
   Value<int> id,
   Value<int> workout,
-  Value<int> weight1,
+  Value<double> weight1,
   Value<int> reps1,
-  Value<int?> weight2,
+  Value<double?> weight2,
   Value<int?> reps2,
   Value<DateTime> date,
 });
@@ -1161,9 +1161,9 @@ class $$EntriesTableTableManager extends RootTableManager<
           updateCompanionCallback: ({
             Value<int> id = const Value.absent(),
             Value<int> workout = const Value.absent(),
-            Value<int> weight1 = const Value.absent(),
+            Value<double> weight1 = const Value.absent(),
             Value<int> reps1 = const Value.absent(),
-            Value<int?> weight2 = const Value.absent(),
+            Value<double?> weight2 = const Value.absent(),
             Value<int?> reps2 = const Value.absent(),
             Value<DateTime> date = const Value.absent(),
           }) =>
@@ -1179,9 +1179,9 @@ class $$EntriesTableTableManager extends RootTableManager<
           createCompanionCallback: ({
             Value<int> id = const Value.absent(),
             required int workout,
-            required int weight1,
+            required double weight1,
             required int reps1,
-            Value<int?> weight2 = const Value.absent(),
+            Value<double?> weight2 = const Value.absent(),
             Value<int?> reps2 = const Value.absent(),
             Value<DateTime> date = const Value.absent(),
           }) =>
@@ -1205,7 +1205,7 @@ class $$EntriesTableFilterComposer
       builder: (column, joinBuilders) =>
           ColumnFilters(column, joinBuilders: joinBuilders));
 
-  ColumnFilters<int> get weight1 => $state.composableBuilder(
+  ColumnFilters<double> get weight1 => $state.composableBuilder(
       column: $state.table.weight1,
       builder: (column, joinBuilders) =>
           ColumnFilters(column, joinBuilders: joinBuilders));
@@ -1215,7 +1215,7 @@ class $$EntriesTableFilterComposer
       builder: (column, joinBuilders) =>
           ColumnFilters(column, joinBuilders: joinBuilders));
 
-  ColumnFilters<int> get weight2 => $state.composableBuilder(
+  ColumnFilters<double> get weight2 => $state.composableBuilder(
       column: $state.table.weight2,
       builder: (column, joinBuilders) =>
           ColumnFilters(column, joinBuilders: joinBuilders));
@@ -1251,7 +1251,7 @@ class $$EntriesTableOrderingComposer
       builder: (column, joinBuilders) =>
           ColumnOrderings(column, joinBuilders: joinBuilders));
 
-  ColumnOrderings<int> get weight1 => $state.composableBuilder(
+  ColumnOrderings<double> get weight1 => $state.composableBuilder(
       column: $state.table.weight1,
       builder: (column, joinBuilders) =>
           ColumnOrderings(column, joinBuilders: joinBuilders));
@@ -1261,7 +1261,7 @@ class $$EntriesTableOrderingComposer
       builder: (column, joinBuilders) =>
           ColumnOrderings(column, joinBuilders: joinBuilders));
 
-  ColumnOrderings<int> get weight2 => $state.composableBuilder(
+  ColumnOrderings<double> get weight2 => $state.composableBuilder(
       column: $state.table.weight2,
       builder: (column, joinBuilders) =>
           ColumnOrderings(column, joinBuilders: joinBuilders));
