@@ -2,1300 +2,397 @@
 
 part of 'database.dart';
 
-// ignore_for_file: type=lint
-class $MuscleGroupsTable extends MuscleGroups
-    with TableInfo<$MuscleGroupsTable, MuscleGroup> {
+// **************************************************************************
+// FloorGenerator
+// **************************************************************************
+
+abstract class $AppDatabaseBuilderContract {
+  /// Adds migrations to the builder.
+  $AppDatabaseBuilderContract addMigrations(List<Migration> migrations);
+
+  /// Adds a database [Callback] to the builder.
+  $AppDatabaseBuilderContract addCallback(Callback callback);
+
+  /// Creates the database and initializes it.
+  Future<AppDatabase> build();
+}
+
+// ignore: avoid_classes_with_only_static_members
+class $FloorAppDatabase {
+  /// Creates a database builder for a persistent database.
+  /// Once a database is built, you should keep a reference to it and re-use it.
+  static $AppDatabaseBuilderContract databaseBuilder(String name) =>
+      _$AppDatabaseBuilder(name);
+
+  /// Creates a database builder for an in memory database.
+  /// Information stored in an in memory database disappears when the process is killed.
+  /// Once a database is built, you should keep a reference to it and re-use it.
+  static $AppDatabaseBuilderContract inMemoryDatabaseBuilder() =>
+      _$AppDatabaseBuilder(null);
+}
+
+class _$AppDatabaseBuilder implements $AppDatabaseBuilderContract {
+  _$AppDatabaseBuilder(this.name);
+
+  final String? name;
+
+  final List<Migration> _migrations = [];
+
+  Callback? _callback;
+
   @override
-  final GeneratedDatabase attachedDatabase;
-  final String? _alias;
-  $MuscleGroupsTable(this.attachedDatabase, [this._alias]);
-  static const VerificationMeta _idMeta = const VerificationMeta('id');
-  @override
-  late final GeneratedColumn<int> id = GeneratedColumn<int>(
-      'id', aliasedName, false,
-      hasAutoIncrement: true,
-      type: DriftSqlType.int,
-      requiredDuringInsert: false,
-      defaultConstraints:
-          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
-  static const VerificationMeta _nameMeta = const VerificationMeta('name');
-  @override
-  late final GeneratedColumn<String> name = GeneratedColumn<String>(
-      'name', aliasedName, false,
-      additionalChecks:
-          GeneratedColumn.checkTextLength(minTextLength: 2, maxTextLength: 32),
-      type: DriftSqlType.string,
-      requiredDuringInsert: true);
-  static const VerificationMeta _dayMeta = const VerificationMeta('day');
-  @override
-  late final GeneratedColumn<String> day = GeneratedColumn<String>(
-      'day', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
-  static const VerificationMeta _iconMeta = const VerificationMeta('icon');
-  @override
-  late final GeneratedColumn<String> icon = GeneratedColumn<String>(
-      'icon', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
-  @override
-  List<GeneratedColumn> get $columns => [id, name, day, icon];
-  @override
-  String get aliasedName => _alias ?? actualTableName;
-  @override
-  String get actualTableName => $name;
-  static const String $name = 'muscle_groups';
-  @override
-  VerificationContext validateIntegrity(Insertable<MuscleGroup> instance,
-      {bool isInserting = false}) {
-    final context = VerificationContext();
-    final data = instance.toColumns(true);
-    if (data.containsKey('id')) {
-      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
-    }
-    if (data.containsKey('name')) {
-      context.handle(
-          _nameMeta, name.isAcceptableOrUnknown(data['name']!, _nameMeta));
-    } else if (isInserting) {
-      context.missing(_nameMeta);
-    }
-    if (data.containsKey('day')) {
-      context.handle(
-          _dayMeta, day.isAcceptableOrUnknown(data['day']!, _dayMeta));
-    } else if (isInserting) {
-      context.missing(_dayMeta);
-    }
-    if (data.containsKey('icon')) {
-      context.handle(
-          _iconMeta, icon.isAcceptableOrUnknown(data['icon']!, _iconMeta));
-    } else if (isInserting) {
-      context.missing(_iconMeta);
-    }
-    return context;
+  $AppDatabaseBuilderContract addMigrations(List<Migration> migrations) {
+    _migrations.addAll(migrations);
+    return this;
   }
 
   @override
-  Set<GeneratedColumn> get $primaryKey => {id};
+  $AppDatabaseBuilderContract addCallback(Callback callback) {
+    _callback = callback;
+    return this;
+  }
+
   @override
-  MuscleGroup map(Map<String, dynamic> data, {String? tablePrefix}) {
-    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return MuscleGroup(
-      id: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
-      name: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}name'])!,
-      day: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}day'])!,
-      icon: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}icon'])!,
+  Future<AppDatabase> build() async {
+    final path = name != null
+        ? await sqfliteDatabaseFactory.getDatabasePath(name!)
+        : ':memory:';
+    final database = _$AppDatabase();
+    database.database = await database.open(
+      path,
+      _migrations,
+      _callback,
     );
-  }
-
-  @override
-  $MuscleGroupsTable createAlias(String alias) {
-    return $MuscleGroupsTable(attachedDatabase, alias);
+    return database;
   }
 }
 
-class MuscleGroup extends DataClass implements Insertable<MuscleGroup> {
-  final int id;
-  final String name;
-  final String day;
-  final String icon;
-  const MuscleGroup(
-      {required this.id,
-      required this.name,
-      required this.day,
-      required this.icon});
-  @override
-  Map<String, Expression> toColumns(bool nullToAbsent) {
-    final map = <String, Expression>{};
-    map['id'] = Variable<int>(id);
-    map['name'] = Variable<String>(name);
-    map['day'] = Variable<String>(day);
-    map['icon'] = Variable<String>(icon);
-    return map;
+class _$AppDatabase extends AppDatabase {
+  _$AppDatabase([StreamController<String>? listener]) {
+    changeListener = listener ?? StreamController<String>.broadcast();
   }
 
-  MuscleGroupsCompanion toCompanion(bool nullToAbsent) {
-    return MuscleGroupsCompanion(
-      id: Value(id),
-      name: Value(name),
-      day: Value(day),
-      icon: Value(icon),
+  EntryDao? _entryDaoInstance;
+
+  WorkoutDao? _workoutDaoInstance;
+
+  MuscleGroupDao? _muscleGroupDaoInstance;
+
+  Future<sqflite.Database> open(
+    String path,
+    List<Migration> migrations, [
+    Callback? callback,
+  ]) async {
+    final databaseOptions = sqflite.OpenDatabaseOptions(
+      version: 1,
+      onConfigure: (database) async {
+        await database.execute('PRAGMA foreign_keys = ON');
+        await callback?.onConfigure?.call(database);
+      },
+      onOpen: (database) async {
+        await callback?.onOpen?.call(database);
+      },
+      onUpgrade: (database, startVersion, endVersion) async {
+        await MigrationAdapter.runMigrations(
+            database, startVersion, endVersion, migrations);
+
+        await callback?.onUpgrade?.call(database, startVersion, endVersion);
+      },
+      onCreate: (database, version) async {
+        await database.execute(
+            'CREATE TABLE IF NOT EXISTS `Entries` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `workoutId` INTEGER, `weight1` REAL, `reps1` INTEGER, `weight2` REAL, `reps2` INTEGER, `date` INTEGER, FOREIGN KEY (`workoutId`) REFERENCES `Workouts` (`id`) ON UPDATE NO ACTION ON DELETE CASCADE)');
+        await database.execute(
+            'CREATE TABLE IF NOT EXISTS `MuscleGroups` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `name` TEXT, `day` TEXT, `icon` TEXT)');
+        await database.execute(
+            'CREATE TABLE IF NOT EXISTS `Workouts` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `name` TEXT, `muscleGroupId` INTEGER, FOREIGN KEY (`muscleGroupId`) REFERENCES `MuscleGroups` (`id`) ON UPDATE NO ACTION ON DELETE CASCADE)');
+
+        await callback?.onCreate?.call(database, version);
+      },
     );
-  }
-
-  factory MuscleGroup.fromJson(Map<String, dynamic> json,
-      {ValueSerializer? serializer}) {
-    serializer ??= driftRuntimeOptions.defaultSerializer;
-    return MuscleGroup(
-      id: serializer.fromJson<int>(json['id']),
-      name: serializer.fromJson<String>(json['name']),
-      day: serializer.fromJson<String>(json['day']),
-      icon: serializer.fromJson<String>(json['icon']),
-    );
-  }
-  @override
-  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
-    serializer ??= driftRuntimeOptions.defaultSerializer;
-    return <String, dynamic>{
-      'id': serializer.toJson<int>(id),
-      'name': serializer.toJson<String>(name),
-      'day': serializer.toJson<String>(day),
-      'icon': serializer.toJson<String>(icon),
-    };
-  }
-
-  MuscleGroup copyWith({int? id, String? name, String? day, String? icon}) =>
-      MuscleGroup(
-        id: id ?? this.id,
-        name: name ?? this.name,
-        day: day ?? this.day,
-        icon: icon ?? this.icon,
-      );
-  MuscleGroup copyWithCompanion(MuscleGroupsCompanion data) {
-    return MuscleGroup(
-      id: data.id.present ? data.id.value : this.id,
-      name: data.name.present ? data.name.value : this.name,
-      day: data.day.present ? data.day.value : this.day,
-      icon: data.icon.present ? data.icon.value : this.icon,
-    );
+    return sqfliteDatabaseFactory.openDatabase(path, options: databaseOptions);
   }
 
   @override
-  String toString() {
-    return (StringBuffer('MuscleGroup(')
-          ..write('id: $id, ')
-          ..write('name: $name, ')
-          ..write('day: $day, ')
-          ..write('icon: $icon')
-          ..write(')'))
-        .toString();
+  EntryDao get entryDao {
+    return _entryDaoInstance ??= _$EntryDao(database, changeListener);
   }
 
   @override
-  int get hashCode => Object.hash(id, name, day, icon);
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      (other is MuscleGroup &&
-          other.id == this.id &&
-          other.name == this.name &&
-          other.day == this.day &&
-          other.icon == this.icon);
-}
-
-class MuscleGroupsCompanion extends UpdateCompanion<MuscleGroup> {
-  final Value<int> id;
-  final Value<String> name;
-  final Value<String> day;
-  final Value<String> icon;
-  const MuscleGroupsCompanion({
-    this.id = const Value.absent(),
-    this.name = const Value.absent(),
-    this.day = const Value.absent(),
-    this.icon = const Value.absent(),
-  });
-  MuscleGroupsCompanion.insert({
-    this.id = const Value.absent(),
-    required String name,
-    required String day,
-    required String icon,
-  })  : name = Value(name),
-        day = Value(day),
-        icon = Value(icon);
-  static Insertable<MuscleGroup> custom({
-    Expression<int>? id,
-    Expression<String>? name,
-    Expression<String>? day,
-    Expression<String>? icon,
-  }) {
-    return RawValuesInsertable({
-      if (id != null) 'id': id,
-      if (name != null) 'name': name,
-      if (day != null) 'day': day,
-      if (icon != null) 'icon': icon,
-    });
-  }
-
-  MuscleGroupsCompanion copyWith(
-      {Value<int>? id,
-      Value<String>? name,
-      Value<String>? day,
-      Value<String>? icon}) {
-    return MuscleGroupsCompanion(
-      id: id ?? this.id,
-      name: name ?? this.name,
-      day: day ?? this.day,
-      icon: icon ?? this.icon,
-    );
+  WorkoutDao get workoutDao {
+    return _workoutDaoInstance ??= _$WorkoutDao(database, changeListener);
   }
 
   @override
-  Map<String, Expression> toColumns(bool nullToAbsent) {
-    final map = <String, Expression>{};
-    if (id.present) {
-      map['id'] = Variable<int>(id.value);
-    }
-    if (name.present) {
-      map['name'] = Variable<String>(name.value);
-    }
-    if (day.present) {
-      map['day'] = Variable<String>(day.value);
-    }
-    if (icon.present) {
-      map['icon'] = Variable<String>(icon.value);
-    }
-    return map;
-  }
-
-  @override
-  String toString() {
-    return (StringBuffer('MuscleGroupsCompanion(')
-          ..write('id: $id, ')
-          ..write('name: $name, ')
-          ..write('day: $day, ')
-          ..write('icon: $icon')
-          ..write(')'))
-        .toString();
+  MuscleGroupDao get muscleGroupDao {
+    return _muscleGroupDaoInstance ??=
+        _$MuscleGroupDao(database, changeListener);
   }
 }
 
-class $WorkoutsTable extends Workouts with TableInfo<$WorkoutsTable, Workout> {
+class _$EntryDao extends EntryDao {
+  _$EntryDao(
+    this.database,
+    this.changeListener,
+  )   : _queryAdapter = QueryAdapter(database),
+        _entryInsertionAdapter = InsertionAdapter(
+            database,
+            'Entries',
+            (Entry item) => <String, Object?>{
+                  'id': item.id,
+                  'workoutId': item.workout,
+                  'weight1': item.weight1,
+                  'reps1': item.reps1,
+                  'weight2': item.weight2,
+                  'reps2': item.reps2,
+                  'date': item.date
+                }),
+        _entryUpdateAdapter = UpdateAdapter(
+            database,
+            'Entries',
+            ['id'],
+            (Entry item) => <String, Object?>{
+                  'id': item.id,
+                  'workoutId': item.workout,
+                  'weight1': item.weight1,
+                  'reps1': item.reps1,
+                  'weight2': item.weight2,
+                  'reps2': item.reps2,
+                  'date': item.date
+                }),
+        _entryDeletionAdapter = DeletionAdapter(
+            database,
+            'Entries',
+            ['id'],
+            (Entry item) => <String, Object?>{
+                  'id': item.id,
+                  'workoutId': item.workout,
+                  'weight1': item.weight1,
+                  'reps1': item.reps1,
+                  'weight2': item.weight2,
+                  'reps2': item.reps2,
+                  'date': item.date
+                });
+
+  final sqflite.DatabaseExecutor database;
+
+  final StreamController<String> changeListener;
+
+  final QueryAdapter _queryAdapter;
+
+  final InsertionAdapter<Entry> _entryInsertionAdapter;
+
+  final UpdateAdapter<Entry> _entryUpdateAdapter;
+
+  final DeletionAdapter<Entry> _entryDeletionAdapter;
+
   @override
-  final GeneratedDatabase attachedDatabase;
-  final String? _alias;
-  $WorkoutsTable(this.attachedDatabase, [this._alias]);
-  static const VerificationMeta _idMeta = const VerificationMeta('id');
-  @override
-  late final GeneratedColumn<int> id = GeneratedColumn<int>(
-      'id', aliasedName, false,
-      hasAutoIncrement: true,
-      type: DriftSqlType.int,
-      requiredDuringInsert: false,
-      defaultConstraints:
-          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
-  static const VerificationMeta _nameMeta = const VerificationMeta('name');
-  @override
-  late final GeneratedColumn<String> name = GeneratedColumn<String>(
-      'name', aliasedName, false,
-      additionalChecks:
-          GeneratedColumn.checkTextLength(minTextLength: 3, maxTextLength: 32),
-      type: DriftSqlType.string,
-      requiredDuringInsert: true);
-  static const VerificationMeta _muscleGroupMeta =
-      const VerificationMeta('muscleGroup');
-  @override
-  late final GeneratedColumn<int> muscleGroup = GeneratedColumn<int>(
-      'muscle_group', aliasedName, false,
-      type: DriftSqlType.int,
-      requiredDuringInsert: true,
-      defaultConstraints: GeneratedColumn.constraintIsAlways(
-          'REFERENCES muscle_groups (id) ON DELETE CASCADE'));
-  @override
-  List<GeneratedColumn> get $columns => [id, name, muscleGroup];
-  @override
-  String get aliasedName => _alias ?? actualTableName;
-  @override
-  String get actualTableName => $name;
-  static const String $name = 'workouts';
-  @override
-  VerificationContext validateIntegrity(Insertable<Workout> instance,
-      {bool isInserting = false}) {
-    final context = VerificationContext();
-    final data = instance.toColumns(true);
-    if (data.containsKey('id')) {
-      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
-    }
-    if (data.containsKey('name')) {
-      context.handle(
-          _nameMeta, name.isAcceptableOrUnknown(data['name']!, _nameMeta));
-    } else if (isInserting) {
-      context.missing(_nameMeta);
-    }
-    if (data.containsKey('muscle_group')) {
-      context.handle(
-          _muscleGroupMeta,
-          muscleGroup.isAcceptableOrUnknown(
-              data['muscle_group']!, _muscleGroupMeta));
-    } else if (isInserting) {
-      context.missing(_muscleGroupMeta);
-    }
-    return context;
+  Future<List<Entry>> getAllEntries() async {
+    return _queryAdapter.queryList('SELECT * FROM Entries',
+        mapper: (Map<String, Object?> row) => Entry(
+            row['id'] as int?,
+            row['workoutId'] as int?,
+            row['weight1'] as double?,
+            row['reps1'] as int?,
+            row['weight2'] as double?,
+            row['reps2'] as int?,
+            row['date'] as int?));
   }
 
   @override
-  Set<GeneratedColumn> get $primaryKey => {id};
-  @override
-  Workout map(Map<String, dynamic> data, {String? tablePrefix}) {
-    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return Workout(
-      id: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
-      name: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}name'])!,
-      muscleGroup: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}muscle_group'])!,
-    );
+  Future<void> createEntry(Entry entry) async {
+    await _entryInsertionAdapter.insert(entry, OnConflictStrategy.abort);
   }
 
   @override
-  $WorkoutsTable createAlias(String alias) {
-    return $WorkoutsTable(attachedDatabase, alias);
-  }
-}
-
-class Workout extends DataClass implements Insertable<Workout> {
-  final int id;
-  final String name;
-  final int muscleGroup;
-  const Workout(
-      {required this.id, required this.name, required this.muscleGroup});
-  @override
-  Map<String, Expression> toColumns(bool nullToAbsent) {
-    final map = <String, Expression>{};
-    map['id'] = Variable<int>(id);
-    map['name'] = Variable<String>(name);
-    map['muscle_group'] = Variable<int>(muscleGroup);
-    return map;
-  }
-
-  WorkoutsCompanion toCompanion(bool nullToAbsent) {
-    return WorkoutsCompanion(
-      id: Value(id),
-      name: Value(name),
-      muscleGroup: Value(muscleGroup),
-    );
-  }
-
-  factory Workout.fromJson(Map<String, dynamic> json,
-      {ValueSerializer? serializer}) {
-    serializer ??= driftRuntimeOptions.defaultSerializer;
-    return Workout(
-      id: serializer.fromJson<int>(json['id']),
-      name: serializer.fromJson<String>(json['name']),
-      muscleGroup: serializer.fromJson<int>(json['muscleGroup']),
-    );
-  }
-  @override
-  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
-    serializer ??= driftRuntimeOptions.defaultSerializer;
-    return <String, dynamic>{
-      'id': serializer.toJson<int>(id),
-      'name': serializer.toJson<String>(name),
-      'muscleGroup': serializer.toJson<int>(muscleGroup),
-    };
-  }
-
-  Workout copyWith({int? id, String? name, int? muscleGroup}) => Workout(
-        id: id ?? this.id,
-        name: name ?? this.name,
-        muscleGroup: muscleGroup ?? this.muscleGroup,
-      );
-  Workout copyWithCompanion(WorkoutsCompanion data) {
-    return Workout(
-      id: data.id.present ? data.id.value : this.id,
-      name: data.name.present ? data.name.value : this.name,
-      muscleGroup:
-          data.muscleGroup.present ? data.muscleGroup.value : this.muscleGroup,
-    );
+  Future<void> editEntry(Entry entry) async {
+    await _entryUpdateAdapter.update(entry, OnConflictStrategy.abort);
   }
 
   @override
-  String toString() {
-    return (StringBuffer('Workout(')
-          ..write('id: $id, ')
-          ..write('name: $name, ')
-          ..write('muscleGroup: $muscleGroup')
-          ..write(')'))
-        .toString();
-  }
-
-  @override
-  int get hashCode => Object.hash(id, name, muscleGroup);
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      (other is Workout &&
-          other.id == this.id &&
-          other.name == this.name &&
-          other.muscleGroup == this.muscleGroup);
-}
-
-class WorkoutsCompanion extends UpdateCompanion<Workout> {
-  final Value<int> id;
-  final Value<String> name;
-  final Value<int> muscleGroup;
-  const WorkoutsCompanion({
-    this.id = const Value.absent(),
-    this.name = const Value.absent(),
-    this.muscleGroup = const Value.absent(),
-  });
-  WorkoutsCompanion.insert({
-    this.id = const Value.absent(),
-    required String name,
-    required int muscleGroup,
-  })  : name = Value(name),
-        muscleGroup = Value(muscleGroup);
-  static Insertable<Workout> custom({
-    Expression<int>? id,
-    Expression<String>? name,
-    Expression<int>? muscleGroup,
-  }) {
-    return RawValuesInsertable({
-      if (id != null) 'id': id,
-      if (name != null) 'name': name,
-      if (muscleGroup != null) 'muscle_group': muscleGroup,
-    });
-  }
-
-  WorkoutsCompanion copyWith(
-      {Value<int>? id, Value<String>? name, Value<int>? muscleGroup}) {
-    return WorkoutsCompanion(
-      id: id ?? this.id,
-      name: name ?? this.name,
-      muscleGroup: muscleGroup ?? this.muscleGroup,
-    );
-  }
-
-  @override
-  Map<String, Expression> toColumns(bool nullToAbsent) {
-    final map = <String, Expression>{};
-    if (id.present) {
-      map['id'] = Variable<int>(id.value);
-    }
-    if (name.present) {
-      map['name'] = Variable<String>(name.value);
-    }
-    if (muscleGroup.present) {
-      map['muscle_group'] = Variable<int>(muscleGroup.value);
-    }
-    return map;
-  }
-
-  @override
-  String toString() {
-    return (StringBuffer('WorkoutsCompanion(')
-          ..write('id: $id, ')
-          ..write('name: $name, ')
-          ..write('muscleGroup: $muscleGroup')
-          ..write(')'))
-        .toString();
+  Future<void> deleteEntry(Entry entry) async {
+    await _entryDeletionAdapter.delete(entry);
   }
 }
 
-class $EntriesTable extends Entries with TableInfo<$EntriesTable, Entry> {
+class _$WorkoutDao extends WorkoutDao {
+  _$WorkoutDao(
+    this.database,
+    this.changeListener,
+  )   : _queryAdapter = QueryAdapter(database),
+        _workoutInsertionAdapter = InsertionAdapter(
+            database,
+            'Workouts',
+            (Workout item) => <String, Object?>{
+                  'id': item.id,
+                  'name': item.name,
+                  'muscleGroupId': item.muscleGroup
+                }),
+        _workoutUpdateAdapter = UpdateAdapter(
+            database,
+            'Workouts',
+            ['id'],
+            (Workout item) => <String, Object?>{
+                  'id': item.id,
+                  'name': item.name,
+                  'muscleGroupId': item.muscleGroup
+                }),
+        _workoutDeletionAdapter = DeletionAdapter(
+            database,
+            'Workouts',
+            ['id'],
+            (Workout item) => <String, Object?>{
+                  'id': item.id,
+                  'name': item.name,
+                  'muscleGroupId': item.muscleGroup
+                });
+
+  final sqflite.DatabaseExecutor database;
+
+  final StreamController<String> changeListener;
+
+  final QueryAdapter _queryAdapter;
+
+  final InsertionAdapter<Workout> _workoutInsertionAdapter;
+
+  final UpdateAdapter<Workout> _workoutUpdateAdapter;
+
+  final DeletionAdapter<Workout> _workoutDeletionAdapter;
+
   @override
-  final GeneratedDatabase attachedDatabase;
-  final String? _alias;
-  $EntriesTable(this.attachedDatabase, [this._alias]);
-  static const VerificationMeta _idMeta = const VerificationMeta('id');
-  @override
-  late final GeneratedColumn<int> id = GeneratedColumn<int>(
-      'id', aliasedName, false,
-      hasAutoIncrement: true,
-      type: DriftSqlType.int,
-      requiredDuringInsert: false,
-      defaultConstraints:
-          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
-  static const VerificationMeta _workoutMeta =
-      const VerificationMeta('workout');
-  @override
-  late final GeneratedColumn<int> workout = GeneratedColumn<int>(
-      'workout', aliasedName, false,
-      type: DriftSqlType.int,
-      requiredDuringInsert: true,
-      defaultConstraints: GeneratedColumn.constraintIsAlways(
-          'REFERENCES workouts (id) ON DELETE CASCADE'));
-  static const VerificationMeta _weight1Meta =
-      const VerificationMeta('weight1');
-  @override
-  late final GeneratedColumn<double> weight1 = GeneratedColumn<double>(
-      'weight1', aliasedName, false,
-      type: DriftSqlType.double, requiredDuringInsert: true);
-  static const VerificationMeta _reps1Meta = const VerificationMeta('reps1');
-  @override
-  late final GeneratedColumn<int> reps1 = GeneratedColumn<int>(
-      'reps1', aliasedName, false,
-      type: DriftSqlType.int, requiredDuringInsert: true);
-  static const VerificationMeta _weight2Meta =
-      const VerificationMeta('weight2');
-  @override
-  late final GeneratedColumn<double> weight2 = GeneratedColumn<double>(
-      'weight2', aliasedName, true,
-      type: DriftSqlType.double, requiredDuringInsert: false);
-  static const VerificationMeta _reps2Meta = const VerificationMeta('reps2');
-  @override
-  late final GeneratedColumn<int> reps2 = GeneratedColumn<int>(
-      'reps2', aliasedName, true,
-      type: DriftSqlType.int, requiredDuringInsert: false);
-  static const VerificationMeta _dateMeta = const VerificationMeta('date');
-  @override
-  late final GeneratedColumn<DateTime> date = GeneratedColumn<DateTime>(
-      'date', aliasedName, false,
-      type: DriftSqlType.dateTime,
-      requiredDuringInsert: false,
-      defaultValue: currentDateAndTime);
-  @override
-  List<GeneratedColumn> get $columns =>
-      [id, workout, weight1, reps1, weight2, reps2, date];
-  @override
-  String get aliasedName => _alias ?? actualTableName;
-  @override
-  String get actualTableName => $name;
-  static const String $name = 'entries';
-  @override
-  VerificationContext validateIntegrity(Insertable<Entry> instance,
-      {bool isInserting = false}) {
-    final context = VerificationContext();
-    final data = instance.toColumns(true);
-    if (data.containsKey('id')) {
-      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
-    }
-    if (data.containsKey('workout')) {
-      context.handle(_workoutMeta,
-          workout.isAcceptableOrUnknown(data['workout']!, _workoutMeta));
-    } else if (isInserting) {
-      context.missing(_workoutMeta);
-    }
-    if (data.containsKey('weight1')) {
-      context.handle(_weight1Meta,
-          weight1.isAcceptableOrUnknown(data['weight1']!, _weight1Meta));
-    } else if (isInserting) {
-      context.missing(_weight1Meta);
-    }
-    if (data.containsKey('reps1')) {
-      context.handle(
-          _reps1Meta, reps1.isAcceptableOrUnknown(data['reps1']!, _reps1Meta));
-    } else if (isInserting) {
-      context.missing(_reps1Meta);
-    }
-    if (data.containsKey('weight2')) {
-      context.handle(_weight2Meta,
-          weight2.isAcceptableOrUnknown(data['weight2']!, _weight2Meta));
-    }
-    if (data.containsKey('reps2')) {
-      context.handle(
-          _reps2Meta, reps2.isAcceptableOrUnknown(data['reps2']!, _reps2Meta));
-    }
-    if (data.containsKey('date')) {
-      context.handle(
-          _dateMeta, date.isAcceptableOrUnknown(data['date']!, _dateMeta));
-    }
-    return context;
+  Future<Workout?> getWorkoutById(int id) async {
+    return _queryAdapter.query('SELECT * FROM Workouts WHERE id = ?1',
+        mapper: (Map<String, Object?> row) => Workout(row['id'] as int?,
+            row['name'] as String?, row['muscleGroupId'] as int?),
+        arguments: [id]);
   }
 
   @override
-  Set<GeneratedColumn> get $primaryKey => {id};
-  @override
-  Entry map(Map<String, dynamic> data, {String? tablePrefix}) {
-    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return Entry(
-      id: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
-      workout: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}workout'])!,
-      weight1: attachedDatabase.typeMapping
-          .read(DriftSqlType.double, data['${effectivePrefix}weight1'])!,
-      reps1: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}reps1'])!,
-      weight2: attachedDatabase.typeMapping
-          .read(DriftSqlType.double, data['${effectivePrefix}weight2']),
-      reps2: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}reps2']),
-      date: attachedDatabase.typeMapping
-          .read(DriftSqlType.dateTime, data['${effectivePrefix}date'])!,
-    );
+  Future<List<Workout>> getWorkoutsByName(String name) async {
+    return _queryAdapter.queryList('SELECT * FROM Workouts WHERE name = ?1',
+        mapper: (Map<String, Object?> row) => Workout(row['id'] as int?,
+            row['name'] as String?, row['muscleGroupId'] as int?),
+        arguments: [name]);
   }
 
   @override
-  $EntriesTable createAlias(String alias) {
-    return $EntriesTable(attachedDatabase, alias);
+  Future<List<Workout>> getWorkoutsByMuscleGroup(int muscleGroupId) async {
+    return _queryAdapter.queryList(
+        'SELECT * FROM Workouts WHERE muscleGroup = ?1',
+        mapper: (Map<String, Object?> row) => Workout(row['id'] as int?,
+            row['name'] as String?, row['muscleGroupId'] as int?),
+        arguments: [muscleGroupId]);
+  }
+
+  @override
+  Future<List<Workout>> getAllWorkouts() async {
+    return _queryAdapter.queryList('SELECT * FROM Workouts',
+        mapper: (Map<String, Object?> row) => Workout(row['id'] as int?,
+            row['name'] as String?, row['muscleGroupId'] as int?));
+  }
+
+  @override
+  Future<void> createWorkout(Workout workout) async {
+    await _workoutInsertionAdapter.insert(workout, OnConflictStrategy.abort);
+  }
+
+  @override
+  Future<void> editWorkout(Workout workout) async {
+    await _workoutUpdateAdapter.update(workout, OnConflictStrategy.abort);
+  }
+
+  @override
+  Future<void> deleteWorkout(Workout workout) async {
+    await _workoutDeletionAdapter.delete(workout);
   }
 }
 
-class Entry extends DataClass implements Insertable<Entry> {
-  final int id;
-  final int workout;
-  final double weight1;
-  final int reps1;
-  final double? weight2;
-  final int? reps2;
-  final DateTime date;
-  const Entry(
-      {required this.id,
-      required this.workout,
-      required this.weight1,
-      required this.reps1,
-      this.weight2,
-      this.reps2,
-      required this.date});
+class _$MuscleGroupDao extends MuscleGroupDao {
+  _$MuscleGroupDao(
+    this.database,
+    this.changeListener,
+  )   : _queryAdapter = QueryAdapter(database),
+        _muscleGroupInsertionAdapter = InsertionAdapter(
+            database,
+            'MuscleGroups',
+            (MuscleGroup item) => <String, Object?>{
+                  'id': item.id,
+                  'name': item.name,
+                  'day': item.day,
+                  'icon': item.icon
+                }),
+        _muscleGroupUpdateAdapter = UpdateAdapter(
+            database,
+            'MuscleGroups',
+            ['id'],
+            (MuscleGroup item) => <String, Object?>{
+                  'id': item.id,
+                  'name': item.name,
+                  'day': item.day,
+                  'icon': item.icon
+                });
+
+  final sqflite.DatabaseExecutor database;
+
+  final StreamController<String> changeListener;
+
+  final QueryAdapter _queryAdapter;
+
+  final InsertionAdapter<MuscleGroup> _muscleGroupInsertionAdapter;
+
+  final UpdateAdapter<MuscleGroup> _muscleGroupUpdateAdapter;
+
   @override
-  Map<String, Expression> toColumns(bool nullToAbsent) {
-    final map = <String, Expression>{};
-    map['id'] = Variable<int>(id);
-    map['workout'] = Variable<int>(workout);
-    map['weight1'] = Variable<double>(weight1);
-    map['reps1'] = Variable<int>(reps1);
-    if (!nullToAbsent || weight2 != null) {
-      map['weight2'] = Variable<double>(weight2);
-    }
-    if (!nullToAbsent || reps2 != null) {
-      map['reps2'] = Variable<int>(reps2);
-    }
-    map['date'] = Variable<DateTime>(date);
-    return map;
-  }
-
-  EntriesCompanion toCompanion(bool nullToAbsent) {
-    return EntriesCompanion(
-      id: Value(id),
-      workout: Value(workout),
-      weight1: Value(weight1),
-      reps1: Value(reps1),
-      weight2: weight2 == null && nullToAbsent
-          ? const Value.absent()
-          : Value(weight2),
-      reps2:
-          reps2 == null && nullToAbsent ? const Value.absent() : Value(reps2),
-      date: Value(date),
-    );
-  }
-
-  factory Entry.fromJson(Map<String, dynamic> json,
-      {ValueSerializer? serializer}) {
-    serializer ??= driftRuntimeOptions.defaultSerializer;
-    return Entry(
-      id: serializer.fromJson<int>(json['id']),
-      workout: serializer.fromJson<int>(json['workout']),
-      weight1: serializer.fromJson<double>(json['weight1']),
-      reps1: serializer.fromJson<int>(json['reps1']),
-      weight2: serializer.fromJson<double?>(json['weight2']),
-      reps2: serializer.fromJson<int?>(json['reps2']),
-      date: serializer.fromJson<DateTime>(json['date']),
-    );
-  }
-  @override
-  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
-    serializer ??= driftRuntimeOptions.defaultSerializer;
-    return <String, dynamic>{
-      'id': serializer.toJson<int>(id),
-      'workout': serializer.toJson<int>(workout),
-      'weight1': serializer.toJson<double>(weight1),
-      'reps1': serializer.toJson<int>(reps1),
-      'weight2': serializer.toJson<double?>(weight2),
-      'reps2': serializer.toJson<int?>(reps2),
-      'date': serializer.toJson<DateTime>(date),
-    };
-  }
-
-  Entry copyWith(
-          {int? id,
-          int? workout,
-          double? weight1,
-          int? reps1,
-          Value<double?> weight2 = const Value.absent(),
-          Value<int?> reps2 = const Value.absent(),
-          DateTime? date}) =>
-      Entry(
-        id: id ?? this.id,
-        workout: workout ?? this.workout,
-        weight1: weight1 ?? this.weight1,
-        reps1: reps1 ?? this.reps1,
-        weight2: weight2.present ? weight2.value : this.weight2,
-        reps2: reps2.present ? reps2.value : this.reps2,
-        date: date ?? this.date,
-      );
-  Entry copyWithCompanion(EntriesCompanion data) {
-    return Entry(
-      id: data.id.present ? data.id.value : this.id,
-      workout: data.workout.present ? data.workout.value : this.workout,
-      weight1: data.weight1.present ? data.weight1.value : this.weight1,
-      reps1: data.reps1.present ? data.reps1.value : this.reps1,
-      weight2: data.weight2.present ? data.weight2.value : this.weight2,
-      reps2: data.reps2.present ? data.reps2.value : this.reps2,
-      date: data.date.present ? data.date.value : this.date,
-    );
+  Future<List<MuscleGroup>> getAllMuscleGroups() async {
+    return _queryAdapter.queryList('SELECT * FROM MuscleGroups',
+        mapper: (Map<String, Object?> row) => MuscleGroup(
+            row['id'] as int?,
+            row['name'] as String?,
+            row['day'] as String?,
+            row['icon'] as String?));
   }
 
   @override
-  String toString() {
-    return (StringBuffer('Entry(')
-          ..write('id: $id, ')
-          ..write('workout: $workout, ')
-          ..write('weight1: $weight1, ')
-          ..write('reps1: $reps1, ')
-          ..write('weight2: $weight2, ')
-          ..write('reps2: $reps2, ')
-          ..write('date: $date')
-          ..write(')'))
-        .toString();
+  Future<MuscleGroup?> getMuscleGroupById(int id) async {
+    return _queryAdapter.query('SELECT * FROM MuscleGroups WHERE id = ?1',
+        mapper: (Map<String, Object?> row) => MuscleGroup(
+            row['id'] as int?,
+            row['name'] as String?,
+            row['day'] as String?,
+            row['icon'] as String?),
+        arguments: [id]);
   }
 
   @override
-  int get hashCode =>
-      Object.hash(id, workout, weight1, reps1, weight2, reps2, date);
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      (other is Entry &&
-          other.id == this.id &&
-          other.workout == this.workout &&
-          other.weight1 == this.weight1 &&
-          other.reps1 == this.reps1 &&
-          other.weight2 == this.weight2 &&
-          other.reps2 == this.reps2 &&
-          other.date == this.date);
-}
-
-class EntriesCompanion extends UpdateCompanion<Entry> {
-  final Value<int> id;
-  final Value<int> workout;
-  final Value<double> weight1;
-  final Value<int> reps1;
-  final Value<double?> weight2;
-  final Value<int?> reps2;
-  final Value<DateTime> date;
-  const EntriesCompanion({
-    this.id = const Value.absent(),
-    this.workout = const Value.absent(),
-    this.weight1 = const Value.absent(),
-    this.reps1 = const Value.absent(),
-    this.weight2 = const Value.absent(),
-    this.reps2 = const Value.absent(),
-    this.date = const Value.absent(),
-  });
-  EntriesCompanion.insert({
-    this.id = const Value.absent(),
-    required int workout,
-    required double weight1,
-    required int reps1,
-    this.weight2 = const Value.absent(),
-    this.reps2 = const Value.absent(),
-    this.date = const Value.absent(),
-  })  : workout = Value(workout),
-        weight1 = Value(weight1),
-        reps1 = Value(reps1);
-  static Insertable<Entry> custom({
-    Expression<int>? id,
-    Expression<int>? workout,
-    Expression<double>? weight1,
-    Expression<int>? reps1,
-    Expression<double>? weight2,
-    Expression<int>? reps2,
-    Expression<DateTime>? date,
-  }) {
-    return RawValuesInsertable({
-      if (id != null) 'id': id,
-      if (workout != null) 'workout': workout,
-      if (weight1 != null) 'weight1': weight1,
-      if (reps1 != null) 'reps1': reps1,
-      if (weight2 != null) 'weight2': weight2,
-      if (reps2 != null) 'reps2': reps2,
-      if (date != null) 'date': date,
-    });
-  }
-
-  EntriesCompanion copyWith(
-      {Value<int>? id,
-      Value<int>? workout,
-      Value<double>? weight1,
-      Value<int>? reps1,
-      Value<double?>? weight2,
-      Value<int?>? reps2,
-      Value<DateTime>? date}) {
-    return EntriesCompanion(
-      id: id ?? this.id,
-      workout: workout ?? this.workout,
-      weight1: weight1 ?? this.weight1,
-      reps1: reps1 ?? this.reps1,
-      weight2: weight2 ?? this.weight2,
-      reps2: reps2 ?? this.reps2,
-      date: date ?? this.date,
-    );
+  Future<List<MuscleGroup>> getMuscleGroupsByName(String name) async {
+    return _queryAdapter.queryList('SELECT * FROM MuscleGroups WHERE name = ?1',
+        mapper: (Map<String, Object?> row) => MuscleGroup(
+            row['id'] as int?,
+            row['name'] as String?,
+            row['day'] as String?,
+            row['icon'] as String?),
+        arguments: [name]);
   }
 
   @override
-  Map<String, Expression> toColumns(bool nullToAbsent) {
-    final map = <String, Expression>{};
-    if (id.present) {
-      map['id'] = Variable<int>(id.value);
-    }
-    if (workout.present) {
-      map['workout'] = Variable<int>(workout.value);
-    }
-    if (weight1.present) {
-      map['weight1'] = Variable<double>(weight1.value);
-    }
-    if (reps1.present) {
-      map['reps1'] = Variable<int>(reps1.value);
-    }
-    if (weight2.present) {
-      map['weight2'] = Variable<double>(weight2.value);
-    }
-    if (reps2.present) {
-      map['reps2'] = Variable<int>(reps2.value);
-    }
-    if (date.present) {
-      map['date'] = Variable<DateTime>(date.value);
-    }
-    return map;
+  Future<List<MuscleGroup>> getMuscleGroupsByDay(String day) async {
+    return _queryAdapter.queryList('SELECT * FROM MuscleGroups WHERE day = ?1',
+        mapper: (Map<String, Object?> row) => MuscleGroup(
+            row['id'] as int?,
+            row['name'] as String?,
+            row['day'] as String?,
+            row['icon'] as String?),
+        arguments: [day]);
   }
 
   @override
-  String toString() {
-    return (StringBuffer('EntriesCompanion(')
-          ..write('id: $id, ')
-          ..write('workout: $workout, ')
-          ..write('weight1: $weight1, ')
-          ..write('reps1: $reps1, ')
-          ..write('weight2: $weight2, ')
-          ..write('reps2: $reps2, ')
-          ..write('date: $date')
-          ..write(')'))
-        .toString();
+  Future<void> createMuscleGroup(MuscleGroup muscleGroup) async {
+    await _muscleGroupInsertionAdapter.insert(
+        muscleGroup, OnConflictStrategy.abort);
   }
-}
 
-abstract class _$AppDatabase extends GeneratedDatabase {
-  _$AppDatabase(QueryExecutor e) : super(e);
-  $AppDatabaseManager get managers => $AppDatabaseManager(this);
-  late final $MuscleGroupsTable muscleGroups = $MuscleGroupsTable(this);
-  late final $WorkoutsTable workouts = $WorkoutsTable(this);
-  late final $EntriesTable entries = $EntriesTable(this);
   @override
-  Iterable<TableInfo<Table, Object?>> get allTables =>
-      allSchemaEntities.whereType<TableInfo<Table, Object?>>();
-  @override
-  List<DatabaseSchemaEntity> get allSchemaEntities =>
-      [muscleGroups, workouts, entries];
-  @override
-  StreamQueryUpdateRules get streamUpdateRules => const StreamQueryUpdateRules(
-        [
-          WritePropagation(
-            on: TableUpdateQuery.onTableName('muscle_groups',
-                limitUpdateKind: UpdateKind.delete),
-            result: [
-              TableUpdate('workouts', kind: UpdateKind.delete),
-            ],
-          ),
-          WritePropagation(
-            on: TableUpdateQuery.onTableName('workouts',
-                limitUpdateKind: UpdateKind.delete),
-            result: [
-              TableUpdate('entries', kind: UpdateKind.delete),
-            ],
-          ),
-        ],
-      );
-}
-
-typedef $$MuscleGroupsTableCreateCompanionBuilder = MuscleGroupsCompanion
-    Function({
-  Value<int> id,
-  required String name,
-  required String day,
-  required String icon,
-});
-typedef $$MuscleGroupsTableUpdateCompanionBuilder = MuscleGroupsCompanion
-    Function({
-  Value<int> id,
-  Value<String> name,
-  Value<String> day,
-  Value<String> icon,
-});
-
-class $$MuscleGroupsTableTableManager extends RootTableManager<
-    _$AppDatabase,
-    $MuscleGroupsTable,
-    MuscleGroup,
-    $$MuscleGroupsTableFilterComposer,
-    $$MuscleGroupsTableOrderingComposer,
-    $$MuscleGroupsTableCreateCompanionBuilder,
-    $$MuscleGroupsTableUpdateCompanionBuilder> {
-  $$MuscleGroupsTableTableManager(_$AppDatabase db, $MuscleGroupsTable table)
-      : super(TableManagerState(
-          db: db,
-          table: table,
-          filteringComposer:
-              $$MuscleGroupsTableFilterComposer(ComposerState(db, table)),
-          orderingComposer:
-              $$MuscleGroupsTableOrderingComposer(ComposerState(db, table)),
-          updateCompanionCallback: ({
-            Value<int> id = const Value.absent(),
-            Value<String> name = const Value.absent(),
-            Value<String> day = const Value.absent(),
-            Value<String> icon = const Value.absent(),
-          }) =>
-              MuscleGroupsCompanion(
-            id: id,
-            name: name,
-            day: day,
-            icon: icon,
-          ),
-          createCompanionCallback: ({
-            Value<int> id = const Value.absent(),
-            required String name,
-            required String day,
-            required String icon,
-          }) =>
-              MuscleGroupsCompanion.insert(
-            id: id,
-            name: name,
-            day: day,
-            icon: icon,
-          ),
-        ));
-}
-
-class $$MuscleGroupsTableFilterComposer
-    extends FilterComposer<_$AppDatabase, $MuscleGroupsTable> {
-  $$MuscleGroupsTableFilterComposer(super.$state);
-  ColumnFilters<int> get id => $state.composableBuilder(
-      column: $state.table.id,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
-
-  ColumnFilters<String> get name => $state.composableBuilder(
-      column: $state.table.name,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
-
-  ColumnFilters<String> get day => $state.composableBuilder(
-      column: $state.table.day,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
-
-  ColumnFilters<String> get icon => $state.composableBuilder(
-      column: $state.table.icon,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
-
-  ComposableFilter workoutsRefs(
-      ComposableFilter Function($$WorkoutsTableFilterComposer f) f) {
-    final $$WorkoutsTableFilterComposer composer = $state.composerBuilder(
-        composer: this,
-        getCurrentColumn: (t) => t.id,
-        referencedTable: $state.db.workouts,
-        getReferencedColumn: (t) => t.muscleGroup,
-        builder: (joinBuilder, parentComposers) =>
-            $$WorkoutsTableFilterComposer(ComposerState(
-                $state.db, $state.db.workouts, joinBuilder, parentComposers)));
-    return f(composer);
+  Future<void> editMuscleGroup(MuscleGroup muscleGroup) async {
+    await _muscleGroupUpdateAdapter.update(
+        muscleGroup, OnConflictStrategy.abort);
   }
-}
-
-class $$MuscleGroupsTableOrderingComposer
-    extends OrderingComposer<_$AppDatabase, $MuscleGroupsTable> {
-  $$MuscleGroupsTableOrderingComposer(super.$state);
-  ColumnOrderings<int> get id => $state.composableBuilder(
-      column: $state.table.id,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
-
-  ColumnOrderings<String> get name => $state.composableBuilder(
-      column: $state.table.name,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
-
-  ColumnOrderings<String> get day => $state.composableBuilder(
-      column: $state.table.day,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
-
-  ColumnOrderings<String> get icon => $state.composableBuilder(
-      column: $state.table.icon,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
-}
-
-typedef $$WorkoutsTableCreateCompanionBuilder = WorkoutsCompanion Function({
-  Value<int> id,
-  required String name,
-  required int muscleGroup,
-});
-typedef $$WorkoutsTableUpdateCompanionBuilder = WorkoutsCompanion Function({
-  Value<int> id,
-  Value<String> name,
-  Value<int> muscleGroup,
-});
-
-class $$WorkoutsTableTableManager extends RootTableManager<
-    _$AppDatabase,
-    $WorkoutsTable,
-    Workout,
-    $$WorkoutsTableFilterComposer,
-    $$WorkoutsTableOrderingComposer,
-    $$WorkoutsTableCreateCompanionBuilder,
-    $$WorkoutsTableUpdateCompanionBuilder> {
-  $$WorkoutsTableTableManager(_$AppDatabase db, $WorkoutsTable table)
-      : super(TableManagerState(
-          db: db,
-          table: table,
-          filteringComposer:
-              $$WorkoutsTableFilterComposer(ComposerState(db, table)),
-          orderingComposer:
-              $$WorkoutsTableOrderingComposer(ComposerState(db, table)),
-          updateCompanionCallback: ({
-            Value<int> id = const Value.absent(),
-            Value<String> name = const Value.absent(),
-            Value<int> muscleGroup = const Value.absent(),
-          }) =>
-              WorkoutsCompanion(
-            id: id,
-            name: name,
-            muscleGroup: muscleGroup,
-          ),
-          createCompanionCallback: ({
-            Value<int> id = const Value.absent(),
-            required String name,
-            required int muscleGroup,
-          }) =>
-              WorkoutsCompanion.insert(
-            id: id,
-            name: name,
-            muscleGroup: muscleGroup,
-          ),
-        ));
-}
-
-class $$WorkoutsTableFilterComposer
-    extends FilterComposer<_$AppDatabase, $WorkoutsTable> {
-  $$WorkoutsTableFilterComposer(super.$state);
-  ColumnFilters<int> get id => $state.composableBuilder(
-      column: $state.table.id,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
-
-  ColumnFilters<String> get name => $state.composableBuilder(
-      column: $state.table.name,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
-
-  $$MuscleGroupsTableFilterComposer get muscleGroup {
-    final $$MuscleGroupsTableFilterComposer composer = $state.composerBuilder(
-        composer: this,
-        getCurrentColumn: (t) => t.muscleGroup,
-        referencedTable: $state.db.muscleGroups,
-        getReferencedColumn: (t) => t.id,
-        builder: (joinBuilder, parentComposers) =>
-            $$MuscleGroupsTableFilterComposer(ComposerState($state.db,
-                $state.db.muscleGroups, joinBuilder, parentComposers)));
-    return composer;
-  }
-
-  ComposableFilter entriesRefs(
-      ComposableFilter Function($$EntriesTableFilterComposer f) f) {
-    final $$EntriesTableFilterComposer composer = $state.composerBuilder(
-        composer: this,
-        getCurrentColumn: (t) => t.id,
-        referencedTable: $state.db.entries,
-        getReferencedColumn: (t) => t.workout,
-        builder: (joinBuilder, parentComposers) => $$EntriesTableFilterComposer(
-            ComposerState(
-                $state.db, $state.db.entries, joinBuilder, parentComposers)));
-    return f(composer);
-  }
-}
-
-class $$WorkoutsTableOrderingComposer
-    extends OrderingComposer<_$AppDatabase, $WorkoutsTable> {
-  $$WorkoutsTableOrderingComposer(super.$state);
-  ColumnOrderings<int> get id => $state.composableBuilder(
-      column: $state.table.id,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
-
-  ColumnOrderings<String> get name => $state.composableBuilder(
-      column: $state.table.name,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
-
-  $$MuscleGroupsTableOrderingComposer get muscleGroup {
-    final $$MuscleGroupsTableOrderingComposer composer = $state.composerBuilder(
-        composer: this,
-        getCurrentColumn: (t) => t.muscleGroup,
-        referencedTable: $state.db.muscleGroups,
-        getReferencedColumn: (t) => t.id,
-        builder: (joinBuilder, parentComposers) =>
-            $$MuscleGroupsTableOrderingComposer(ComposerState($state.db,
-                $state.db.muscleGroups, joinBuilder, parentComposers)));
-    return composer;
-  }
-}
-
-typedef $$EntriesTableCreateCompanionBuilder = EntriesCompanion Function({
-  Value<int> id,
-  required int workout,
-  required double weight1,
-  required int reps1,
-  Value<double?> weight2,
-  Value<int?> reps2,
-  Value<DateTime> date,
-});
-typedef $$EntriesTableUpdateCompanionBuilder = EntriesCompanion Function({
-  Value<int> id,
-  Value<int> workout,
-  Value<double> weight1,
-  Value<int> reps1,
-  Value<double?> weight2,
-  Value<int?> reps2,
-  Value<DateTime> date,
-});
-
-class $$EntriesTableTableManager extends RootTableManager<
-    _$AppDatabase,
-    $EntriesTable,
-    Entry,
-    $$EntriesTableFilterComposer,
-    $$EntriesTableOrderingComposer,
-    $$EntriesTableCreateCompanionBuilder,
-    $$EntriesTableUpdateCompanionBuilder> {
-  $$EntriesTableTableManager(_$AppDatabase db, $EntriesTable table)
-      : super(TableManagerState(
-          db: db,
-          table: table,
-          filteringComposer:
-              $$EntriesTableFilterComposer(ComposerState(db, table)),
-          orderingComposer:
-              $$EntriesTableOrderingComposer(ComposerState(db, table)),
-          updateCompanionCallback: ({
-            Value<int> id = const Value.absent(),
-            Value<int> workout = const Value.absent(),
-            Value<double> weight1 = const Value.absent(),
-            Value<int> reps1 = const Value.absent(),
-            Value<double?> weight2 = const Value.absent(),
-            Value<int?> reps2 = const Value.absent(),
-            Value<DateTime> date = const Value.absent(),
-          }) =>
-              EntriesCompanion(
-            id: id,
-            workout: workout,
-            weight1: weight1,
-            reps1: reps1,
-            weight2: weight2,
-            reps2: reps2,
-            date: date,
-          ),
-          createCompanionCallback: ({
-            Value<int> id = const Value.absent(),
-            required int workout,
-            required double weight1,
-            required int reps1,
-            Value<double?> weight2 = const Value.absent(),
-            Value<int?> reps2 = const Value.absent(),
-            Value<DateTime> date = const Value.absent(),
-          }) =>
-              EntriesCompanion.insert(
-            id: id,
-            workout: workout,
-            weight1: weight1,
-            reps1: reps1,
-            weight2: weight2,
-            reps2: reps2,
-            date: date,
-          ),
-        ));
-}
-
-class $$EntriesTableFilterComposer
-    extends FilterComposer<_$AppDatabase, $EntriesTable> {
-  $$EntriesTableFilterComposer(super.$state);
-  ColumnFilters<int> get id => $state.composableBuilder(
-      column: $state.table.id,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
-
-  ColumnFilters<double> get weight1 => $state.composableBuilder(
-      column: $state.table.weight1,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
-
-  ColumnFilters<int> get reps1 => $state.composableBuilder(
-      column: $state.table.reps1,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
-
-  ColumnFilters<double> get weight2 => $state.composableBuilder(
-      column: $state.table.weight2,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
-
-  ColumnFilters<int> get reps2 => $state.composableBuilder(
-      column: $state.table.reps2,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
-
-  ColumnFilters<DateTime> get date => $state.composableBuilder(
-      column: $state.table.date,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
-
-  $$WorkoutsTableFilterComposer get workout {
-    final $$WorkoutsTableFilterComposer composer = $state.composerBuilder(
-        composer: this,
-        getCurrentColumn: (t) => t.workout,
-        referencedTable: $state.db.workouts,
-        getReferencedColumn: (t) => t.id,
-        builder: (joinBuilder, parentComposers) =>
-            $$WorkoutsTableFilterComposer(ComposerState(
-                $state.db, $state.db.workouts, joinBuilder, parentComposers)));
-    return composer;
-  }
-}
-
-class $$EntriesTableOrderingComposer
-    extends OrderingComposer<_$AppDatabase, $EntriesTable> {
-  $$EntriesTableOrderingComposer(super.$state);
-  ColumnOrderings<int> get id => $state.composableBuilder(
-      column: $state.table.id,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
-
-  ColumnOrderings<double> get weight1 => $state.composableBuilder(
-      column: $state.table.weight1,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
-
-  ColumnOrderings<int> get reps1 => $state.composableBuilder(
-      column: $state.table.reps1,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
-
-  ColumnOrderings<double> get weight2 => $state.composableBuilder(
-      column: $state.table.weight2,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
-
-  ColumnOrderings<int> get reps2 => $state.composableBuilder(
-      column: $state.table.reps2,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
-
-  ColumnOrderings<DateTime> get date => $state.composableBuilder(
-      column: $state.table.date,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
-
-  $$WorkoutsTableOrderingComposer get workout {
-    final $$WorkoutsTableOrderingComposer composer = $state.composerBuilder(
-        composer: this,
-        getCurrentColumn: (t) => t.workout,
-        referencedTable: $state.db.workouts,
-        getReferencedColumn: (t) => t.id,
-        builder: (joinBuilder, parentComposers) =>
-            $$WorkoutsTableOrderingComposer(ComposerState(
-                $state.db, $state.db.workouts, joinBuilder, parentComposers)));
-    return composer;
-  }
-}
-
-class $AppDatabaseManager {
-  final _$AppDatabase _db;
-  $AppDatabaseManager(this._db);
-  $$MuscleGroupsTableTableManager get muscleGroups =>
-      $$MuscleGroupsTableTableManager(_db, _db.muscleGroups);
-  $$WorkoutsTableTableManager get workouts =>
-      $$WorkoutsTableTableManager(_db, _db.workouts);
-  $$EntriesTableTableManager get entries =>
-      $$EntriesTableTableManager(_db, _db.entries);
 }
