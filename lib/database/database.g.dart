@@ -189,7 +189,7 @@ class _$EntryDao extends EntryDao {
     int id,
   ) async {
     await _queryAdapter.queryNoReturn(
-        'DELETE FROM Entries WHERE id = ?2 AND workout = ?1',
+        'DELETE FROM Entries WHERE id = ?2 AND workoutId = ?1',
         arguments: [workoutId, id]);
   }
 
@@ -208,8 +208,8 @@ class _$EntryDao extends EntryDao {
   }
 
   @override
-  Future<List<Entry>> getEntriesByWorkoutId(int workout) async {
-    return _queryAdapter.queryList('SELECT * FROM Entries WHERE workout = ?1',
+  Future<List<Entry>> getEntriesByWorkoutId(int workoutId) async {
+    return _queryAdapter.queryList('SELECT * FROM Entries WHERE workoutId = ?1',
         mapper: (Map<String, Object?> row) => Entry(
             row['id'] as int?,
             row['workoutId'] as int?,
@@ -218,12 +218,13 @@ class _$EntryDao extends EntryDao {
             row['weight2'] as double?,
             row['reps2'] as int?,
             row['date'] as int?),
-        arguments: [workout]);
+        arguments: [workoutId]);
   }
 
   @override
-  Future<void> createEntry(Entry entry) async {
-    await _entryInsertionAdapter.insert(entry, OnConflictStrategy.abort);
+  Future<int> createEntry(Entry entry) {
+    return _entryInsertionAdapter.insertAndReturnId(
+        entry, OnConflictStrategy.abort);
   }
 
   @override
@@ -290,7 +291,7 @@ class _$WorkoutDao extends WorkoutDao {
   @override
   Future<List<Workout>> getWorkoutsByMuscleGroup(int muscleGroupId) async {
     return _queryAdapter.queryList(
-        'SELECT * FROM Workouts WHERE muscleGroup = ?1',
+        'SELECT * FROM Workouts WHERE muscleGroupId = ?1',
         mapper: (Map<String, Object?> row) => Workout(row['id'] as int?,
             row['name'] as String?, row['muscleGroupId'] as int?),
         arguments: [muscleGroupId]);
@@ -304,8 +305,9 @@ class _$WorkoutDao extends WorkoutDao {
   }
 
   @override
-  Future<void> createWorkout(Workout workout) async {
-    await _workoutInsertionAdapter.insert(workout, OnConflictStrategy.abort);
+  Future<int> createWorkout(Workout workout) {
+    return _workoutInsertionAdapter.insertAndReturnId(
+        workout, OnConflictStrategy.abort);
   }
 
   @override
@@ -403,8 +405,8 @@ class _$MuscleGroupDao extends MuscleGroupDao {
   }
 
   @override
-  Future<void> createMuscleGroup(MuscleGroup muscleGroup) async {
-    await _muscleGroupInsertionAdapter.insert(
+  Future<int> createMuscleGroup(MuscleGroup muscleGroup) {
+    return _muscleGroupInsertionAdapter.insertAndReturnId(
         muscleGroup, OnConflictStrategy.abort);
   }
 

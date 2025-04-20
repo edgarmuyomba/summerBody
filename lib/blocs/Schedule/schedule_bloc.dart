@@ -148,10 +148,10 @@ class ScheduleBloc extends Bloc<ScheduleEvent, ScheduleState> {
 
     if (state is ScheduleReady) {
       try {
-        await _localDatabaseService.createWorkout(
+        int workoutId = await _localDatabaseService.createWorkout(
             state.musclegroup!.id!, event.workoutName);
         await _localDatabaseService.createEntry(
-            state.musclegroup!.id!, event.weight1, event.reps1, event.weight2, event.reps2);
+            workoutId, event.weight1, event.reps1, event.weight2, event.reps2);
 
         Map<String, dynamic> muscleGroupAndWorkouts =
             await _getMuscleGroupAndWorkouts(state.currentDay);

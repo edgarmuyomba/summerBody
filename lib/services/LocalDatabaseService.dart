@@ -40,8 +40,8 @@ class LocalDatabaseService {
     await _appDatabase.muscleGroupDao.updateMuscleGroupDay(id, day);
   }
 
-  Future<void> createWorkout(int muscleGroupId, String workoutName) async {
-    await _appDatabase.workoutDao
+  Future<int> createWorkout(int muscleGroupId, String workoutName) async {
+    return await _appDatabase.workoutDao
         .createWorkout(Workout(null, workoutName, muscleGroupId));
   }
 
@@ -56,10 +56,10 @@ class LocalDatabaseService {
     }
   }
 
-  Future<void> createEntry(int workoutId, double weight1, int reps1,
+  Future<int> createEntry(int workoutId, double weight1, int reps1,
       double? weight2, int? reps2) async {
     int currentTime = DateTimeConverter.encode(DateTime.now());
-    await _appDatabase.entryDao.createEntry(
+    return await _appDatabase.entryDao.createEntry(
         Entry(null, workoutId, weight1, reps1, weight2, reps2, currentTime));
   }
 
@@ -96,24 +96,5 @@ class LocalDatabaseService {
 
   Future<void> deleteEntry(int workoutId, int entryId) async {
     await _appDatabase.entryDao.deleteEntryById(workoutId, entryId);
-  }
-
-  Future<void> seedMuscleGroups() async {
-    try {
-      await Future.wait([
-        _appDatabase.muscleGroupDao.createMuscleGroup(
-            MuscleGroup(1, "Chest", "", "assets/icons/chest.png")),
-        _appDatabase.muscleGroupDao.createMuscleGroup(
-            MuscleGroup(2, "Arms", "", "assets/icons/arms.png")),
-        _appDatabase.muscleGroupDao.createMuscleGroup(
-            MuscleGroup(3, "Shoulders", "", "assets/icons/shoulders.png")),
-        _appDatabase.muscleGroupDao.createMuscleGroup(
-            MuscleGroup(4, "Back", "", "assets/icons/back.png")),
-        _appDatabase.muscleGroupDao.createMuscleGroup(
-            MuscleGroup(5, "Legs", "", "assets/icons/legs.png")),
-      ]);
-    } catch (e) {
-      rethrow;
-    }
   }
 }

@@ -4,7 +4,7 @@ import 'package:summerbody/database/tables/Workout.dart';
 @dao
 abstract class WorkoutDao {
   @insert
-  Future<void> createWorkout(Workout workout);
+  Future<int> createWorkout(Workout workout);
 
   @update
   Future<void> editWorkout(Workout workout);
@@ -18,7 +18,7 @@ abstract class WorkoutDao {
   @Query('SELECT * FROM Workouts WHERE name = :name')
   Future<List<Workout>> getWorkoutsByName(String name);
     
-  @Query('SELECT * FROM Workouts WHERE muscleGroup = :muscleGroupId')
+  @Query('SELECT * FROM Workouts WHERE muscleGroupId = :muscleGroupId')
   Future<List<Workout>> getWorkoutsByMuscleGroup(int muscleGroupId);
   
   @Query('SELECT * FROM Workouts')

@@ -22,5 +22,5 @@ abstract class MuscleGroupDao {
   Future<void> updateMuscleGroupDay(int id, String day);
 
   @insert
-  Future<void> createMuscleGroup(MuscleGroup muscleGroup);
+  Future<int> createMuscleGroup(MuscleGroup muscleGroup);
 }
