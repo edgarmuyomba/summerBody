@@ -1,7 +1,6 @@
 import 'package:floor/floor.dart';
 import 'package:summerbody/database/tables/Entry.dart';
 
-
 @dao
 abstract class EntryDao {
   @insert
@@ -22,4 +21,3 @@ abstract class EntryDao {
   @Query('SELECT * FROM Entries WHERE workoutId = :workoutId')
   Future<List<Entry>> getEntriesByWorkoutId(int workoutId);
 }
- 

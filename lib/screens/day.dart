@@ -7,6 +7,7 @@ import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:summerbody/blocs/Schedule/schedule_bloc.dart';
 import 'package:summerbody/database/tables/MuscleGroup.dart';
+import 'package:summerbody/database/typeConverters/datetimeConverter.dart';
 import 'package:summerbody/routing/routes.dart';
 import 'package:summerbody/services/DIService.dart';
 import 'package:summerbody/services/LocalDatabaseService.dart';
@@ -146,7 +147,8 @@ class _DayState extends State<Day> {
                               onPressed: () {
                                 context.pushNamed(Routes.workouts,
                                     pathParameters: {
-                                      "muscleGroupName": state.musclegroup!.name!
+                                      "muscleGroupName":
+                                          state.musclegroup!.name!
                                     });
                               },
                               icon: const Icon(
@@ -183,7 +185,8 @@ class _DayState extends State<Day> {
                               onPressed: () {
                                 context.pushNamed(Routes.workouts,
                                     pathParameters: {
-                                      "muscleGroupName": state.musclegroup!.name!
+                                      "muscleGroupName":
+                                          state.musclegroup!.name!
                                     });
                               },
                               child: Text(
@@ -209,7 +212,8 @@ class _DayState extends State<Day> {
                               "reps1": entry.reps1,
                               "weight2": entry.weight2,
                               "reps2": entry.reps2,
-                              "date": entry.date.toString()
+                              "date": DateTimeConverter.decode(entry.date!)
+                                  .toString()
                             };
                           }).toList()
                         };

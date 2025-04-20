@@ -76,11 +76,12 @@ class _WorkoutState extends State<Workout> {
                   state.entries[0].weight2?.toString();
               form.control('reps2').value = state.entries[0].reps2?.toString();
 
+              firstEntryValid = true;
+
               if (form.control('weight2').value != null &&
                   form.control('weight2').value != "" &&
                   form.control('reps2').value != null &&
                   form.control('reps2').value != "") {
-                firstEntryValid = true;
                 secondEntryEnabled = true;
               }
             });
@@ -399,8 +400,9 @@ class _WorkoutState extends State<Workout> {
                     int index = entryMap.key;
                     Entry entry = entryMap.value;
 
-                    bool first = index == 0;
-                    bool last = index == state.entries.length - 1;
+                    bool isFirst = index == 0;
+
+                    int lastIndex = state.entries.length - 1;
 
                     String entryString =
                         "${entry.weight1}Kg/${entry.reps1} reps";
@@ -413,7 +415,7 @@ class _WorkoutState extends State<Workout> {
                       child: Container(
                         width: double.infinity,
                         decoration: BoxDecoration(
-                            color: first ? Colors.green[50] : Colors.red[50],
+                            color: isFirst ? Colors.green[50] : Colors.red[50],
                             borderRadius: BorderRadius.circular(5)),
                         child: Padding(
                           padding: EdgeInsets.all(8.0.h),
@@ -428,42 +430,39 @@ class _WorkoutState extends State<Workout> {
                                       entryString,
                                       style: GoogleFonts.monda(
                                           fontSize: 20.sp,
-                                          color: first
+                                          color: isFirst
                                               ? Colors.green[900]
                                               : Colors.red[900]),
                                     ),
                                     Text(
-                                      Utilities.dateToString(DateTimeConverter.decode(entry.date!)),
+                                      Utilities.dateToString(
+                                          DateTimeConverter.decode(
+                                              entry.date!)),
                                       style: TextStyle(
                                           fontSize: 13.sp,
-                                          color: first
+                                          color: isFirst
                                               ? Colors.green[900]
                                               : Colors.red[900]),
                                     )
                                   ],
                                 ),
-                                GestureDetector(
-                                  onTap: first == last
-                                      ? () {
-                                          Utilities.showSnackBar(
-                                              "Cannot delete the last entry",
-                                              context,
-                                              Colors.red);
-                                        }
-                                      : () {
-                                          context.read<ScheduleBloc>().add(
-                                              DeleteEntry(
-                                                  workoutId: widget.workoutId,
-                                                  entryId: entry.id!,
-                                                  context: context));
-                                        },
-                                  child: Icon(
-                                    Icons.delete_outline,
-                                    color: first
-                                        ? Colors.green[900]
-                                        : Colors.red[900],
-                                  ),
-                                )
+                                if (lastIndex != 0) ...[
+                                  GestureDetector(
+                                    onTap: () {
+                                      context.read<ScheduleBloc>().add(
+                                          DeleteEntry(
+                                              workoutId: widget.workoutId,
+                                              entryId: entry.id!,
+                                              context: context));
+                                    },
+                                    child: Icon(
+                                      Icons.delete_outline,
+                                      color: isFirst
+                                          ? Colors.green[900]
+                                          : Colors.red[900],
+                                    ),
+                                  )
+                                ]
                               ],
                             ),
                           ),

@@ -51,6 +51,7 @@ class ScheduleBloc extends Bloc<ScheduleEvent, ScheduleState> {
       for (var workout in workouts) {
         List<Entry> workoutEntries =
             await _localDatabaseService.getAllEntries(workout.id!);
+        workoutEntries.sort((a, b) => b.date!.compareTo(a.date!));
         entries[workout.id!] = workoutEntries;
       }
 
@@ -195,14 +196,15 @@ class ScheduleBloc extends Bloc<ScheduleEvent, ScheduleState> {
       try {
         await _localDatabaseService.editWorkout(
             event.workoutId, event.workoutName);
-        await _localDatabaseService.editEntry(event.entryId,
-            event.weight1, event.reps1, event.weight2, event.reps2);
+        await _localDatabaseService.editEntry(event.entryId, event.weight1,
+            event.reps1, event.weight2, event.reps2);
 
         Workout? workout =
             await _localDatabaseService.getWorkoutByKey("id", event.workoutId);
 
-        List<Entry> entries =
-            await _localDatabaseService.getAllEntries(event.workoutId);
+        List<Entry> entries = (await _localDatabaseService
+            .getAllEntries(event.workoutId))
+          ..sort((a, b) => b.date!.compareTo(a.date!));
 
         Utilities.showSnackBar(
             "Successfully updated the workout", event.context, Colors.green);
@@ -227,7 +229,8 @@ class ScheduleBloc extends Bloc<ScheduleEvent, ScheduleState> {
             event.reps1, event.weight2, event.reps2);
 
         List<Entry> entries =
-            await _localDatabaseService.getAllEntries(event.workoutId);
+            ((await _localDatabaseService.getAllEntries(event.workoutId))
+              ..sort((a, b) => b.date!.compareTo(a.date!)));
 
         Utilities.showSnackBar(
             "Successfully created the entry", event.context, Colors.green);
@@ -249,8 +252,9 @@ class ScheduleBloc extends Bloc<ScheduleEvent, ScheduleState> {
       try {
         await _localDatabaseService.deleteEntry(event.workoutId, event.entryId);
 
-        List<Entry> entries =
-            await _localDatabaseService.getAllEntries(event.workoutId);
+        List<Entry> entries = (await _localDatabaseService
+            .getAllEntries(event.workoutId))
+          ..sort((a, b) => b.date!.compareTo(a.date!));
 
         Utilities.showSnackBar(
             "Successfully deleted the entry", event.context, Colors.green);

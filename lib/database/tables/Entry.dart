@@ -49,8 +49,8 @@ class Entry {
       workout ?? this.workout,
       weight1 ?? this.weight1,
       reps1 ?? this.reps1,
-      weight2 ?? this.weight2,
-      reps2 ?? this.reps2,
+      weight2,
+      reps2,
       date ?? this.date,
     );
   }
