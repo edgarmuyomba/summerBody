@@ -1,6 +1,5 @@
 import 'package:floor/floor.dart';
 import 'package:summerbody/database/database.dart';
-import 'package:summerbody/database/tables/MuscleGroup.dart';
 import 'package:summerbody/services/LocalDatabaseService.dart';
 import 'package:summerbody/services/SharedPreferencesService.dart';
 import 'package:get_it/get_it.dart';
