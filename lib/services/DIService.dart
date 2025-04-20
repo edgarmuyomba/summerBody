@@ -14,11 +14,14 @@ class DIService {
 
   GetIt locator = GetIt.instance;
 
-  void setupLocator() {
+  void setupLocator() async {
+
+    final database = await $FloorAppDatabase.databaseBuilder('summerbody.db').build();
+
     locator.registerSingleton<SharedPreferencesService>(
         SharedPreferencesService());
 
-    locator.registerSingleton<AppDatabase>(AppDatabase());
+    locator.registerSingleton<AppDatabase>(database);
 
     locator.registerSingleton<LocalDatabaseService>(
         LocalDatabaseService(appDatabase: locator<AppDatabase>()));

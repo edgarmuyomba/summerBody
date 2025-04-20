@@ -34,4 +34,24 @@ class Entry {
     this.reps2,
     this.date,
   );
+
+  Entry copyWith({
+    int? id,
+    int? workout,
+    double? weight1,
+    int? reps1,
+    double? weight2,
+    int? reps2,
+    int? date,
+  }) {
+    return Entry(
+      id ?? this.id,
+      workout ?? this.workout,
+      weight1 ?? this.weight1,
+      reps1 ?? this.reps1,
+      weight2 ?? this.weight2,
+      reps2 ?? this.reps2,
+      date ?? this.date,
+    );
+  }
 }

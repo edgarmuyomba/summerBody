@@ -9,8 +9,8 @@ abstract class WorkoutDao {
   @update
   Future<void> editWorkout(Workout workout);
 
-  @delete
-  Future<void> deleteWorkout(Workout workout);
+  @Query('DELETE FROM Workouts WHERE id = :id')
+  Future<void> deleteWorkoutById(int id);
   
   @Query('SELECT * FROM Workouts WHERE id = :id')
   Future<Workout?> getWorkoutById(int id);

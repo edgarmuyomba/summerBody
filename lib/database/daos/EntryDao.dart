@@ -13,6 +13,12 @@ abstract class EntryDao {
   @Query('SELECT * FROM Entries')
   Future<List<Entry>> getAllEntries();
 
-  @delete
-  Future<void> deleteEntry(Entry entry);
+  @Query('DELETE FROM Entries WHERE id = :id AND workout = :workoutId')
+  Future<void> deleteEntryById(int workoutId, int id);
+
+  @Query('SELECT * FROM Entries WHERE id = :id')
+  Future<Entry?> getEntryById(int id);
+
+  @Query('SELECT * FROM Entries WHERE workout = :workout')
+  Future<List<Entry>> getEntriesByWorkoutId(int workout);
 }

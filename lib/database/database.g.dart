@@ -158,19 +158,6 @@ class _$EntryDao extends EntryDao {
                   'weight2': item.weight2,
                   'reps2': item.reps2,
                   'date': item.date
-                }),
-        _entryDeletionAdapter = DeletionAdapter(
-            database,
-            'Entries',
-            ['id'],
-            (Entry item) => <String, Object?>{
-                  'id': item.id,
-                  'workoutId': item.workout,
-                  'weight1': item.weight1,
-                  'reps1': item.reps1,
-                  'weight2': item.weight2,
-                  'reps2': item.reps2,
-                  'date': item.date
                 });
 
   final sqflite.DatabaseExecutor database;
@@ -182,8 +169,6 @@ class _$EntryDao extends EntryDao {
   final InsertionAdapter<Entry> _entryInsertionAdapter;
 
   final UpdateAdapter<Entry> _entryUpdateAdapter;
-
-  final DeletionAdapter<Entry> _entryDeletionAdapter;
 
   @override
   Future<List<Entry>> getAllEntries() async {
@@ -199,6 +184,44 @@ class _$EntryDao extends EntryDao {
   }
 
   @override
+  Future<void> deleteEntryById(
+    int workoutId,
+    int id,
+  ) async {
+    await _queryAdapter.queryNoReturn(
+        'DELETE FROM Entries WHERE id = ?2 AND workout = ?1',
+        arguments: [workoutId, id]);
+  }
+
+  @override
+  Future<Entry?> getEntryById(int id) async {
+    return _queryAdapter.query('SELECT * FROM Entries WHERE id = ?1',
+        mapper: (Map<String, Object?> row) => Entry(
+            row['id'] as int?,
+            row['workoutId'] as int?,
+            row['weight1'] as double?,
+            row['reps1'] as int?,
+            row['weight2'] as double?,
+            row['reps2'] as int?,
+            row['date'] as int?),
+        arguments: [id]);
+  }
+
+  @override
+  Future<List<Entry>> getEntriesByWorkoutId(int workout) async {
+    return _queryAdapter.queryList('SELECT * FROM Entries WHERE workout = ?1',
+        mapper: (Map<String, Object?> row) => Entry(
+            row['id'] as int?,
+            row['workoutId'] as int?,
+            row['weight1'] as double?,
+            row['reps1'] as int?,
+            row['weight2'] as double?,
+            row['reps2'] as int?,
+            row['date'] as int?),
+        arguments: [workout]);
+  }
+
+  @override
   Future<void> createEntry(Entry entry) async {
     await _entryInsertionAdapter.insert(entry, OnConflictStrategy.abort);
   }
@@ -206,11 +229,6 @@ class _$EntryDao extends EntryDao {
   @override
   Future<void> editEntry(Entry entry) async {
     await _entryUpdateAdapter.update(entry, OnConflictStrategy.abort);
-  }
-
-  @override
-  Future<void> deleteEntry(Entry entry) async {
-    await _entryDeletionAdapter.delete(entry);
   }
 }
 
@@ -235,15 +253,6 @@ class _$WorkoutDao extends WorkoutDao {
                   'id': item.id,
                   'name': item.name,
                   'muscleGroupId': item.muscleGroup
-                }),
-        _workoutDeletionAdapter = DeletionAdapter(
-            database,
-            'Workouts',
-            ['id'],
-            (Workout item) => <String, Object?>{
-                  'id': item.id,
-                  'name': item.name,
-                  'muscleGroupId': item.muscleGroup
                 });
 
   final sqflite.DatabaseExecutor database;
@@ -256,7 +265,11 @@ class _$WorkoutDao extends WorkoutDao {
 
   final UpdateAdapter<Workout> _workoutUpdateAdapter;
 
-  final DeletionAdapter<Workout> _workoutDeletionAdapter;
+  @override
+  Future<void> deleteWorkoutById(int id) async {
+    await _queryAdapter
+        .queryNoReturn('DELETE FROM Workouts WHERE id = ?1', arguments: [id]);
+  }
 
   @override
   Future<Workout?> getWorkoutById(int id) async {
@@ -298,11 +311,6 @@ class _$WorkoutDao extends WorkoutDao {
   @override
   Future<void> editWorkout(Workout workout) async {
     await _workoutUpdateAdapter.update(workout, OnConflictStrategy.abort);
-  }
-
-  @override
-  Future<void> deleteWorkout(Workout workout) async {
-    await _workoutDeletionAdapter.delete(workout);
   }
 }
 
@@ -382,6 +390,16 @@ class _$MuscleGroupDao extends MuscleGroupDao {
             row['day'] as String?,
             row['icon'] as String?),
         arguments: [day]);
+  }
+
+  @override
+  Future<void> updateMuscleGroupDay(
+    int id,
+    String day,
+  ) async {
+    await _queryAdapter.queryNoReturn(
+        'UPDATE MuscleGroups SET day = ?2 WHERE id = ?1',
+        arguments: [id, day]);
   }
 
   @override

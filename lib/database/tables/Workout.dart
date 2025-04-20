@@ -25,4 +25,12 @@ class Workout {
     this.name,
     this.muscleGroup,
   );
+
+  Workout copyWith({int? id, String? name, int? muscleGroup}) {
+    return Workout(
+      id ?? this.id,
+      name ?? this.name,
+      muscleGroup ?? this.muscleGroup,
+    );
+  }
 }

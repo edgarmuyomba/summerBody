@@ -1,5 +1,8 @@
-import 'package:drift/drift.dart';
 import 'package:summerbody/database/database.dart';
+import 'package:summerbody/database/tables/Entry.dart';
+import 'package:summerbody/database/tables/MuscleGroup.dart';
+import 'package:summerbody/database/tables/Workout.dart';
+import 'package:summerbody/database/typeConverters/datetimeConverter.dart';
 import 'package:summerbody/services/DIService.dart';
 
 class LocalDatabaseService {
@@ -9,121 +12,106 @@ class LocalDatabaseService {
       : _appDatabase = appDatabase ?? DIService().locator.get<AppDatabase>();
 
   Future<List<MuscleGroup>> getAllMuscleGroups() async {
-    return await _appDatabase.managers.muscleGroups.get();
+    return await _appDatabase.muscleGroupDao.getAllMuscleGroups();
   }
 
   Future<MuscleGroup?> getMuscleGroupByKey(String key, dynamic value) async {
-    return await _appDatabase.managers.muscleGroups.filter((mg) {
-      switch (key) {
-        case "day":
-          return mg.day.equals(value as String);
-        case "name":
-          return mg.name.equals(value as String);
-        default:
-          return mg.id.equals(value as int);
-      }
-    }).getSingleOrNull();
+    switch (key) {
+      case "day":
+        return (await _appDatabase.muscleGroupDao
+                .getMuscleGroupsByDay(value as String))
+            .firstOrNull;
+      case "name":
+        return (await _appDatabase.muscleGroupDao
+                .getMuscleGroupsByName(value as String))
+            .firstOrNull;
+      default:
+        return await _appDatabase.muscleGroupDao
+            .getMuscleGroupById(value as int);
+    }
   }
 
-  Future<List<Workout>> getWorkoutsByMuscleGroup(int id) async {
-    return await _appDatabase.managers.workouts
-        .filter((w) => w.muscleGroup.id(id))
-        .get();
+  Future<List<Workout>> getWorkoutsByMuscleGroup(int muscleGroupId) async {
+    return await _appDatabase.workoutDao
+        .getWorkoutsByMuscleGroup(muscleGroupId);
   }
 
   Future<void> addDayToMuscleGroup(int id, String day) async {
-    await _appDatabase.managers.muscleGroups
-        .filter((mg) => mg.id.equals(id))
-        .update((mg) => mg(day: Value(day)));
+    await _appDatabase.muscleGroupDao.updateMuscleGroupDay(id, day);
   }
 
-  Future<int> createWorkout(int muscleGroupId, String workoutName) async {
-    return await _appDatabase.managers.workouts
-        .create((o) => o(muscleGroup: muscleGroupId, name: workoutName));
+  Future<void> createWorkout(int muscleGroupId, String workoutName) async {
+    await _appDatabase.workoutDao
+        .createWorkout(Workout(null, workoutName, muscleGroupId));
   }
 
   Future<Workout?> getWorkoutByKey(String key, dynamic value) async {
-    return await _appDatabase.managers.workouts.filter((w) {
-      switch (key) {
-        case "name":
-          return w.name.equals(value as String);
-        default:
-          return w.id.equals(value as int);
-      }
-    }).getSingleOrNull();
+    switch (key) {
+      case "name":
+        return (await _appDatabase.workoutDao
+                .getWorkoutsByName(value as String))
+            .firstOrNull;
+      default:
+        return await _appDatabase.workoutDao.getWorkoutById(value as int);
+    }
   }
 
-  Future<int> createEntry(int workoutId, double weight1, int reps1,
+  Future<void> createEntry(int workoutId, double weight1, int reps1,
       double? weight2, int? reps2) async {
-    return await _appDatabase.managers.entries.create((o) => o(
-        workout: workoutId,
+    int currentTime = DateTimeConverter.encode(DateTime.now());
+    await _appDatabase.entryDao.createEntry(
+        Entry(null, workoutId, weight1, reps1, weight2, reps2, currentTime));
+  }
+
+  Future<void> editEntry(int entryId, double weight1, int reps1,
+      double? weight2, int? reps2) async {
+    final originalEntry = await _appDatabase.entryDao.getEntryById(entryId);
+    if (originalEntry != null) {
+      final updatedEntry = originalEntry.copyWith(
         weight1: weight1,
         reps1: reps1,
-        weight2: Value(weight2),
-        reps2: Value(reps2)));
-  }
-
-  Future<int> editEntry(int workoutId, int entryId, double weight1, int reps1,
-      double? weight2, int? reps2) async {
-    return await _appDatabase.managers.entries
-        .filter((e) => e.workout.id.equals(workoutId))
-        .filter((e) => e.id.equals(entryId))
-        .update((o) {
-      return o(
-        weight1: Value(weight1),
-        reps1: Value(reps1),
-        weight2: Value(weight2),
-        reps2: Value(reps2),
+        weight2: weight2,
+        reps2: reps2,
       );
-    });
+      await _appDatabase.entryDao.editEntry(updatedEntry);
+    }
   }
 
   Future<List<Entry>> getAllEntries(int workoutId) async {
-    return await _appDatabase.managers.entries
-        .filter((e) => e.workout.id.equals(workoutId))
-        .orderBy((o) => o.date.desc())
-        .get();
+    return await _appDatabase.entryDao.getEntriesByWorkoutId(workoutId);
   }
 
   Future<void> deleteWorkout(int workoutId) async {
-    await _appDatabase.managers.entries
-        .filter((e) => e.workout.id.equals(workoutId))
-        .delete();
-    await _appDatabase.managers.workouts
-        .filter((w) => w.id.equals(workoutId))
-        .delete();
+    await _appDatabase.workoutDao.deleteWorkoutById(workoutId);
   }
 
-  Future<int> editWorkout(int workoutId, String name) async {
-    return await _appDatabase.managers.workouts
-        .filter((w) => w.id.equals(workoutId))
-        .update((w) => w(name: Value(name)));
+  Future<void> editWorkout(int workoutId, String name) async {
+    final originalWorkout =
+        await _appDatabase.workoutDao.getWorkoutById(workoutId);
+    if (originalWorkout != null) {
+      final updatedWorkout = originalWorkout.copyWith(name: name);
+      await _appDatabase.workoutDao.editWorkout(updatedWorkout);
+    }
   }
 
-  Future<int> deleteEntry(int workoutId, int entryId) async {
-    return await _appDatabase.managers.entries
-        .filter((e) => e.workout.id.equals(workoutId))
-        .filter((e) => e.id.equals(entryId))
-        .delete();
+  Future<void> deleteEntry(int workoutId, int entryId) async {
+    await _appDatabase.entryDao.deleteEntryById(workoutId, entryId);
   }
 
   Future<void> seedMuscleGroups() async {
     try {
-      await _appDatabase.managers.muscleGroups.bulkCreate((o) => [
-            const MuscleGroup(
-                id: 1, name: "Chest", day: "", icon: "assets/icons/chest.png"),
-            const MuscleGroup(
-                id: 2, name: "Arms", day: "", icon: "assets/icons/arms.png"),
-            const MuscleGroup(
-                id: 3,
-                name: "Shoulders",
-                day: "",
-                icon: "assets/icons/shoulders.png"),
-            const MuscleGroup(
-                id: 4, name: "Back", day: "", icon: "assets/icons/back.png"),
-            const MuscleGroup(
-                id: 5, name: "Legs", day: "", icon: "assets/icons/legs.png")
-          ]);
+      await Future.wait([
+        _appDatabase.muscleGroupDao.createMuscleGroup(
+            MuscleGroup(1, "Chest", "", "assets/icons/chest.png")),
+        _appDatabase.muscleGroupDao.createMuscleGroup(
+            MuscleGroup(2, "Arms", "", "assets/icons/arms.png")),
+        _appDatabase.muscleGroupDao.createMuscleGroup(
+            MuscleGroup(3, "Shoulders", "", "assets/icons/shoulders.png")),
+        _appDatabase.muscleGroupDao.createMuscleGroup(
+            MuscleGroup(4, "Back", "", "assets/icons/back.png")),
+        _appDatabase.muscleGroupDao.createMuscleGroup(
+            MuscleGroup(5, "Legs", "", "assets/icons/legs.png")),
+      ]);
     } catch (e) {
       rethrow;
     }
