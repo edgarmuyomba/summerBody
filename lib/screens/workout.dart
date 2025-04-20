@@ -7,7 +7,8 @@ import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 import 'package:summerbody/blocs/Schedule/schedule_bloc.dart';
-import 'package:summerbody/database/database.dart';
+import 'package:summerbody/database/tables/Entry.dart';
+import 'package:summerbody/database/typeConverters/datetimeConverter.dart';
 import 'package:summerbody/utils/utilities.dart';
 
 class Workout extends StatefulWidget {
@@ -65,7 +66,7 @@ class _WorkoutState extends State<Workout> {
             setState(() {
               loading = false;
 
-              workoutName = state.workout.name;
+              workoutName = state.workout.name!;
 
               form.control('name').value = state.workout.name;
               form.control('weight1').value =
@@ -309,7 +310,7 @@ class _WorkoutState extends State<Workout> {
                               Expanded(
                                 child: ElevatedButton(
                                   onPressed: () =>
-                                      addEntryDialog(state.workout.id),
+                                      addEntryDialog(state.workout.id!),
                                   style: ElevatedButton.styleFrom(
                                       backgroundColor: Colors.white,
                                       foregroundColor: Colors.black87,
@@ -343,7 +344,7 @@ class _WorkoutState extends State<Workout> {
                                             workoutId: widget.workoutId,
                                             workoutName:
                                                 form.control("name").value,
-                                            entryId: state.entries[0].id,
+                                            entryId: state.entries[0].id!,
                                             weight1: double.parse(
                                                 form.control("weight1").value),
                                             reps1: int.parse(
@@ -432,7 +433,7 @@ class _WorkoutState extends State<Workout> {
                                               : Colors.red[900]),
                                     ),
                                     Text(
-                                      Utilities.dateToString(entry.date),
+                                      Utilities.dateToString(DateTimeConverter.decode(entry.date!)),
                                       style: TextStyle(
                                           fontSize: 13.sp,
                                           color: first
@@ -453,7 +454,7 @@ class _WorkoutState extends State<Workout> {
                                           context.read<ScheduleBloc>().add(
                                               DeleteEntry(
                                                   workoutId: widget.workoutId,
-                                                  entryId: entry.id,
+                                                  entryId: entry.id!,
                                                   context: context));
                                         },
                                   child: Icon(

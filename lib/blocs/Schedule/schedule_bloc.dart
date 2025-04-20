@@ -1,7 +1,9 @@
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
-import 'package:summerbody/database/database.dart';
+import 'package:summerbody/database/tables/Entry.dart';
+import 'package:summerbody/database/tables/MuscleGroup.dart';
+import 'package:summerbody/database/tables/Workout.dart';
 import 'package:summerbody/services/DIService.dart';
 import 'package:summerbody/services/LocalDatabaseService.dart';
 import 'package:logger/logger.dart';
@@ -42,14 +44,14 @@ class ScheduleBloc extends Bloc<ScheduleEvent, ScheduleState> {
       };
     } else {
       List<Workout> workouts =
-          await _localDatabaseService.getWorkoutsByMuscleGroup(muscleGroup.id);
+          await _localDatabaseService.getWorkoutsByMuscleGroup(muscleGroup.id!);
 
       Map<int, List<Entry>> entries = {};
 
       for (var workout in workouts) {
         List<Entry> workoutEntries =
-            await _localDatabaseService.getAllEntries(workout.id);
-        entries[workout.id] = workoutEntries;
+            await _localDatabaseService.getAllEntries(workout.id!);
+        entries[workout.id!] = workoutEntries;
       }
 
       return {
@@ -109,7 +111,7 @@ class ScheduleBloc extends Bloc<ScheduleEvent, ScheduleState> {
 
         if (muscleGroup != null) {
           await _localDatabaseService.addDayToMuscleGroup(
-              muscleGroup.id, event.day);
+              muscleGroup.id!, event.day);
 
           Map<String, dynamic> muscleGroupAndWorkouts =
               await _getMuscleGroupAndWorkouts(event.day);
@@ -146,10 +148,10 @@ class ScheduleBloc extends Bloc<ScheduleEvent, ScheduleState> {
 
     if (state is ScheduleReady) {
       try {
-        int workoutId = await _localDatabaseService.createWorkout(
-            state.musclegroup!.id, event.workoutName);
+        await _localDatabaseService.createWorkout(
+            state.musclegroup!.id!, event.workoutName);
         await _localDatabaseService.createEntry(
-            workoutId, event.weight1, event.reps1, event.weight2, event.reps2);
+            state.musclegroup!.id!, event.weight1, event.reps1, event.weight2, event.reps2);
 
         Map<String, dynamic> muscleGroupAndWorkouts =
             await _getMuscleGroupAndWorkouts(state.currentDay);
@@ -193,7 +195,7 @@ class ScheduleBloc extends Bloc<ScheduleEvent, ScheduleState> {
       try {
         await _localDatabaseService.editWorkout(
             event.workoutId, event.workoutName);
-        await _localDatabaseService.editEntry(event.workoutId, event.entryId,
+        await _localDatabaseService.editEntry(event.entryId,
             event.weight1, event.reps1, event.weight2, event.reps2);
 
         Workout? workout =

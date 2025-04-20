@@ -6,7 +6,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:summerbody/blocs/Schedule/schedule_bloc.dart';
-import 'package:summerbody/database/database.dart';
+import 'package:summerbody/database/tables/MuscleGroup.dart';
 import 'package:summerbody/routing/routes.dart';
 import 'package:summerbody/services/DIService.dart';
 import 'package:summerbody/services/LocalDatabaseService.dart';
@@ -124,7 +124,7 @@ class _DayState extends State<Day> {
                       child: Image(
                           height: 300.h,
                           image: AssetImage(
-                            state.musclegroup!.icon,
+                            state.musclegroup!.icon!,
                           )),
                     ),
                     Padding(
@@ -146,7 +146,7 @@ class _DayState extends State<Day> {
                               onPressed: () {
                                 context.pushNamed(Routes.workouts,
                                     pathParameters: {
-                                      "muscleGroupName": state.musclegroup!.name
+                                      "muscleGroupName": state.musclegroup!.name!
                                     });
                               },
                               icon: const Icon(
@@ -170,7 +170,7 @@ class _DayState extends State<Day> {
                                 children: [
                                   TextSpan(
                                     text:
-                                        "${state.musclegroup!.name.toLowerCase()}.",
+                                        "${state.musclegroup!.name!.toLowerCase()}.",
                                     style: TextStyle(
                                         fontWeight: FontWeight.bold,
                                         fontSize: 12.sp,
@@ -183,7 +183,7 @@ class _DayState extends State<Day> {
                               onPressed: () {
                                 context.pushNamed(Routes.workouts,
                                     pathParameters: {
-                                      "muscleGroupName": state.musclegroup!.name
+                                      "muscleGroupName": state.musclegroup!.name!
                                     });
                               },
                               child: Text(
@@ -358,7 +358,7 @@ class _DayState extends State<Day> {
                                       child: Padding(
                                         padding: EdgeInsets.all(24.0.h),
                                         child: Image.asset(
-                                          muscleGroup.icon,
+                                          muscleGroup.icon!,
                                         ),
                                       ),
                                     ),
