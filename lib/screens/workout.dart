@@ -396,80 +396,89 @@ class _WorkoutState extends State<Workout> {
                     padding: EdgeInsets.all(8.0.h),
                     child: const Divider(),
                   ),
-                  ...state.entries.asMap().entries.map((entryMap) {
-                    int index = entryMap.key;
-                    Entry entry = entryMap.value;
+                  Expanded(
+                      child: SingleChildScrollView(
+                    child: Column(
+                      children: state.entries.asMap().entries.map((entryMap) {
+                        int index = entryMap.key;
+                        Entry entry = entryMap.value;
 
-                    bool isFirst = index == 0;
+                        bool isFirst = index == 0;
 
-                    int lastIndex = state.entries.length - 1;
+                        int lastIndex = state.entries.length - 1;
 
-                    String entryString =
-                        "${entry.weight1}Kg/${entry.reps1} reps";
+                        String entryString =
+                            "${entry.weight1}Kg/${entry.reps1} reps";
 
-                    if (entry.weight2 != null) {
-                      entryString += ", ${entry.weight2}Kg/${entry.reps2} reps";
-                    }
-                    return Padding(
-                      padding: EdgeInsets.only(bottom: 10.0.h),
-                      child: Container(
-                        width: double.infinity,
-                        decoration: BoxDecoration(
-                            color: isFirst ? Colors.green[50] : Colors.red[50],
-                            borderRadius: BorderRadius.circular(5)),
-                        child: Padding(
-                          padding: EdgeInsets.all(8.0.h),
-                          child: IntrinsicHeight(
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
+                        if (entry.weight2 != null) {
+                          entryString +=
+                              ", ${entry.weight2}Kg/${entry.reps2} reps";
+                        }
+                        return Padding(
+                          padding: EdgeInsets.only(bottom: 10.0.h),
+                          child: Container(
+                            width: double.infinity,
+                            decoration: BoxDecoration(
+                                color:
+                                    isFirst ? Colors.green[50] : Colors.red[50],
+                                borderRadius: BorderRadius.circular(5)),
+                            child: Padding(
+                              padding: EdgeInsets.all(8.0.h),
+                              child: IntrinsicHeight(
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
                                   children: [
-                                    Text(
-                                      entryString,
-                                      style: GoogleFonts.monda(
-                                          fontSize: 20.sp,
-                                          color: isFirst
-                                              ? Colors.green[900]
-                                              : Colors.red[900]),
+                                    Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          entryString,
+                                          style: GoogleFonts.monda(
+                                              fontSize: 20.sp,
+                                              color: isFirst
+                                                  ? Colors.green[900]
+                                                  : Colors.red[900]),
+                                        ),
+                                        Text(
+                                          Utilities.dateToString(
+                                              DateTimeConverter.decode(
+                                                  entry.date!)),
+                                          style: TextStyle(
+                                              fontSize: 13.sp,
+                                              color: isFirst
+                                                  ? Colors.green[900]
+                                                  : Colors.red[900]),
+                                        )
+                                      ],
                                     ),
-                                    Text(
-                                      Utilities.dateToString(
-                                          DateTimeConverter.decode(
-                                              entry.date!)),
-                                      style: TextStyle(
-                                          fontSize: 13.sp,
+                                    if (lastIndex != 0) ...[
+                                      GestureDetector(
+                                        onTap: () {
+                                          context.read<ScheduleBloc>().add(
+                                              DeleteEntry(
+                                                  workoutId: widget.workoutId,
+                                                  entryId: entry.id!,
+                                                  context: context));
+                                        },
+                                        child: Icon(
+                                          Icons.delete_outline,
                                           color: isFirst
                                               ? Colors.green[900]
-                                              : Colors.red[900]),
-                                    )
+                                              : Colors.red[900],
+                                        ),
+                                      )
+                                    ]
                                   ],
                                 ),
-                                if (lastIndex != 0) ...[
-                                  GestureDetector(
-                                    onTap: () {
-                                      context.read<ScheduleBloc>().add(
-                                          DeleteEntry(
-                                              workoutId: widget.workoutId,
-                                              entryId: entry.id!,
-                                              context: context));
-                                    },
-                                    child: Icon(
-                                      Icons.delete_outline,
-                                      color: isFirst
-                                          ? Colors.green[900]
-                                          : Colors.red[900],
-                                    ),
-                                  )
-                                ]
-                              ],
+                              ),
                             ),
                           ),
-                        ),
-                      ),
-                    );
-                  }),
+                        );
+                      }).toList(),
+                    ),
+                  ))
                 ],
               ),
             );
