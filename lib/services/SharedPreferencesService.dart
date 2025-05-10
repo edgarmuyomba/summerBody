@@ -1,19 +1,19 @@
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SharedPreferencesService {
-  void saveStringValue(String value) async {
+  Future<void> saveStringValue(String key, String value) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setString('stringValue', value);
+    prefs.setString(key, value);
   }
 
-  void saveIntValue(int value) async {
+  Future<void> saveIntValue(String key, int value) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setInt('intValue', value);
+    prefs.setInt(key, value);
   }
 
-  void saveBoolValue(bool value) async {
+  Future<void> saveBoolValue(String key, bool value) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setBool('boolValue', value);
+    prefs.setBool(key, value);
   }
 
   Future<String?> getStringValue(String key) async {

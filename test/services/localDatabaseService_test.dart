@@ -6,17 +6,18 @@ import 'package:summerbody/database/daos/MuscleGroupDao.dart';
 import 'package:summerbody/database/daos/WorkoutDao.dart';
 import 'package:summerbody/database/database.dart';
 import 'package:summerbody/database/tables/MuscleGroup.dart';
+import 'package:summerbody/database/tables/Workout.dart';
 import 'package:summerbody/services/LocalDatabaseService.dart';
 
 @GenerateMocks([AppDatabase, MuscleGroupDao, WorkoutDao, EntryDao])
 import 'localDatabaseService_test.mocks.dart';
 
 final List<MuscleGroup> mockMuscleGroups = [
-  MuscleGroup(1, 'Chest', '', 'assets/icons/chest.png'),
-  MuscleGroup(2, 'Arms', '', 'assets/icons/arms.png'),
-  MuscleGroup(3, 'Shoulders', '', 'assets/icons/shoulders.png'),
-  MuscleGroup(4, 'Back', '', 'assets/icons/back.png'),
-  MuscleGroup(5, 'Legs', '', 'assets/icons/legs.png'),
+  const MuscleGroup(1, 'Chest', '', 'assets/icons/chest.png'),
+  const MuscleGroup(2, 'Arms', '', 'assets/icons/arms.png'),
+  const MuscleGroup(3, 'Shoulders', '', 'assets/icons/shoulders.png'),
+  const MuscleGroup(4, 'Back', '', 'assets/icons/back.png'),
+  const MuscleGroup(5, 'Legs', '', 'assets/icons/legs.png'),
 ];
 
 void main() {
@@ -54,11 +55,11 @@ void main() {
     test("Get muscle group by key", () async {
       when(mockMuscleGroupDao.getMuscleGroupById(1)).thenAnswer(
           (realInvocation) async =>
-              MuscleGroup(1, 'Chest', '', 'assets/icons/chest.png'));
+              const MuscleGroup(1, 'Chest', '', 'assets/icons/chest.png'));
 
       when(mockMuscleGroupDao.getMuscleGroupsByName("Legs")).thenAnswer(
           (realInvocation) async =>
-              [MuscleGroup(5, 'Legs', '', 'assets/icons/legs.png')]);
+              [const MuscleGroup(5, 'Legs', '', 'assets/icons/legs.png')]);
 
       when(mockMuscleGroupDao.getMuscleGroupsByDay("Monday"))
           .thenAnswer((realInvocation) async => []);
@@ -69,9 +70,21 @@ void main() {
       final result3 =
           await localDatabaseService.getMuscleGroupByKey("day", "Monday");
 
-      expect(result1, MuscleGroup(1, 'Chest', '', 'assets/icons/chest.png'));
-      expect(result2, MuscleGroup(5, 'Legs', '', 'assets/icons/legs.png'));
+      expect(
+          result1, const MuscleGroup(1, 'Chest', '', 'assets/icons/chest.png'));
+      expect(
+          result2, const MuscleGroup(5, 'Legs', '', 'assets/icons/legs.png'));
       expect(result3, isNull);
+    });
+
+    test('Get workouts by musclegroup', () async {
+      when(mockWorkoutDao.getWorkoutsByMuscleGroup(1)).thenAnswer(
+          (realInvocation) async => [const Workout(1, "Sample Workout", 1)]);
+
+      final result = await localDatabaseService.getWorkoutsByMuscleGroup(1);
+
+      expect(result, [const Workout(1, "Sample Workout", 1)]);
+      verify(mockAppDatabase.workoutDao).called(1);
     });
   });
 }

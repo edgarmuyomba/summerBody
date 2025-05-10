@@ -1,3 +1,4 @@
+import 'package:equatable/equatable.dart';
 import 'package:floor/floor.dart';
 import 'MuscleGroup.dart';
 
@@ -12,7 +13,7 @@ import 'MuscleGroup.dart';
     ),
   ],
 )
-class Workout {
+class Workout extends Equatable {
   @PrimaryKey(autoGenerate: true)
   final int? id;
   final String? name;
@@ -20,7 +21,7 @@ class Workout {
   @ColumnInfo(name: 'muscleGroupId')
   final int? muscleGroup;
 
-  Workout(
+  const Workout(
     this.id,
     this.name,
     this.muscleGroup,
@@ -32,5 +33,20 @@ class Workout {
       name ?? this.name,
       muscleGroup ?? this.muscleGroup,
     );
+  }
+
+  @override
+  List<Object> get props => [];
+
+  @override
+  int get hashCode => Object.hash(id, name, muscleGroup);
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    return other is Workout &&
+        other.id == id &&
+        other.name == name &&
+        other.muscleGroup == muscleGroup;
   }
 }
