@@ -26,7 +26,7 @@ class DIService {
       (5, 'Legs', '', 'assets/icons/legs.png'),
       (6, 'Cardio', '', 'assets/icons/cardio.png'),
       (7, 'Full Body', '', 'assets/icons/full-body.png'),
-      (8, 'Rest Day', '', 'assets/icons/rest-day.png'),
+      (8, 'Rest Day', '', 'assets/icons/rest-day.png')
     ''');
     });
 

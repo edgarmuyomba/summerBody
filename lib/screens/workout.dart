@@ -391,7 +391,7 @@ class _WorkoutState extends State<Workout> {
                                                   size: 20.0.h,
                                                 )
                                               : const Text(
-                                                  "Edit",
+                                                  "Save",
                                                 ),
                                         ),
                                       );
@@ -423,8 +423,7 @@ class _WorkoutState extends State<Workout> {
                               "${set.weight1}Kg/${set.reps1} reps";
 
                           if (set.weight2 != null) {
-                            setString +=
-                                ", ${set.weight2}Kg/${set.reps2} reps";
+                            setString += ", ${set.weight2}Kg/${set.reps2} reps";
                           }
                           return Padding(
                             padding: EdgeInsets.only(bottom: 10.0.h),
@@ -545,10 +544,10 @@ class _WorkoutState extends State<Workout> {
                         child: Column(
                           children: [
                             Row(
-                              mainAxisAlignment: dialogFirstSetValid &&
-                                      !dialogSecondSetEnabled
-                                  ? MainAxisAlignment.start
-                                  : MainAxisAlignment.spaceBetween,
+                              mainAxisAlignment:
+                                  dialogFirstSetValid && !dialogSecondSetEnabled
+                                      ? MainAxisAlignment.start
+                                      : MainAxisAlignment.spaceBetween,
                               children: [
                                 SizedBox(
                                   width: dialogFirstSetValid &&
