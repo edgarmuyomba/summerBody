@@ -2,7 +2,7 @@ import 'package:summerbody/database/tables/Workout.dart';
 import 'package:floor/floor.dart';
 
 @Entity(
-  tableName: 'Entries',
+  tableName: 'Sets',
   foreignKeys: [
     ForeignKey(
       childColumns: ['workoutId'],
@@ -12,7 +12,7 @@ import 'package:floor/floor.dart';
     ),
   ],
 )
-class Entry {
+class Set {
   @PrimaryKey(autoGenerate: true)
   final int? id;
 
@@ -25,7 +25,7 @@ class Entry {
   final int? reps2;
   final int? date;
 
-  Entry(
+  Set(
     this.id,
     this.workout,
     this.weight1,
@@ -35,7 +35,7 @@ class Entry {
     this.date,
   );
 
-  Entry copyWith({
+  Set copyWith({
     int? id,
     int? workout,
     double? weight1,
@@ -44,7 +44,7 @@ class Entry {
     int? reps2,
     int? date,
   }) {
-    return Entry(
+    return Set(
       id ?? this.id,
       workout ?? this.workout,
       weight1 ?? this.weight1,

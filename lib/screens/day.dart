@@ -208,14 +208,14 @@ class _DayState extends State<Day> {
                             Map<String, dynamic> workoutMap = {
                               "id": workout.id,
                               "name": workout.name,
-                              "entries": (state.entries[workout.id] ?? [])
-                                  .map((entry) {
+                              "sets":
+                                  (state.sets[workout.id] ?? []).map((set) {
                                 return {
-                                  "weight1": entry.weight1,
-                                  "reps1": entry.reps1,
-                                  "weight2": entry.weight2,
-                                  "reps2": entry.reps2,
-                                  "date": DateTimeConverter.decode(entry.date!)
+                                  "weight1": set.weight1,
+                                  "reps1": set.reps1,
+                                  "weight2": set.weight2,
+                                  "reps2": set.reps2,
+                                  "date": DateTimeConverter.decode(set.date!)
                                       .toString()
                                 };
                               }).toList()

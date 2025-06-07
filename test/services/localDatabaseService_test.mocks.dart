@@ -7,12 +7,12 @@ import 'dart:async' as _i5;
 
 import 'package:mockito/mockito.dart' as _i1;
 import 'package:sqflite/sqflite.dart' as _i6;
-import 'package:summerbody/database/daos/EntryDao.dart' as _i2;
 import 'package:summerbody/database/daos/MuscleGroupDao.dart' as _i4;
+import 'package:summerbody/database/daos/SetDao.dart' as _i2;
 import 'package:summerbody/database/daos/WorkoutDao.dart' as _i3;
 import 'package:summerbody/database/database.dart' as _i7;
-import 'package:summerbody/database/tables/Entry.dart' as _i10;
 import 'package:summerbody/database/tables/MuscleGroup.dart' as _i8;
+import 'package:summerbody/database/tables/Set.dart' as _i10;
 import 'package:summerbody/database/tables/Workout.dart' as _i9;
 
 // ignore_for_file: type=lint
@@ -28,8 +28,8 @@ import 'package:summerbody/database/tables/Workout.dart' as _i9;
 // ignore_for_file: camel_case_types
 // ignore_for_file: subtype_of_sealed_class
 
-class _FakeEntryDao_0 extends _i1.SmartFake implements _i2.EntryDao {
-  _FakeEntryDao_0(
+class _FakeSetDao_0 extends _i1.SmartFake implements _i2.SetDao {
+  _FakeSetDao_0(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -90,13 +90,13 @@ class MockAppDatabase extends _i1.Mock implements _i7.AppDatabase {
   }
 
   @override
-  _i2.EntryDao get entryDao => (super.noSuchMethod(
-        Invocation.getter(#entryDao),
-        returnValue: _FakeEntryDao_0(
+  _i2.SetDao get setDao => (super.noSuchMethod(
+        Invocation.getter(#setDao),
+        returnValue: _FakeSetDao_0(
           this,
-          Invocation.getter(#entryDao),
+          Invocation.getter(#setDao),
         ),
-      ) as _i2.EntryDao);
+      ) as _i2.SetDao);
 
   @override
   _i3.WorkoutDao get workoutDao => (super.noSuchMethod(
@@ -329,50 +329,50 @@ class MockWorkoutDao extends _i1.Mock implements _i3.WorkoutDao {
       ) as _i5.Future<List<_i9.Workout>>);
 }
 
-/// A class which mocks [EntryDao].
+/// A class which mocks [SetDao].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockEntryDao extends _i1.Mock implements _i2.EntryDao {
-  MockEntryDao() {
+class MockSetDao extends _i1.Mock implements _i2.SetDao {
+  MockSetDao() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  _i5.Future<int> createEntry(_i10.Entry? entry) => (super.noSuchMethod(
+  _i5.Future<int> createSet(_i10.Set? set) => (super.noSuchMethod(
         Invocation.method(
-          #createEntry,
-          [entry],
+          #createSet,
+          [set],
         ),
         returnValue: _i5.Future<int>.value(0),
       ) as _i5.Future<int>);
 
   @override
-  _i5.Future<void> editEntry(_i10.Entry? entry) => (super.noSuchMethod(
+  _i5.Future<void> editSet(_i10.Set? set) => (super.noSuchMethod(
         Invocation.method(
-          #editEntry,
-          [entry],
+          #editSet,
+          [set],
         ),
         returnValue: _i5.Future<void>.value(),
         returnValueForMissingStub: _i5.Future<void>.value(),
       ) as _i5.Future<void>);
 
   @override
-  _i5.Future<List<_i10.Entry>> getAllEntries() => (super.noSuchMethod(
+  _i5.Future<List<_i10.Set>> getAllSets() => (super.noSuchMethod(
         Invocation.method(
-          #getAllEntries,
+          #getAllSets,
           [],
         ),
-        returnValue: _i5.Future<List<_i10.Entry>>.value(<_i10.Entry>[]),
-      ) as _i5.Future<List<_i10.Entry>>);
+        returnValue: _i5.Future<List<_i10.Set>>.value(<_i10.Set>[]),
+      ) as _i5.Future<List<_i10.Set>>);
 
   @override
-  _i5.Future<void> deleteEntryById(
+  _i5.Future<void> deleteSetById(
     int? workoutId,
     int? id,
   ) =>
       (super.noSuchMethod(
         Invocation.method(
-          #deleteEntryById,
+          #deleteSetById,
           [
             workoutId,
             id,
@@ -383,21 +383,21 @@ class MockEntryDao extends _i1.Mock implements _i2.EntryDao {
       ) as _i5.Future<void>);
 
   @override
-  _i5.Future<_i10.Entry?> getEntryById(int? id) => (super.noSuchMethod(
+  _i5.Future<_i10.Set?> getSetById(int? id) => (super.noSuchMethod(
         Invocation.method(
-          #getEntryById,
+          #getSetById,
           [id],
         ),
-        returnValue: _i5.Future<_i10.Entry?>.value(),
-      ) as _i5.Future<_i10.Entry?>);
+        returnValue: _i5.Future<_i10.Set?>.value(),
+      ) as _i5.Future<_i10.Set?>);
 
   @override
-  _i5.Future<List<_i10.Entry>> getEntriesByWorkoutId(int? workoutId) =>
+  _i5.Future<List<_i10.Set>> getSetsByWorkoutId(int? workoutId) =>
       (super.noSuchMethod(
         Invocation.method(
-          #getEntriesByWorkoutId,
+          #getSetsByWorkoutId,
           [workoutId],
         ),
-        returnValue: _i5.Future<List<_i10.Entry>>.value(<_i10.Entry>[]),
-      ) as _i5.Future<List<_i10.Entry>>);
+        returnValue: _i5.Future<List<_i10.Set>>.value(<_i10.Set>[]),
+      ) as _i5.Future<List<_i10.Set>>);
 }

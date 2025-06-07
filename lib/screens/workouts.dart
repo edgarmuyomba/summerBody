@@ -19,8 +19,8 @@ class Workouts extends StatefulWidget {
 
 class _WorkoutsState extends State<Workouts> {
   bool newWorkout = false;
-  bool firstEntryValid = false;
-  bool secondEntryEnabled = false;
+  bool firstSetValid = false;
+  bool secondSetEnabled = false;
 
   final form = FormGroup({
     "name": FormControl<String>(validators: [Validators.required]),
@@ -56,8 +56,8 @@ class _WorkoutsState extends State<Workouts> {
                     onTap: () {
                       setState(() {
                         newWorkout = !newWorkout;
-                        secondEntryEnabled = false;
-                        firstEntryValid = false;
+                        secondSetEnabled = false;
+                        firstSetValid = false;
                       });
                       if (newWorkout == false) {
                         form.control('name').reset();
@@ -129,13 +129,13 @@ class _WorkoutsState extends State<Workouts> {
                             SizedBox(height: 10.h),
                             Row(
                               mainAxisAlignment:
-                                  firstEntryValid && !secondEntryEnabled
+                                  firstSetValid && !secondSetEnabled
                                       ? MainAxisAlignment.start
                                       : MainAxisAlignment.spaceBetween,
                               children: [
                                 SizedBox(
                                   width: MediaQuery.of(context).size.width /
-                                      (firstEntryValid && !secondEntryEnabled
+                                      (firstSetValid && !secondSetEnabled
                                           ? 2.75
                                           : 2.2),
                                   child: ReactiveTextField(
@@ -158,7 +158,7 @@ class _WorkoutsState extends State<Workouts> {
                                       if (form.control('weight1').valid &&
                                           form.control('reps1').valid) {
                                         setState(() {
-                                          firstEntryValid = true;
+                                          firstSetValid = true;
                                         });
                                       }
                                     },
@@ -166,12 +166,12 @@ class _WorkoutsState extends State<Workouts> {
                                         fontSize: 20.sp, color: Colors.black87),
                                   ),
                                 ),
-                                if (firstEntryValid && !secondEntryEnabled) ...[
+                                if (firstSetValid && !secondSetEnabled) ...[
                                   SizedBox(width: 10.w),
                                 ],
                                 SizedBox(
                                   width: MediaQuery.of(context).size.width /
-                                      (firstEntryValid && !secondEntryEnabled
+                                      (firstSetValid && !secondSetEnabled
                                           ? 2.75
                                           : 2.2),
                                   child: ReactiveTextField(
@@ -194,7 +194,7 @@ class _WorkoutsState extends State<Workouts> {
                                       if (form.control('weight1').valid &&
                                           form.control('reps1').valid) {
                                         setState(() {
-                                          firstEntryValid = true;
+                                          firstSetValid = true;
                                         });
                                       }
                                     },
@@ -202,7 +202,7 @@ class _WorkoutsState extends State<Workouts> {
                                         fontSize: 20.sp, color: Colors.black87),
                                   ),
                                 ),
-                                if (firstEntryValid && !secondEntryEnabled) ...[
+                                if (firstSetValid && !secondSetEnabled) ...[
                                   SizedBox(
                                     width: 10.w,
                                   ),
@@ -210,7 +210,7 @@ class _WorkoutsState extends State<Workouts> {
                                     child: GestureDetector(
                                       onTap: () {
                                         setState(() {
-                                          secondEntryEnabled = true;
+                                          secondSetEnabled = true;
                                         });
                                       },
                                       child: Container(
@@ -229,7 +229,7 @@ class _WorkoutsState extends State<Workouts> {
                                 ]
                               ],
                             ),
-                            if (secondEntryEnabled) ...[
+                            if (secondSetEnabled) ...[
                               SizedBox(height: 10.h),
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.start,
@@ -294,7 +294,7 @@ class _WorkoutsState extends State<Workouts> {
                                     child: GestureDetector(
                                       onTap: () {
                                         setState(() {
-                                          secondEntryEnabled = false;
+                                          secondSetEnabled = false;
                                           form.control('weight2').reset();
                                           form.control('reps2').reset();
                                         });
@@ -388,14 +388,14 @@ class _WorkoutsState extends State<Workouts> {
                     Map<String, dynamic> workoutMap = {
                       "id": workout.id,
                       "name": workout.name,
-                      "entries": (state.entries[workout.id] ?? []).map((entry) {
+                      "sets": (state.sets[workout.id] ?? []).map((set) {
                         return {
-                          "weight1": entry.weight1,
-                          "reps1": entry.reps1,
-                          "weight2": entry.weight2,
-                          "reps2": entry.reps2,
+                          "weight1": set.weight1,
+                          "reps1": set.reps1,
+                          "weight2": set.weight2,
+                          "reps2": set.reps2,
                           "date":
-                              DateTimeConverter.decode(entry.date!).toString()
+                              DateTimeConverter.decode(set.date!).toString()
                         };
                       }).toList()
                     };

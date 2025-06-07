@@ -1,5 +1,5 @@
 import 'package:summerbody/database/database.dart';
-import 'package:summerbody/database/tables/Entry.dart';
+import 'package:summerbody/database/tables/Set.dart';
 import 'package:summerbody/database/tables/MuscleGroup.dart';
 import 'package:summerbody/database/tables/Workout.dart';
 import 'package:summerbody/database/typeConverters/datetimeConverter.dart';
@@ -56,29 +56,29 @@ class LocalDatabaseService {
     }
   }
 
-  Future<int> createEntry(int workoutId, double weight1, int reps1,
+  Future<int> createSet(int workoutId, double weight1, int reps1,
       double? weight2, int? reps2) async {
     int currentTime = DateTimeConverter.encode(DateTime.now());
-    return await _appDatabase.entryDao.createEntry(
-        Entry(null, workoutId, weight1, reps1, weight2, reps2, currentTime));
+    return await _appDatabase.setDao.createSet(
+        Set(null, workoutId, weight1, reps1, weight2, reps2, currentTime));
   }
 
-  Future<void> editEntry(int entryId, double weight1, int reps1,
-      double? weight2, int? reps2) async {
-    final originalEntry = await _appDatabase.entryDao.getEntryById(entryId);
-    if (originalEntry != null) {
-      final updatedEntry = originalEntry.copyWith(
+  Future<void> editSet(int setId, double weight1, int reps1, double? weight2,
+      int? reps2) async {
+    final originalSet = await _appDatabase.setDao.getSetById(setId);
+    if (originalSet != null) {
+      final updatedSet = originalSet.copyWith(
         weight1: weight1,
         reps1: reps1,
         weight2: weight2,
         reps2: reps2,
       );
-      await _appDatabase.entryDao.editEntry(updatedEntry);
+      await _appDatabase.setDao.editSet(updatedSet);
     }
   }
 
-  Future<List<Entry>> getAllEntries(int workoutId) async {
-    return await _appDatabase.entryDao.getEntriesByWorkoutId(workoutId);
+  Future<List<Set>> getAllSets(int workoutId) async {
+    return await _appDatabase.setDao.getSetsByWorkoutId(workoutId);
   }
 
   Future<void> deleteWorkout(int workoutId) async {
@@ -94,7 +94,7 @@ class LocalDatabaseService {
     }
   }
 
-  Future<void> deleteEntry(int workoutId, int entryId) async {
-    await _appDatabase.entryDao.deleteEntryById(workoutId, entryId);
+  Future<void> deleteSet(int workoutId, int setId) async {
+    await _appDatabase.setDao.deleteSetById(workoutId, setId);
   }
 }

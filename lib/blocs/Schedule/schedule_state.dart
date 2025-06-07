@@ -9,18 +9,18 @@ final class ScheduleReady extends ScheduleState {
   final String currentDay;
   final MuscleGroup? musclegroup;
   final List<Workout> workouts;
-  final Map<int, List<Entry>> entries;
+  final Map<int, List<Set>> sets;
 
   ScheduleReady(
       {required this.currentDay,
       required this.musclegroup,
       required this.workouts,
-      required this.entries});
+      required this.sets});
 }
 
 final class WorkoutReady extends ScheduleState {
   final Workout workout;
-  final List<Entry> entries;
+  final List<Set> sets;
 
-  WorkoutReady({required this.workout, required this.entries});
+  WorkoutReady({required this.workout, required this.sets});
 }

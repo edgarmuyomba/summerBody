@@ -72,7 +72,7 @@ class _$AppDatabase extends AppDatabase {
     changeListener = listener ?? StreamController<String>.broadcast();
   }
 
-  EntryDao? _entryDaoInstance;
+  SetDao? _setDaoInstance;
 
   WorkoutDao? _workoutDaoInstance;
 
@@ -100,7 +100,7 @@ class _$AppDatabase extends AppDatabase {
       },
       onCreate: (database, version) async {
         await database.execute(
-            'CREATE TABLE IF NOT EXISTS `Entries` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `workoutId` INTEGER, `weight1` REAL, `reps1` INTEGER, `weight2` REAL, `reps2` INTEGER, `date` INTEGER, FOREIGN KEY (`workoutId`) REFERENCES `Workouts` (`id`) ON UPDATE NO ACTION ON DELETE CASCADE)');
+            'CREATE TABLE IF NOT EXISTS `Sets` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `workoutId` INTEGER, `weight1` REAL, `reps1` INTEGER, `weight2` REAL, `reps2` INTEGER, `date` INTEGER, FOREIGN KEY (`workoutId`) REFERENCES `Workouts` (`id`) ON UPDATE NO ACTION ON DELETE CASCADE)');
         await database.execute(
             'CREATE TABLE IF NOT EXISTS `MuscleGroups` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `name` TEXT, `day` TEXT, `icon` TEXT)');
         await database.execute(
@@ -113,8 +113,8 @@ class _$AppDatabase extends AppDatabase {
   }
 
   @override
-  EntryDao get entryDao {
-    return _entryDaoInstance ??= _$EntryDao(database, changeListener);
+  SetDao get setDao {
+    return _setDaoInstance ??= _$SetDao(database, changeListener);
   }
 
   @override
@@ -129,15 +129,15 @@ class _$AppDatabase extends AppDatabase {
   }
 }
 
-class _$EntryDao extends EntryDao {
-  _$EntryDao(
+class _$SetDao extends SetDao {
+  _$SetDao(
     this.database,
     this.changeListener,
   )   : _queryAdapter = QueryAdapter(database),
-        _entryInsertionAdapter = InsertionAdapter(
+        _setInsertionAdapter = InsertionAdapter(
             database,
-            'Entries',
-            (Entry item) => <String, Object?>{
+            'Sets',
+            (Set item) => <String, Object?>{
                   'id': item.id,
                   'workoutId': item.workout,
                   'weight1': item.weight1,
@@ -146,11 +146,11 @@ class _$EntryDao extends EntryDao {
                   'reps2': item.reps2,
                   'date': item.date
                 }),
-        _entryUpdateAdapter = UpdateAdapter(
+        _setUpdateAdapter = UpdateAdapter(
             database,
-            'Entries',
+            'Sets',
             ['id'],
-            (Entry item) => <String, Object?>{
+            (Set item) => <String, Object?>{
                   'id': item.id,
                   'workoutId': item.workout,
                   'weight1': item.weight1,
@@ -166,14 +166,14 @@ class _$EntryDao extends EntryDao {
 
   final QueryAdapter _queryAdapter;
 
-  final InsertionAdapter<Entry> _entryInsertionAdapter;
+  final InsertionAdapter<Set> _setInsertionAdapter;
 
-  final UpdateAdapter<Entry> _entryUpdateAdapter;
+  final UpdateAdapter<Set> _setUpdateAdapter;
 
   @override
-  Future<List<Entry>> getAllEntries() async {
-    return _queryAdapter.queryList('SELECT * FROM Entries',
-        mapper: (Map<String, Object?> row) => Entry(
+  Future<List<Set>> getAllSets() async {
+    return _queryAdapter.queryList('SELECT * FROM Sets',
+        mapper: (Map<String, Object?> row) => Set(
             row['id'] as int?,
             row['workoutId'] as int?,
             row['weight1'] as double?,
@@ -184,19 +184,19 @@ class _$EntryDao extends EntryDao {
   }
 
   @override
-  Future<void> deleteEntryById(
+  Future<void> deleteSetById(
     int workoutId,
     int id,
   ) async {
     await _queryAdapter.queryNoReturn(
-        'DELETE FROM Entries WHERE id = ?2 AND workoutId = ?1',
+        'DELETE FROM Sets WHERE id = ?2 AND workoutId = ?1',
         arguments: [workoutId, id]);
   }
 
   @override
-  Future<Entry?> getEntryById(int id) async {
-    return _queryAdapter.query('SELECT * FROM Entries WHERE id = ?1',
-        mapper: (Map<String, Object?> row) => Entry(
+  Future<Set?> getSetById(int id) async {
+    return _queryAdapter.query('SELECT * FROM Sets WHERE id = ?1',
+        mapper: (Map<String, Object?> row) => Set(
             row['id'] as int?,
             row['workoutId'] as int?,
             row['weight1'] as double?,
@@ -208,9 +208,9 @@ class _$EntryDao extends EntryDao {
   }
 
   @override
-  Future<List<Entry>> getEntriesByWorkoutId(int workoutId) async {
-    return _queryAdapter.queryList('SELECT * FROM Entries WHERE workoutId = ?1',
-        mapper: (Map<String, Object?> row) => Entry(
+  Future<List<Set>> getSetsByWorkoutId(int workoutId) async {
+    return _queryAdapter.queryList('SELECT * FROM Sets WHERE workoutId = ?1',
+        mapper: (Map<String, Object?> row) => Set(
             row['id'] as int?,
             row['workoutId'] as int?,
             row['weight1'] as double?,
@@ -222,14 +222,14 @@ class _$EntryDao extends EntryDao {
   }
 
   @override
-  Future<int> createEntry(Entry entry) {
-    return _entryInsertionAdapter.insertAndReturnId(
-        entry, OnConflictStrategy.abort);
+  Future<int> createSet(Set set) {
+    return _setInsertionAdapter.insertAndReturnId(
+        set, OnConflictStrategy.abort);
   }
 
   @override
-  Future<void> editEntry(Entry entry) async {
-    await _entryUpdateAdapter.update(entry, OnConflictStrategy.abort);
+  Future<void> editSet(Set set) async {
+    await _setUpdateAdapter.update(set, OnConflictStrategy.abort);
   }
 }
 

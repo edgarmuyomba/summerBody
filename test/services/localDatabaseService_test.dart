@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:mockito/annotations.dart';
-import 'package:summerbody/database/daos/EntryDao.dart';
+import 'package:summerbody/database/daos/SetDao.dart';
 import 'package:summerbody/database/daos/MuscleGroupDao.dart';
 import 'package:summerbody/database/daos/WorkoutDao.dart';
 import 'package:summerbody/database/database.dart';
@@ -9,7 +9,7 @@ import 'package:summerbody/database/tables/MuscleGroup.dart';
 import 'package:summerbody/database/tables/Workout.dart';
 import 'package:summerbody/services/LocalDatabaseService.dart';
 
-@GenerateMocks([AppDatabase, MuscleGroupDao, WorkoutDao, EntryDao])
+@GenerateMocks([AppDatabase, MuscleGroupDao, WorkoutDao, SetDao])
 import 'localDatabaseService_test.mocks.dart';
 
 final List<MuscleGroup> mockMuscleGroups = [
@@ -24,18 +24,18 @@ void main() {
   late MockAppDatabase mockAppDatabase;
   late MockMuscleGroupDao mockMuscleGroupDao;
   late MockWorkoutDao mockWorkoutDao;
-  late MockEntryDao mockEntryDao;
+  late MockSetDao mockSetDao;
   late LocalDatabaseService localDatabaseService;
 
   setUp(() {
     mockAppDatabase = MockAppDatabase();
     mockMuscleGroupDao = MockMuscleGroupDao();
     mockWorkoutDao = MockWorkoutDao();
-    mockEntryDao = MockEntryDao();
+    mockSetDao = MockSetDao();
 
     when(mockAppDatabase.muscleGroupDao).thenReturn(mockMuscleGroupDao);
     when(mockAppDatabase.workoutDao).thenReturn(mockWorkoutDao);
-    when(mockAppDatabase.entryDao).thenReturn(mockEntryDao);
+    when(mockAppDatabase.setDao).thenReturn(mockSetDao);
 
     localDatabaseService = LocalDatabaseService(appDatabase: mockAppDatabase);
   });

@@ -7,7 +7,7 @@ import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 import 'package:summerbody/blocs/Schedule/schedule_bloc.dart';
-import 'package:summerbody/database/tables/Entry.dart';
+import 'package:summerbody/database/tables/Set.dart';
 import 'package:summerbody/database/typeConverters/datetimeConverter.dart';
 import 'package:summerbody/utils/utilities.dart';
 
@@ -22,11 +22,11 @@ class Workout extends StatefulWidget {
 class _WorkoutState extends State<Workout> {
   String workoutName = "";
 
-  bool firstEntryValid = false;
-  bool secondEntryEnabled = false;
+  bool firstSetValid = false;
+  bool secondSetEnabled = false;
 
-  bool dialogFirstEntryValid = false;
-  bool dialogSecondEntryEnabled = false;
+  bool dialogFirstSetValid = false;
+  bool dialogSecondSetEnabled = false;
 
   bool loading = false;
 
@@ -76,20 +76,19 @@ class _WorkoutState extends State<Workout> {
 
                 form.control('name').value = state.workout.name;
                 form.control('weight1').value =
-                    state.entries[0].weight1.toString();
-                form.control('reps1').value = state.entries[0].reps1.toString();
+                    state.sets[0].weight1.toString();
+                form.control('reps1').value = state.sets[0].reps1.toString();
                 form.control('weight2').value =
-                    state.entries[0].weight2?.toString();
-                form.control('reps2').value =
-                    state.entries[0].reps2?.toString();
+                    state.sets[0].weight2?.toString();
+                form.control('reps2').value = state.sets[0].reps2?.toString();
 
-                firstEntryValid = true;
+                firstSetValid = true;
 
                 if (form.control('weight2').value != null &&
                     form.control('weight2').value != "" &&
                     form.control('reps2').value != null &&
                     form.control('reps2').value != "") {
-                  secondEntryEnabled = true;
+                  secondSetEnabled = true;
                 }
               });
             }
@@ -131,13 +130,13 @@ class _WorkoutState extends State<Workout> {
                             SizedBox(height: 10.h),
                             Row(
                               mainAxisAlignment:
-                                  firstEntryValid && !secondEntryEnabled
+                                  firstSetValid && !secondSetEnabled
                                       ? MainAxisAlignment.start
                                       : MainAxisAlignment.spaceBetween,
                               children: [
                                 SizedBox(
                                   width: MediaQuery.of(context).size.width /
-                                      (firstEntryValid && !secondEntryEnabled
+                                      (firstSetValid && !secondSetEnabled
                                           ? 2.75
                                           : 2.2),
                                   child: ReactiveTextField(
@@ -160,7 +159,7 @@ class _WorkoutState extends State<Workout> {
                                       if (form.control('weight1').valid &&
                                           form.control('reps1').valid) {
                                         setState(() {
-                                          firstEntryValid = true;
+                                          firstSetValid = true;
                                         });
                                       }
                                     },
@@ -168,12 +167,12 @@ class _WorkoutState extends State<Workout> {
                                         fontSize: 20.sp, color: Colors.black87),
                                   ),
                                 ),
-                                if (firstEntryValid && !secondEntryEnabled) ...[
+                                if (firstSetValid && !secondSetEnabled) ...[
                                   SizedBox(width: 10.w),
                                 ],
                                 SizedBox(
                                   width: MediaQuery.of(context).size.width /
-                                      (firstEntryValid && !secondEntryEnabled
+                                      (firstSetValid && !secondSetEnabled
                                           ? 2.75
                                           : 2.2),
                                   child: ReactiveTextField(
@@ -196,7 +195,7 @@ class _WorkoutState extends State<Workout> {
                                       if (form.control('weight1').valid &&
                                           form.control('reps1').valid) {
                                         setState(() {
-                                          firstEntryValid = true;
+                                          firstSetValid = true;
                                         });
                                       }
                                     },
@@ -204,7 +203,7 @@ class _WorkoutState extends State<Workout> {
                                         fontSize: 20.sp, color: Colors.black87),
                                   ),
                                 ),
-                                if (firstEntryValid && !secondEntryEnabled) ...[
+                                if (firstSetValid && !secondSetEnabled) ...[
                                   SizedBox(
                                     width: 10.w,
                                   ),
@@ -212,7 +211,7 @@ class _WorkoutState extends State<Workout> {
                                     child: GestureDetector(
                                       onTap: () {
                                         setState(() {
-                                          secondEntryEnabled = true;
+                                          secondSetEnabled = true;
                                         });
                                       },
                                       child: Container(
@@ -231,7 +230,7 @@ class _WorkoutState extends State<Workout> {
                                 ]
                               ],
                             ),
-                            if (secondEntryEnabled) ...[
+                            if (secondSetEnabled) ...[
                               SizedBox(height: 10.h),
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.start,
@@ -296,7 +295,7 @@ class _WorkoutState extends State<Workout> {
                                     child: GestureDetector(
                                       onTap: () {
                                         setState(() {
-                                          secondEntryEnabled = false;
+                                          secondSetEnabled = false;
                                           form.control('weight2').reset();
                                           form.control('reps2').reset();
                                         });
@@ -322,7 +321,7 @@ class _WorkoutState extends State<Workout> {
                                 Expanded(
                                   child: ElevatedButton(
                                     onPressed: () =>
-                                        addEntryDialog(state.workout.id!),
+                                        addSetDialog(state.workout.id!),
                                     style: ElevatedButton.styleFrom(
                                         backgroundColor: Colors.white,
                                         foregroundColor: Colors.black87,
@@ -333,7 +332,7 @@ class _WorkoutState extends State<Workout> {
                                                 BorderRadius.circular(5))),
                                     child: const Center(
                                       child: Text(
-                                        "Add Entry",
+                                        "Add Set",
                                       ),
                                     ),
                                   ),
@@ -356,7 +355,7 @@ class _WorkoutState extends State<Workout> {
                                               workoutId: widget.workoutId,
                                               workoutName:
                                                   form.control("name").value,
-                                              entryId: state.entries[0].id!,
+                                              setId: state.sets[0].id!,
                                               weight1: double.parse(form
                                                   .control("weight1")
                                                   .value),
@@ -412,20 +411,20 @@ class _WorkoutState extends State<Workout> {
                     Expanded(
                         child: SingleChildScrollView(
                       child: Column(
-                        children: state.entries.asMap().entries.map((entryMap) {
+                        children: state.sets.asMap().entries.map((entryMap) {
                           int index = entryMap.key;
-                          Entry entry = entryMap.value;
+                          Set set = entryMap.value;
 
                           bool isFirst = index == 0;
 
-                          int lastIndex = state.entries.length - 1;
+                          int lastIndex = state.sets.length - 1;
 
-                          String entryString =
-                              "${entry.weight1}Kg/${entry.reps1} reps";
+                          String setString =
+                              "${set.weight1}Kg/${set.reps1} reps";
 
-                          if (entry.weight2 != null) {
-                            entryString +=
-                                ", ${entry.weight2}Kg/${entry.reps2} reps";
+                          if (set.weight2 != null) {
+                            setString +=
+                                ", ${set.weight2}Kg/${set.reps2} reps";
                           }
                           return Padding(
                             padding: EdgeInsets.only(bottom: 10.0.h),
@@ -448,7 +447,7 @@ class _WorkoutState extends State<Workout> {
                                             CrossAxisAlignment.start,
                                         children: [
                                           Text(
-                                            entryString,
+                                            setString,
                                             style: GoogleFonts.monda(
                                                 fontSize: 20.sp,
                                                 color: isFirst
@@ -458,7 +457,7 @@ class _WorkoutState extends State<Workout> {
                                           Text(
                                             Utilities.dateToString(
                                                 DateTimeConverter.decode(
-                                                    entry.date!)),
+                                                    set.date!)),
                                             style: TextStyle(
                                                 fontSize: 13.sp,
                                                 color: isFirst
@@ -471,9 +470,9 @@ class _WorkoutState extends State<Workout> {
                                         GestureDetector(
                                           onTap: () {
                                             context.read<ScheduleBloc>().add(
-                                                DeleteEntry(
+                                                DeleteSet(
                                                     workoutId: widget.workoutId,
-                                                    entryId: entry.id!,
+                                                    setId: set.id!,
                                                     context: context));
                                           },
                                           child: Icon(
@@ -505,7 +504,7 @@ class _WorkoutState extends State<Workout> {
     );
   }
 
-  addEntryDialog(int workoutId) async {
+  addSetDialog(int workoutId) async {
     final form = FormGroup({
       "weight1": FormControl<String>(validators: [Validators.required]),
       "reps1": FormControl<String>(validators: [Validators.required]),
@@ -533,7 +532,7 @@ class _WorkoutState extends State<Workout> {
                     Align(
                       alignment: Alignment.centerLeft,
                       child: Text(
-                        "Entry details?",
+                        "Set details?",
                         style: GoogleFonts.monda(
                             fontSize: 20.sp,
                             color: Colors.black87,
@@ -546,14 +545,14 @@ class _WorkoutState extends State<Workout> {
                         child: Column(
                           children: [
                             Row(
-                              mainAxisAlignment: dialogFirstEntryValid &&
-                                      !dialogSecondEntryEnabled
+                              mainAxisAlignment: dialogFirstSetValid &&
+                                      !dialogSecondSetEnabled
                                   ? MainAxisAlignment.start
                                   : MainAxisAlignment.spaceBetween,
                               children: [
                                 SizedBox(
-                                  width: dialogFirstEntryValid &&
-                                          !dialogSecondEntryEnabled
+                                  width: dialogFirstSetValid &&
+                                          !dialogSecondSetEnabled
                                       ? 130.w
                                       : 160.w,
                                   child: ReactiveTextField(
@@ -576,7 +575,7 @@ class _WorkoutState extends State<Workout> {
                                       if (form.control('weight1').valid &&
                                           form.control('reps1').valid) {
                                         setModalState(() {
-                                          dialogFirstEntryValid = true;
+                                          dialogFirstSetValid = true;
                                         });
                                         setState(() {});
                                       }
@@ -585,13 +584,13 @@ class _WorkoutState extends State<Workout> {
                                         fontSize: 20.sp, color: Colors.black87),
                                   ),
                                 ),
-                                if (dialogFirstEntryValid &&
-                                    !dialogSecondEntryEnabled) ...[
+                                if (dialogFirstSetValid &&
+                                    !dialogSecondSetEnabled) ...[
                                   SizedBox(width: 10.w),
                                 ],
                                 SizedBox(
-                                  width: dialogFirstEntryValid &&
-                                          !dialogSecondEntryEnabled
+                                  width: dialogFirstSetValid &&
+                                          !dialogSecondSetEnabled
                                       ? 130.w
                                       : 160.w,
                                   child: ReactiveTextField(
@@ -614,7 +613,7 @@ class _WorkoutState extends State<Workout> {
                                       if (form.control('weight1').valid &&
                                           form.control('reps1').valid) {
                                         setModalState(() {
-                                          dialogFirstEntryValid = true;
+                                          dialogFirstSetValid = true;
                                         });
                                         setState(() {});
                                       }
@@ -623,8 +622,8 @@ class _WorkoutState extends State<Workout> {
                                         fontSize: 20.sp, color: Colors.black87),
                                   ),
                                 ),
-                                if (dialogFirstEntryValid &&
-                                    !dialogSecondEntryEnabled) ...[
+                                if (dialogFirstSetValid &&
+                                    !dialogSecondSetEnabled) ...[
                                   SizedBox(
                                     width: 10.w,
                                   ),
@@ -632,7 +631,7 @@ class _WorkoutState extends State<Workout> {
                                     child: GestureDetector(
                                       onTap: () {
                                         setModalState(() {
-                                          dialogSecondEntryEnabled = true;
+                                          dialogSecondSetEnabled = true;
                                         });
                                         setState(() {});
                                       },
@@ -652,7 +651,7 @@ class _WorkoutState extends State<Workout> {
                                 ]
                               ],
                             ),
-                            if (dialogSecondEntryEnabled) ...[
+                            if (dialogSecondSetEnabled) ...[
                               SizedBox(height: 10.h),
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.start,
@@ -715,7 +714,7 @@ class _WorkoutState extends State<Workout> {
                                     child: GestureDetector(
                                       onTap: () {
                                         setModalState(() {
-                                          dialogSecondEntryEnabled = false;
+                                          dialogSecondSetEnabled = false;
                                           form.control('weight2').reset();
                                           form.control('reps2').reset();
                                         });
@@ -741,29 +740,26 @@ class _WorkoutState extends State<Workout> {
                               if (form.valid) {
                                 return ElevatedButton(
                                   onPressed: () {
-                                    // save the entry
-                                    context.read<ScheduleBloc>().add(
-                                        CreateEntry(
-                                            workoutId: workoutId,
-                                            weight1: double.parse(
-                                                form.control('weight1').value),
-                                            reps1: int.parse(
-                                                form.control('reps1').value),
-                                            weight2:
-                                                form.control('weight2').value !=
-                                                        null
-                                                    ? double.parse(form
-                                                        .control('weight2')
-                                                        .value)
-                                                    : null,
-                                            reps2: form
-                                                        .control('reps2')
-                                                        .value !=
-                                                    null
+                                    // save the set
+                                    context.read<ScheduleBloc>().add(CreateSet(
+                                        workoutId: workoutId,
+                                        weight1: double.parse(
+                                            form.control('weight1').value),
+                                        reps1: int.parse(
+                                            form.control('reps1').value),
+                                        weight2: form
+                                                    .control('weight2')
+                                                    .value !=
+                                                null
+                                            ? double.parse(
+                                                form.control('weight2').value)
+                                            : null,
+                                        reps2:
+                                            form.control('reps2').value != null
                                                 ? int.parse(
                                                     form.control('reps2').value)
                                                 : null,
-                                            context: context));
+                                        context: context));
 
                                     context.pop();
                                   },

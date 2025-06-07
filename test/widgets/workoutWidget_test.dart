@@ -10,7 +10,7 @@ void main() {
     workout = {
       "id": 1,
       "name": "Bench press",
-      "entries": [
+      "sets": [
         {
           "weight1": 20.0,
           "reps1": 75,

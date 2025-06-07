@@ -21,17 +21,17 @@ class WorkoutWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Map<String, dynamic>? latestEntry = workout["entries"][0];
+    Map<String, dynamic>? latestSet = workout["sets"][0];
 
-    String entryString =
-        "${latestEntry?["weight1"]}Kg/${latestEntry?["reps1"]} reps";
+    String setString =
+        "${latestSet?["weight1"]}Kg/${latestSet?["reps1"]} reps";
 
-    if (latestEntry?["weight2"] != null) {
-      entryString +=
-          ", ${latestEntry?["weight2"]}Kg/${latestEntry?["reps2"]} reps";
+    if (latestSet?["weight2"] != null) {
+      setString +=
+          ", ${latestSet?["weight2"]}Kg/${latestSet?["reps2"]} reps";
     }
 
-    Map<String, dynamic> parsedDate = Utilities.parseDate(latestEntry?["date"]);
+    Map<String, dynamic> parsedDate = Utilities.parseDate(latestSet?["date"]);
 
     return Padding(
       padding: EdgeInsets.only(bottom: 8.0.h),
@@ -87,7 +87,7 @@ class WorkoutWidget extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      entryString,
+                      setString,
                       style: TextStyle(
                         fontSize: 15.sp,
                         color: Colors.black87,

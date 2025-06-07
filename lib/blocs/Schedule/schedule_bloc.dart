@@ -1,7 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
-import 'package:summerbody/database/tables/Entry.dart';
+import 'package:summerbody/database/tables/Set.dart';
 import 'package:summerbody/database/tables/MuscleGroup.dart';
 import 'package:summerbody/database/tables/Workout.dart';
 import 'package:summerbody/services/DIService.dart';
@@ -26,8 +26,8 @@ class ScheduleBloc extends Bloc<ScheduleEvent, ScheduleState> {
     on<AddWorkout>(_onAddWorkout);
     on<DeleteWorkout>(_onDeleteWorkout);
     on<EditWorkout>(_onEditWorkout);
-    on<CreateEntry>(_onCreateEntry);
-    on<DeleteEntry>(_onDeleteEntry);
+    on<CreateSet>(_onCreateSet);
+    on<DeleteSet>(_onDeleteSet);
   }
 
   String? selectDay;
@@ -40,26 +40,22 @@ class ScheduleBloc extends Bloc<ScheduleEvent, ScheduleState> {
       return {
         "muscleGroup": null,
         "workouts": [].cast<Workout>(),
-        "entries": {}.cast<int, List<Entry>>()
+        "sets": {}.cast<int, List<Set>>()
       };
     } else {
       List<Workout> workouts =
           await _localDatabaseService.getWorkoutsByMuscleGroup(muscleGroup.id!);
 
-      Map<int, List<Entry>> entries = {};
+      Map<int, List<Set>> sets = {};
 
       for (var workout in workouts) {
-        List<Entry> workoutEntries =
-            await _localDatabaseService.getAllEntries(workout.id!);
-        workoutEntries.sort((a, b) => b.date!.compareTo(a.date!));
-        entries[workout.id!] = workoutEntries;
+        List<Set> workoutSets =
+            await _localDatabaseService.getAllSets(workout.id!);
+        workoutSets.sort((a, b) => b.date!.compareTo(a.date!));
+        sets[workout.id!] = workoutSets;
       }
 
-      return {
-        "muscleGroup": muscleGroup,
-        "workouts": workouts,
-        "entries": entries
-      };
+      return {"muscleGroup": muscleGroup, "workouts": workouts, "sets": sets};
     }
   }
 
@@ -87,7 +83,7 @@ class ScheduleBloc extends Bloc<ScheduleEvent, ScheduleState> {
         currentDay: currentDay,
         musclegroup: muscleGroupAndWorkouts["muscleGroup"],
         workouts: muscleGroupAndWorkouts["workouts"],
-        entries: muscleGroupAndWorkouts["entries"]));
+        sets: muscleGroupAndWorkouts["sets"]));
   }
 
   Future<void> _onSetDay(SetDay event, Emitter emit) async {
@@ -100,7 +96,7 @@ class ScheduleBloc extends Bloc<ScheduleEvent, ScheduleState> {
         currentDay: event.day,
         musclegroup: muscleGroupAndWorkouts["muscleGroup"],
         workouts: muscleGroupAndWorkouts["workouts"],
-        entries: muscleGroupAndWorkouts["entries"]));
+        sets: muscleGroupAndWorkouts["sets"]));
   }
 
   Future<void> _onAddMuscleGroup(AddMuscleGroup event, Emitter emit) async {
@@ -120,7 +116,7 @@ class ScheduleBloc extends Bloc<ScheduleEvent, ScheduleState> {
               currentDay: event.day,
               musclegroup: muscleGroupAndWorkouts["muscleGroup"],
               workouts: muscleGroupAndWorkouts["workouts"],
-              entries: muscleGroupAndWorkouts["entries"]));
+              sets: muscleGroupAndWorkouts["sets"]));
         } else {
           throw Exception(
               "MuscleGroup with name ${event.muscleGroupName} not found!");
@@ -138,9 +134,9 @@ class ScheduleBloc extends Bloc<ScheduleEvent, ScheduleState> {
     if (state is ScheduleReady) {
       Workout workout =
           state.workouts.firstWhere((w) => w.id == event.workoutId);
-      List<Entry> entries = state.entries[workout.id] ?? [];
+      List<Set> sets = state.sets[workout.id] ?? [];
 
-      emit(WorkoutReady(workout: workout, entries: entries));
+      emit(WorkoutReady(workout: workout, sets: sets));
     }
   }
 
@@ -151,7 +147,7 @@ class ScheduleBloc extends Bloc<ScheduleEvent, ScheduleState> {
       try {
         int workoutId = await _localDatabaseService.createWorkout(
             state.musclegroup!.id!, event.workoutName);
-        await _localDatabaseService.createEntry(
+        await _localDatabaseService.createSet(
             workoutId, event.weight1, event.reps1, event.weight2, event.reps2);
 
         Map<String, dynamic> muscleGroupAndWorkouts =
@@ -160,7 +156,7 @@ class ScheduleBloc extends Bloc<ScheduleEvent, ScheduleState> {
             currentDay: state.currentDay,
             musclegroup: muscleGroupAndWorkouts["muscleGroup"],
             workouts: muscleGroupAndWorkouts["workouts"],
-            entries: muscleGroupAndWorkouts["entries"]));
+            sets: muscleGroupAndWorkouts["sets"]));
       } catch (e) {
         Logger().e(e);
         emit(state);
@@ -181,7 +177,7 @@ class ScheduleBloc extends Bloc<ScheduleEvent, ScheduleState> {
             currentDay: state.currentDay,
             musclegroup: muscleGroupAndWorkouts["muscleGroup"],
             workouts: muscleGroupAndWorkouts["workouts"],
-            entries: muscleGroupAndWorkouts["entries"]));
+            sets: muscleGroupAndWorkouts["sets"]));
       } catch (e) {
         Logger().e(e);
         emit(state);
@@ -196,20 +192,20 @@ class ScheduleBloc extends Bloc<ScheduleEvent, ScheduleState> {
       try {
         await _localDatabaseService.editWorkout(
             event.workoutId, event.workoutName);
-        await _localDatabaseService.editEntry(event.entryId, event.weight1,
+        await _localDatabaseService.editSet(event.setId, event.weight1,
             event.reps1, event.weight2, event.reps2);
 
         Workout? workout =
             await _localDatabaseService.getWorkoutByKey("id", event.workoutId);
 
-        List<Entry> entries = (await _localDatabaseService
-            .getAllEntries(event.workoutId))
+        List<Set> sets = (await _localDatabaseService
+            .getAllSets(event.workoutId))
           ..sort((a, b) => b.date!.compareTo(a.date!));
 
         Utilities.showSnackBar(
             "Successfully updated the workout", event.context, Colors.green);
 
-        emit(WorkoutReady(workout: workout!, entries: entries));
+        emit(WorkoutReady(workout: workout!, sets: sets));
       } catch (e) {
         Logger().e(e);
         Utilities.showSnackBar(
@@ -220,50 +216,50 @@ class ScheduleBloc extends Bloc<ScheduleEvent, ScheduleState> {
     }
   }
 
-  Future<void> _onCreateEntry(CreateEntry event, Emitter emit) async {
+  Future<void> _onCreateSet(CreateSet event, Emitter emit) async {
     final state = this.state;
 
     if (state is WorkoutReady) {
       try {
-        await _localDatabaseService.createEntry(event.workoutId, event.weight1,
+        await _localDatabaseService.createSet(event.workoutId, event.weight1,
             event.reps1, event.weight2, event.reps2);
 
-        List<Entry> entries =
-            ((await _localDatabaseService.getAllEntries(event.workoutId))
+        List<Set> sets =
+            ((await _localDatabaseService.getAllSets(event.workoutId))
               ..sort((a, b) => b.date!.compareTo(a.date!)));
 
         Utilities.showSnackBar(
-            "Successfully created the entry", event.context, Colors.green);
+            "Successfully created the set", event.context, Colors.green);
 
-        emit(WorkoutReady(workout: state.workout, entries: entries));
+        emit(WorkoutReady(workout: state.workout, sets: sets));
       } catch (e) {
         Logger().e(e);
         Utilities.showSnackBar(
-            "Failed to create entry", event.context, Colors.red);
+            "Failed to create set", event.context, Colors.red);
         emit(state);
       }
     }
   }
 
-  Future<void> _onDeleteEntry(DeleteEntry event, Emitter emit) async {
+  Future<void> _onDeleteSet(DeleteSet event, Emitter emit) async {
     final state = this.state;
 
     if (state is WorkoutReady) {
       try {
-        await _localDatabaseService.deleteEntry(event.workoutId, event.entryId);
+        await _localDatabaseService.deleteSet(event.workoutId, event.setId);
 
-        List<Entry> entries = (await _localDatabaseService
-            .getAllEntries(event.workoutId))
+        List<Set> sets = (await _localDatabaseService
+            .getAllSets(event.workoutId))
           ..sort((a, b) => b.date!.compareTo(a.date!));
 
         Utilities.showSnackBar(
-            "Successfully deleted the entry", event.context, Colors.green);
+            "Successfully deleted the set", event.context, Colors.green);
 
-        emit(WorkoutReady(workout: state.workout, entries: entries));
+        emit(WorkoutReady(workout: state.workout, sets: sets));
       } catch (e) {
         Logger().e(e);
         Utilities.showSnackBar(
-            "Failed to delete entry", event.context, Colors.red);
+            "Failed to delete set", event.context, Colors.red);
         emit(state);
       }
     }
