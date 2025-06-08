@@ -191,7 +191,7 @@ class ScheduleBloc extends Bloc<ScheduleEvent, ScheduleState> {
     if (state is WorkoutReady) {
       try {
         await _localDatabaseService.editWorkout(
-            event.workoutId, event.workoutName);
+            event.workoutId, event.workoutName); 
         await _localDatabaseService.editSet(event.setId, event.weight1,
             event.reps1, event.weight2, event.reps2);
 

@@ -5,6 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:logger/logger.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 import 'package:summerbody/blocs/Schedule/schedule_bloc.dart';
 import 'package:summerbody/database/tables/Set.dart';
@@ -32,11 +33,49 @@ class _WorkoutState extends State<Workout> {
 
   final form = FormGroup({
     "name": FormControl<String>(validators: [Validators.required]),
+    "date": FormControl<int>(),
     "weight1": FormControl<String>(validators: [Validators.required]),
     "reps1": FormControl<String>(validators: [Validators.required]),
     "weight2": FormControl<String?>(),
     "reps2": FormControl<String?>(),
   });
+
+  Future<void> _selectDate(BuildContext context) async {
+    DateTime initialDate = DateTime.now();
+    if (form.control('date').value != null) {
+      initialDate = DateTimeConverter.decode(form.control('date').value);
+    }
+
+    final DateTime? pickedDate = await showDatePicker(
+      context: context,
+      initialDate: initialDate,
+      firstDate: DateTime(2021),
+      lastDate: DateTime.now(),
+      builder: (context, child) {
+        return Theme(
+          data: ThemeData().copyWith(
+            dialogBackgroundColor: Colors.white,
+            datePickerTheme: DatePickerThemeData(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(5),
+              ),
+              backgroundColor: Colors.white,
+            ),
+            colorScheme: const ColorScheme.light(
+              primary: Colors.black87,
+              onPrimary: Colors.white,
+              onSurface: Colors.black87,
+            ),
+          ),
+          child: child!,
+        );
+      },
+    );
+
+    if (pickedDate != null) {
+      form.control('date').value = DateTimeConverter.encode(pickedDate);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -75,6 +114,7 @@ class _WorkoutState extends State<Workout> {
                 workoutName = state.workout.name!;
 
                 form.control('name').value = state.workout.name;
+                form.control('date').value = state.sets.first.date;
                 form.control('weight1').value =
                     state.sets[0].weight1.toString();
                 form.control('reps1').value = state.sets[0].reps1.toString();
@@ -104,28 +144,52 @@ class _WorkoutState extends State<Workout> {
                         formGroup: form,
                         child: Column(
                           children: [
-                            ReactiveTextField(
-                              formControlName: 'name',
-                              validationMessages: {
-                                ValidationMessage.required: (error) =>
-                                    'This field is required.',
-                              },
-                              decoration: InputDecoration(
-                                  hintText: "Workout Name",
-                                  fillColor: Colors.grey[100],
-                                  filled: true,
-                                  contentPadding: EdgeInsets.symmetric(
-                                      horizontal: 16.0.w, vertical: 12.0.h),
-                                  border: OutlineInputBorder(
-                                      borderSide: BorderSide.none,
-                                      borderRadius: BorderRadius.circular(5))),
-                              onChanged: (control) {
-                                form.control('name').value = control.value;
-                              },
-                              style: GoogleFonts.monda(
-                                fontSize: 20.sp,
-                                color: Colors.black87,
-                              ),
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: ReactiveTextField(
+                                    formControlName: 'name',
+                                    validationMessages: {
+                                      ValidationMessage.required: (error) =>
+                                          'This field is required.',
+                                    },
+                                    decoration: InputDecoration(
+                                        hintText: "Workout Name",
+                                        fillColor: Colors.grey[100],
+                                        filled: true,
+                                        contentPadding: EdgeInsets.symmetric(
+                                            horizontal: 16.0.w,
+                                            vertical: 12.0.h),
+                                        border: OutlineInputBorder(
+                                            borderSide: BorderSide.none,
+                                            borderRadius:
+                                                BorderRadius.circular(5))),
+                                    onChanged: (control) {
+                                      form.control('name').value =
+                                          control.value;
+                                    },
+                                    style: GoogleFonts.monda(
+                                      fontSize: 20.sp,
+                                      color: Colors.black87,
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(width: 10.w),
+                                GestureDetector(
+                                  onTap: () => _selectDate(context),
+                                  child: Container(
+                                    height: 50.h,
+                                    width: 60.w,
+                                    decoration: BoxDecoration(
+                                        color: Colors.black87,
+                                        borderRadius: BorderRadius.circular(5)),
+                                    child: const Icon(
+                                      Icons.calendar_month,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
                             SizedBox(height: 10.h),
                             Row(
