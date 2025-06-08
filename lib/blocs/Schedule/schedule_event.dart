@@ -49,6 +49,7 @@ final class EditWorkout extends ScheduleEvent {
   final int workoutId;
   final String workoutName;
   final int setId;
+  final int date;
   final double weight1;
   final int reps1;
   final double? weight2;
@@ -60,6 +61,7 @@ final class EditWorkout extends ScheduleEvent {
       {required this.workoutId,
       required this.workoutName,
       required this.setId,
+      required this.date,
       required this.weight1,
       required this.reps1,
       this.weight2,
