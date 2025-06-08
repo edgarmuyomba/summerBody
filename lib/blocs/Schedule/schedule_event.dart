@@ -71,6 +71,7 @@ final class EditWorkout extends ScheduleEvent {
 
 final class CreateSet extends ScheduleEvent {
   final int workoutId;
+  final int date;
   final double weight1;
   final int reps1;
   final double? weight2;
@@ -79,6 +80,7 @@ final class CreateSet extends ScheduleEvent {
 
   CreateSet(
       {required this.workoutId,
+      required this.date,
       required this.weight1,
       required this.reps1,
       this.weight2,

@@ -5,6 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:logger/logger.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 import 'package:summerbody/blocs/Schedule/schedule_bloc.dart';
 import 'package:summerbody/database/tables/Set.dart';
@@ -39,7 +40,8 @@ class _WorkoutState extends State<Workout> {
     "reps2": FormControl<String?>(),
   });
 
-  Future<void> _selectDate(BuildContext context) async {
+  Future<void> _selectDate(
+      BuildContext context, FormGroup form, StateSetter? setModalState) async {
     DateTime initialDate = DateTime.now();
     if (form.control('date').value != null) {
       initialDate = DateTimeConverter.decode(form.control('date').value);
@@ -72,7 +74,13 @@ class _WorkoutState extends State<Workout> {
     );
 
     if (pickedDate != null) {
-      form.control('date').value = DateTimeConverter.encode(pickedDate);
+      if (setModalState != null) {
+        setModalState(() {
+          form.control('date').value = DateTimeConverter.encode(pickedDate);
+        });
+      } else {
+        form.control('date').value = DateTimeConverter.encode(pickedDate);
+      }
     }
   }
 
@@ -175,7 +183,7 @@ class _WorkoutState extends State<Workout> {
                                 ),
                                 SizedBox(width: 10.w),
                                 GestureDetector(
-                                  onTap: () => _selectDate(context),
+                                  onTap: () => _selectDate(context, form, null),
                                   child: Container(
                                     height: 50.h,
                                     width: 60.w,
@@ -569,6 +577,7 @@ class _WorkoutState extends State<Workout> {
 
   addSetDialog(int workoutId) async {
     final form = FormGroup({
+      "date": FormControl<int>(value: DateTimeConverter.encode(DateTime.now())),
       "weight1": FormControl<String>(validators: [Validators.required]),
       "reps1": FormControl<String>(validators: [Validators.required]),
       "weight2": FormControl<String?>(),
@@ -607,6 +616,23 @@ class _WorkoutState extends State<Workout> {
                         formGroup: form,
                         child: Column(
                           children: [
+                            ElevatedButton(
+                              onPressed: () {
+                                _selectDate(context, form, setModalState);
+                              },
+                              style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.black87,
+                                  foregroundColor: Colors.white,
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(5))),
+                              child: Center(
+                                child: Text(form.control('date').value != null
+                                    ? Utilities.dateToString(
+                                        DateTimeConverter.decode(
+                                            form.control('date').value))
+                                    : "Select Date"),
+                              ),
+                            ),
                             Row(
                               mainAxisAlignment:
                                   dialogFirstSetValid && !dialogSecondSetEnabled
@@ -806,6 +832,7 @@ class _WorkoutState extends State<Workout> {
                                     // save the set
                                     context.read<ScheduleBloc>().add(CreateSet(
                                         workoutId: workoutId,
+                                        date: form.control('date').value,
                                         weight1: double.parse(
                                             form.control('weight1').value),
                                         reps1: int.parse(

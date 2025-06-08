@@ -221,8 +221,8 @@ class ScheduleBloc extends Bloc<ScheduleEvent, ScheduleState> {
 
     if (state is WorkoutReady) {
       try {
-        await _localDatabaseService.createSet(event.workoutId, event.weight1,
-            event.reps1, event.weight2, event.reps2);
+        await _localDatabaseService.createSet(event.workoutId, event.date,
+            event.weight1, event.reps1, event.weight2, event.reps2);
 
         List<Set> sets =
             ((await _localDatabaseService.getAllSets(event.workoutId))
