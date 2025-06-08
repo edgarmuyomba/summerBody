@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -24,11 +25,49 @@ class _WorkoutsState extends State<Workouts> {
 
   final form = FormGroup({
     "name": FormControl<String>(validators: [Validators.required]),
+    "date": FormControl<int>(value: DateTimeConverter.encode(DateTime.now())),
     "weight1": FormControl<String>(validators: [Validators.required]),
     "reps1": FormControl<String>(validators: [Validators.required]),
     "weight2": FormControl<String?>(),
     "reps2": FormControl<String?>(),
   });
+
+  Future<void> _selectDate(BuildContext context, FormGroup form) async {
+    DateTime initialDate = DateTime.now();
+    if (form.control('date').value != null) {
+      initialDate = DateTimeConverter.decode(form.control('date').value);
+    }
+
+    final DateTime? pickedDate = await showDatePicker(
+      context: context,
+      initialDate: initialDate,
+      firstDate: DateTime(2021),
+      lastDate: DateTime.now(),
+      builder: (context, child) {
+        return Theme(
+          data: ThemeData().copyWith(
+            dialogBackgroundColor: Colors.white,
+            datePickerTheme: DatePickerThemeData(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(5),
+              ),
+              backgroundColor: Colors.white,
+            ),
+            colorScheme: const ColorScheme.light(
+              primary: Colors.black87,
+              onPrimary: Colors.white,
+              onSurface: Colors.black87,
+            ),
+          ),
+          child: child!,
+        );
+      },
+    );
+
+    if (pickedDate != null) {
+      form.control('date').value = DateTimeConverter.encode(pickedDate);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -103,28 +142,52 @@ class _WorkoutsState extends State<Workouts> {
                         formGroup: form,
                         child: Column(
                           children: [
-                            ReactiveTextField(
-                              formControlName: 'name',
-                              validationMessages: {
-                                ValidationMessage.required: (error) =>
-                                    'This field is required.',
-                              },
-                              decoration: InputDecoration(
-                                  hintText: "Workout Name",
-                                  fillColor: Colors.grey[100],
-                                  filled: true,
-                                  contentPadding: EdgeInsets.symmetric(
-                                      horizontal: 16.0.w, vertical: 12.0.h),
-                                  border: OutlineInputBorder(
-                                      borderSide: BorderSide.none,
-                                      borderRadius: BorderRadius.circular(5))),
-                              onChanged: (control) {
-                                form.control('name').value = control.value;
-                              },
-                              style: GoogleFonts.monda(
-                                fontSize: 20.sp,
-                                color: Colors.black87,
-                              ),
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: ReactiveTextField(
+                                    formControlName: 'name',
+                                    validationMessages: {
+                                      ValidationMessage.required: (error) =>
+                                          'This field is required.',
+                                    },
+                                    decoration: InputDecoration(
+                                        hintText: "Workout Name",
+                                        fillColor: Colors.grey[100],
+                                        filled: true,
+                                        contentPadding: EdgeInsets.symmetric(
+                                            horizontal: 16.0.w,
+                                            vertical: 12.0.h),
+                                        border: OutlineInputBorder(
+                                            borderSide: BorderSide.none,
+                                            borderRadius:
+                                                BorderRadius.circular(5))),
+                                    onChanged: (control) {
+                                      form.control('name').value =
+                                          control.value;
+                                    },
+                                    style: GoogleFonts.monda(
+                                      fontSize: 20.sp,
+                                      color: Colors.black87,
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(width: 10.w),
+                                GestureDetector(
+                                  onTap: () => _selectDate(context, form),
+                                  child: Container(
+                                    height: 50.h,
+                                    width: 60.w,
+                                    decoration: BoxDecoration(
+                                        color: Colors.black87,
+                                        borderRadius: BorderRadius.circular(5)),
+                                    child: const Icon(
+                                      Icons.calendar_month,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
                             SizedBox(height: 10.h),
                             Row(
@@ -323,6 +386,7 @@ class _WorkoutsState extends State<Workouts> {
                                       context.read<ScheduleBloc>().add(AddWorkout(
                                           workoutName:
                                               form.control('name').value,
+                                          date: form.control('date').value,
                                           weight1: double.parse(
                                               form.control('weight1').value),
                                           reps1: int.parse(
@@ -394,8 +458,7 @@ class _WorkoutsState extends State<Workouts> {
                           "reps1": set.reps1,
                           "weight2": set.weight2,
                           "reps2": set.reps2,
-                          "date":
-                              DateTimeConverter.decode(set.date!).toString()
+                          "date": DateTimeConverter.decode(set.date!).toString()
                         };
                       }).toList()
                     };

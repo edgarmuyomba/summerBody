@@ -26,6 +26,7 @@ final class LoadWorkout extends ScheduleEvent {
 
 final class AddWorkout extends ScheduleEvent {
   final String workoutName;
+  final int date;
   final double weight1;
   final int reps1;
   final double? weight2;
@@ -33,6 +34,7 @@ final class AddWorkout extends ScheduleEvent {
 
   AddWorkout(
       {required this.workoutName,
+      required this.date,
       required this.weight1,
       required this.reps1,
       this.weight2,
