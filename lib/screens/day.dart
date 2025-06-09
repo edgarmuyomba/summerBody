@@ -208,8 +208,7 @@ class _DayState extends State<Day> {
                             Map<String, dynamic> workoutMap = {
                               "id": workout.id,
                               "name": workout.name,
-                              "sets":
-                                  (state.sets[workout.id] ?? []).map((set) {
+                              "sets": (state.sets[workout.id] ?? []).map((set) {
                                 return {
                                   "weight1": set.weight1,
                                   "reps1": set.reps1,
@@ -234,6 +233,15 @@ class _DayState extends State<Day> {
           }
           return const SizedBox.shrink();
         },
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          context.pushNamed(Routes.timer);
+        },
+        backgroundColor: Colors.black87,
+        foregroundColor: Colors.white,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
+        child: const Icon(Icons.timer),
       ),
     );
   }
