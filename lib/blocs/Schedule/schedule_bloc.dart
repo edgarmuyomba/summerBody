@@ -77,7 +77,7 @@ class ScheduleBloc extends Bloc<ScheduleEvent, ScheduleState> {
     Map<String, dynamic> muscleGroupAndWorkouts =
         await _getMuscleGroupAndWorkouts(currentDay);
 
-    selectDay = currentDay;
+    selectDay = currentDay; 
 
     emit(ScheduleReady(
         currentDay: currentDay,
