@@ -234,15 +234,15 @@ class _DayState extends State<Day> {
           return const SizedBox.shrink();
         },
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          context.pushNamed(Routes.timer);
-        },
-        backgroundColor: Colors.black87,
-        foregroundColor: Colors.white,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
-        child: const Icon(Icons.timer),
-      ),
+      // floatingActionButton: FloatingActionButton(
+      //   onPressed: () {
+      //     context.pushNamed(Routes.timer);
+      //   },
+      //   backgroundColor: Colors.black87,
+      //   foregroundColor: Colors.white,
+      //   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
+      //   child: const Icon(Icons.timer),
+      // ),
     );
   }
 
