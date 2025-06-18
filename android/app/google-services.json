@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "283663823307",
+    "project_id": "summer-body-be982",
+    "storage_bucket": "summer-body-be982.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:283663823307:android:f1c80db5c177ef7eb8c64e",
+        "android_client_info": {
+          "package_name": "com.edgarmuyomba.summerbody"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC9P_xHSlBQLWUzL97SC9hIGdYdMaZDTq8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -173,7 +173,7 @@ class _DayState extends State<Day> {
   void initState() {
     super.initState();
     widget._sharedPreferencesService.getStringValue("gender").then((value) {
-      if (value != null) {
+      if (value == null) {
         _showGenderSelector();
       }
     });

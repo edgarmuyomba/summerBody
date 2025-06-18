@@ -1,5 +1,7 @@
 import 'package:floor/floor.dart';
 import 'package:summerbody/database/database.dart';
+import 'package:summerbody/services/ConnectivityService.dart';
+import 'package:summerbody/services/FirebaseService.dart';
 import 'package:summerbody/services/LocalDatabaseService.dart';
 import 'package:summerbody/services/SharedPreferencesService.dart';
 import 'package:get_it/get_it.dart';
@@ -42,5 +44,9 @@ class DIService {
 
     locator.registerSingleton<LocalDatabaseService>(
         LocalDatabaseService(appDatabase: locator<AppDatabase>()));
+
+    locator.registerSingleton<ConnectivityService>(ConnectivityService());
+
+    locator.registerSingleton<FirebaseService>(FirebaseService());
   }
 }
