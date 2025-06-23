@@ -1,1 +1,21 @@
-{"flutter":{"platforms":{"android":{"default":{"projectId":"summer-body-be982","appId":"1:283663823307:android:f1c80db5c177ef7eb8c64e","fileOutput":"android/app/google-services.json"}},"dart":{"lib/firebase_options.dart":{"projectId":"summer-body-be982","configurations":{"android":"1:283663823307:android:f1c80db5c177ef7eb8c64e"}}}}}}
+{
+    "flutter": {
+        "platforms": {
+            "android": {
+                "default": {
+                    "projectId": "summer-body-be982",
+                    "appId": "1:283663823307:android:f1c80db5c177ef7eb8c64e",
+                    "fileOutput": "android/app/google-services.json"
+                }
+            },
+            "dart": {
+                "lib/firebase_options.dart": {
+                    "projectId": "summer-body-be982",
+                    "configurations": {
+                        "android": "1:283663823307:android:f1c80db5c177ef7eb8c64e"
+                    }
+                }
+            }
+        }
+    }
+}

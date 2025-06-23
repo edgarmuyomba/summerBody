@@ -41,7 +41,7 @@ class LocalDatabaseService {
 
   Future<int> createWorkout(int muscleGroupId, String workoutName) async {
     return await _appDatabase.workoutDao
-        .createWorkout(Workout(null, workoutName, muscleGroupId));
+        .createWorkout(Workout(id: null, name: workoutName, muscleGroup: muscleGroupId, isSuggested: false));
   }
 
   Future<Workout?> getWorkoutByKey(String key, dynamic value) async {

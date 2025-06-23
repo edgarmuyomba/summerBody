@@ -104,7 +104,7 @@ class _$AppDatabase extends AppDatabase {
         await database.execute(
             'CREATE TABLE IF NOT EXISTS `MuscleGroups` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `name` TEXT, `day` TEXT, `icon` TEXT)');
         await database.execute(
-            'CREATE TABLE IF NOT EXISTS `Workouts` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `name` TEXT, `muscleGroupId` INTEGER, FOREIGN KEY (`muscleGroupId`) REFERENCES `MuscleGroups` (`id`) ON UPDATE NO ACTION ON DELETE CASCADE)');
+            'CREATE TABLE IF NOT EXISTS `Workouts` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `name` TEXT, `isSuggested` INTEGER NOT NULL, `equipment` TEXT, `subMuscles` TEXT, `steps` TEXT, `videoUrl` TEXT, `gifUrl` TEXT, `muscleGroupId` INTEGER, FOREIGN KEY (`muscleGroupId`) REFERENCES `MuscleGroups` (`id`) ON UPDATE NO ACTION ON DELETE CASCADE)');
 
         await callback?.onCreate?.call(database, version);
       },
@@ -244,6 +244,12 @@ class _$WorkoutDao extends WorkoutDao {
             (Workout item) => <String, Object?>{
                   'id': item.id,
                   'name': item.name,
+                  'isSuggested': item.isSuggested ? 1 : 0,
+                  'equipment': _stringListConverter.encode(item.equipment),
+                  'subMuscles': _stringListConverter.encode(item.subMuscles),
+                  'steps': _stringListConverter.encode(item.steps),
+                  'videoUrl': _stringMapConverter.encode(item.videoUrl),
+                  'gifUrl': _stringMapConverter.encode(item.gifUrl),
                   'muscleGroupId': item.muscleGroup
                 }),
         _workoutUpdateAdapter = UpdateAdapter(
@@ -253,6 +259,12 @@ class _$WorkoutDao extends WorkoutDao {
             (Workout item) => <String, Object?>{
                   'id': item.id,
                   'name': item.name,
+                  'isSuggested': item.isSuggested ? 1 : 0,
+                  'equipment': _stringListConverter.encode(item.equipment),
+                  'subMuscles': _stringListConverter.encode(item.subMuscles),
+                  'steps': _stringListConverter.encode(item.steps),
+                  'videoUrl': _stringMapConverter.encode(item.videoUrl),
+                  'gifUrl': _stringMapConverter.encode(item.gifUrl),
                   'muscleGroupId': item.muscleGroup
                 });
 
@@ -275,16 +287,34 @@ class _$WorkoutDao extends WorkoutDao {
   @override
   Future<Workout?> getWorkoutById(int id) async {
     return _queryAdapter.query('SELECT * FROM Workouts WHERE id = ?1',
-        mapper: (Map<String, Object?> row) => Workout(row['id'] as int?,
-            row['name'] as String?, row['muscleGroupId'] as int?),
+        mapper: (Map<String, Object?> row) => Workout(
+            id: row['id'] as int?,
+            name: row['name'] as String?,
+            isSuggested: (row['isSuggested'] as int) != 0,
+            equipment: _stringListConverter.decode(row['equipment'] as String?),
+            subMuscles:
+                _stringListConverter.decode(row['subMuscles'] as String?),
+            steps: _stringListConverter.decode(row['steps'] as String?),
+            videoUrl: _stringMapConverter.decode(row['videoUrl'] as String?),
+            gifUrl: _stringMapConverter.decode(row['gifUrl'] as String?),
+            muscleGroup: row['muscleGroupId'] as int?),
         arguments: [id]);
   }
 
   @override
   Future<List<Workout>> getWorkoutsByName(String name) async {
     return _queryAdapter.queryList('SELECT * FROM Workouts WHERE name = ?1',
-        mapper: (Map<String, Object?> row) => Workout(row['id'] as int?,
-            row['name'] as String?, row['muscleGroupId'] as int?),
+        mapper: (Map<String, Object?> row) => Workout(
+            id: row['id'] as int?,
+            name: row['name'] as String?,
+            isSuggested: (row['isSuggested'] as int) != 0,
+            equipment: _stringListConverter.decode(row['equipment'] as String?),
+            subMuscles:
+                _stringListConverter.decode(row['subMuscles'] as String?),
+            steps: _stringListConverter.decode(row['steps'] as String?),
+            videoUrl: _stringMapConverter.decode(row['videoUrl'] as String?),
+            gifUrl: _stringMapConverter.decode(row['gifUrl'] as String?),
+            muscleGroup: row['muscleGroupId'] as int?),
         arguments: [name]);
   }
 
@@ -292,16 +322,34 @@ class _$WorkoutDao extends WorkoutDao {
   Future<List<Workout>> getWorkoutsByMuscleGroup(int muscleGroupId) async {
     return _queryAdapter.queryList(
         'SELECT * FROM Workouts WHERE muscleGroupId = ?1',
-        mapper: (Map<String, Object?> row) => Workout(row['id'] as int?,
-            row['name'] as String?, row['muscleGroupId'] as int?),
+        mapper: (Map<String, Object?> row) => Workout(
+            id: row['id'] as int?,
+            name: row['name'] as String?,
+            isSuggested: (row['isSuggested'] as int) != 0,
+            equipment: _stringListConverter.decode(row['equipment'] as String?),
+            subMuscles:
+                _stringListConverter.decode(row['subMuscles'] as String?),
+            steps: _stringListConverter.decode(row['steps'] as String?),
+            videoUrl: _stringMapConverter.decode(row['videoUrl'] as String?),
+            gifUrl: _stringMapConverter.decode(row['gifUrl'] as String?),
+            muscleGroup: row['muscleGroupId'] as int?),
         arguments: [muscleGroupId]);
   }
 
   @override
   Future<List<Workout>> getAllWorkouts() async {
     return _queryAdapter.queryList('SELECT * FROM Workouts',
-        mapper: (Map<String, Object?> row) => Workout(row['id'] as int?,
-            row['name'] as String?, row['muscleGroupId'] as int?));
+        mapper: (Map<String, Object?> row) => Workout(
+            id: row['id'] as int?,
+            name: row['name'] as String?,
+            isSuggested: (row['isSuggested'] as int) != 0,
+            equipment: _stringListConverter.decode(row['equipment'] as String?),
+            subMuscles:
+                _stringListConverter.decode(row['subMuscles'] as String?),
+            steps: _stringListConverter.decode(row['steps'] as String?),
+            videoUrl: _stringMapConverter.decode(row['videoUrl'] as String?),
+            gifUrl: _stringMapConverter.decode(row['gifUrl'] as String?),
+            muscleGroup: row['muscleGroupId'] as int?));
   }
 
   @override
@@ -416,3 +464,7 @@ class _$MuscleGroupDao extends MuscleGroupDao {
         muscleGroup, OnConflictStrategy.abort);
   }
 }
+
+// ignore_for_file: unused_element
+final _stringListConverter = StringListConverter();
+final _stringMapConverter = StringMapConverter();
