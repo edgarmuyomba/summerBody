@@ -26,7 +26,7 @@ final class LoadWorkout extends ScheduleEvent {
 
 final class AddWorkout extends ScheduleEvent {
   final String workoutName;
-  final int date;
+  final DateTime date;
   final double weight1;
   final int reps1;
   final double? weight2;
@@ -51,7 +51,7 @@ final class EditWorkout extends ScheduleEvent {
   final int workoutId;
   final String workoutName;
   final int setId;
-  final int date;
+  final DateTime date;
   final double weight1;
   final int reps1;
   final double? weight2;
@@ -73,7 +73,7 @@ final class EditWorkout extends ScheduleEvent {
 
 final class CreateSet extends ScheduleEvent {
   final int workoutId;
-  final int date;
+  final DateTime date;
   final double weight1;
   final int reps1;
   final double? weight2;

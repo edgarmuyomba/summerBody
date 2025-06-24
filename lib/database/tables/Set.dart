@@ -1,6 +1,8 @@
 import 'package:summerbody/database/tables/Workout.dart';
 import 'package:floor/floor.dart';
+import 'package:summerbody/database/typeConverters/datetimeConverter.dart';
 
+@TypeConverters([DateTimeConverter])
 @Entity(
   tableName: 'Sets',
   foreignKeys: [
@@ -23,7 +25,7 @@ class Set {
   final int? reps1;
   final double? weight2;
   final int? reps2;
-  final int? date;
+  final DateTime? date;
 
   Set(
     this.id,
@@ -42,7 +44,7 @@ class Set {
     int? reps1,
     double? weight2,
     int? reps2,
-    int? date,
+    DateTime? date,
   }) {
     return Set(
       id ?? this.id,

@@ -55,13 +55,13 @@ class LocalDatabaseService {
     }
   }
 
-  Future<int> createSet(int workoutId, int date, double weight1, int reps1,
+  Future<int> createSet(int workoutId, DateTime date, double weight1, int reps1,
       double? weight2, int? reps2) async {
     return await _appDatabase.setDao
         .createSet(Set(null, workoutId, weight1, reps1, weight2, reps2, date));
   }
 
-  Future<void> editSet(int setId, int date, double weight1, int reps1,
+  Future<void> editSet(int setId, DateTime date, double weight1, int reps1,
       double? weight2, int? reps2) async {
     final originalSet = await _appDatabase.setDao.getSetById(setId);
     if (originalSet != null) {

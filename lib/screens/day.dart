@@ -5,11 +5,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:logger/logger.dart';
 import 'package:summerbody/blocs/Schedule/schedule_bloc.dart';
 import 'package:summerbody/database/tables/MuscleGroup.dart';
-import 'package:summerbody/database/typeConverters/datetimeConverter.dart';
 import 'package:summerbody/routing/routes.dart';
 import 'package:summerbody/services/DIService.dart';
+import 'package:summerbody/services/FirebaseService.dart';
 import 'package:summerbody/services/LocalDatabaseService.dart';
 import 'package:summerbody/services/SharedPreferencesService.dart';
 import 'package:summerbody/widgets/workoutWidget.dart';
@@ -366,8 +367,7 @@ class _DayState extends State<Day> {
                                   "reps1": set.reps1,
                                   "weight2": set.weight2,
                                   "reps2": set.reps2,
-                                  "date": DateTimeConverter.decode(set.date!)
-                                      .toString()
+                                  "date": set.date!.toString()
                                 };
                               }).toList()
                             };
@@ -387,8 +387,17 @@ class _DayState extends State<Day> {
         },
       ),
       // floatingActionButton: FloatingActionButton(
-      //   onPressed: () {
-      //     context.pushNamed(Routes.timer);
+      //   onPressed: () async {
+      //     // context.pushNamed(Routes.timer);
+      //     List<Map<String, dynamic>> results = await DIService()
+      //         .locator
+      //         .get<FirebaseService>()
+      //         .fetchWorkoutSuggestions("Arms", "Band Bayesi");
+      //     if (results.isNotEmpty) {
+      //       Logger().d(results.first);
+      //     } else {
+      //       Logger().d("No results");
+      //     }
       //   },
       //   backgroundColor: Colors.black87,
       //   foregroundColor: Colors.white,

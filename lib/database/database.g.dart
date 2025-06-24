@@ -144,7 +144,7 @@ class _$SetDao extends SetDao {
                   'reps1': item.reps1,
                   'weight2': item.weight2,
                   'reps2': item.reps2,
-                  'date': item.date
+                  'date': _dateTimeConverter.encode(item.date)
                 }),
         _setUpdateAdapter = UpdateAdapter(
             database,
@@ -157,7 +157,7 @@ class _$SetDao extends SetDao {
                   'reps1': item.reps1,
                   'weight2': item.weight2,
                   'reps2': item.reps2,
-                  'date': item.date
+                  'date': _dateTimeConverter.encode(item.date)
                 });
 
   final sqflite.DatabaseExecutor database;
@@ -180,7 +180,7 @@ class _$SetDao extends SetDao {
             row['reps1'] as int?,
             row['weight2'] as double?,
             row['reps2'] as int?,
-            row['date'] as int?));
+            _dateTimeConverter.decode(row['date'] as int?)));
   }
 
   @override
@@ -203,7 +203,7 @@ class _$SetDao extends SetDao {
             row['reps1'] as int?,
             row['weight2'] as double?,
             row['reps2'] as int?,
-            row['date'] as int?),
+            _dateTimeConverter.decode(row['date'] as int?)),
         arguments: [id]);
   }
 
@@ -217,7 +217,7 @@ class _$SetDao extends SetDao {
             row['reps1'] as int?,
             row['weight2'] as double?,
             row['reps2'] as int?,
-            row['date'] as int?),
+            _dateTimeConverter.decode(row['date'] as int?)),
         arguments: [workoutId]);
   }
 
@@ -468,3 +468,4 @@ class _$MuscleGroupDao extends MuscleGroupDao {
 // ignore_for_file: unused_element
 final _stringListConverter = StringListConverter();
 final _stringMapConverter = StringMapConverter();
+final _dateTimeConverter = DateTimeConverter();

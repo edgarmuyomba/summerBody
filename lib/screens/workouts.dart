@@ -25,7 +25,7 @@ class _WorkoutsState extends State<Workouts> {
 
   final form = FormGroup({
     "name": FormControl<String>(validators: [Validators.required]),
-    "date": FormControl<int>(value: DateTimeConverter.encode(DateTime.now())),
+    "date": FormControl<DateTime>(value: DateTime.now()),
     "weight1": FormControl<String>(validators: [Validators.required]),
     "reps1": FormControl<String>(validators: [Validators.required]),
     "weight2": FormControl<String?>(),
@@ -35,7 +35,7 @@ class _WorkoutsState extends State<Workouts> {
   Future<void> _selectDate(BuildContext context, FormGroup form) async {
     DateTime initialDate = DateTime.now();
     if (form.control('date').value != null) {
-      initialDate = DateTimeConverter.decode(form.control('date').value);
+      initialDate = form.control('date').value;
     }
 
     final DateTime? pickedDate = await showDatePicker(
@@ -65,7 +65,7 @@ class _WorkoutsState extends State<Workouts> {
     );
 
     if (pickedDate != null) {
-      form.control('date').value = DateTimeConverter.encode(pickedDate);
+      form.control('date').value = pickedDate;
     }
   }
 
@@ -458,7 +458,7 @@ class _WorkoutsState extends State<Workouts> {
                           "reps1": set.reps1,
                           "weight2": set.weight2,
                           "reps2": set.reps2,
-                          "date": DateTimeConverter.decode(set.date!).toString()
+                          "date": set.date!.toString()
                         };
                       }).toList()
                     };

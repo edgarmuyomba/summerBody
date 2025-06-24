@@ -10,6 +10,8 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await DIService().setupLocator();
   await DIService().locator.get<FirebaseService>().initializeFirebase();
+
+  await DIService().locator.allReady();
   runApp(ScreenUtilInit(
       designSize: const Size(448.0, 973.34),
       builder: (context, child) => const MyApp()));

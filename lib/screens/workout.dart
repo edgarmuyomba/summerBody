@@ -32,7 +32,7 @@ class _WorkoutState extends State<Workout> {
 
   final form = FormGroup({
     "name": FormControl<String>(validators: [Validators.required]),
-    "date": FormControl<int>(),
+    "date": FormControl<DateTime>(),
     "weight1": FormControl<String>(validators: [Validators.required]),
     "reps1": FormControl<String>(validators: [Validators.required]),
     "weight2": FormControl<String?>(),
@@ -43,7 +43,7 @@ class _WorkoutState extends State<Workout> {
       BuildContext context, FormGroup form, StateSetter? setModalState) async {
     DateTime initialDate = DateTime.now();
     if (form.control('date').value != null) {
-      initialDate = DateTimeConverter.decode(form.control('date').value);
+      initialDate = form.control('date').value;
     }
 
     final DateTime? pickedDate = await showDatePicker(
@@ -75,10 +75,10 @@ class _WorkoutState extends State<Workout> {
     if (pickedDate != null) {
       if (setModalState != null) {
         setModalState(() {
-          form.control('date').value = DateTimeConverter.encode(pickedDate);
+          form.control('date').value = pickedDate;
         });
       } else {
-        form.control('date').value = DateTimeConverter.encode(pickedDate);
+        form.control('date').value = pickedDate;
       }
     }
   }
@@ -525,9 +525,7 @@ class _WorkoutState extends State<Workout> {
                                                     : Colors.red[900]),
                                           ),
                                           Text(
-                                            Utilities.dateToString(
-                                                DateTimeConverter.decode(
-                                                    set.date!)),
+                                            Utilities.dateToString(set.date!),
                                             style: TextStyle(
                                                 fontSize: 13.sp,
                                                 color: isFirst
@@ -576,7 +574,7 @@ class _WorkoutState extends State<Workout> {
 
   addSetDialog(int workoutId) async {
     final form = FormGroup({
-      "date": FormControl<int>(value: DateTimeConverter.encode(DateTime.now())),
+      "date": FormControl<DateTime>(value: DateTime.now()),
       "weight1": FormControl<String>(validators: [Validators.required]),
       "reps1": FormControl<String>(validators: [Validators.required]),
       "weight2": FormControl<String?>(),
@@ -627,8 +625,7 @@ class _WorkoutState extends State<Workout> {
                               child: Center(
                                 child: Text(form.control('date').value != null
                                     ? Utilities.dateToString(
-                                        DateTimeConverter.decode(
-                                            form.control('date').value))
+                                        form.control('date').value)
                                     : "Select Date"),
                               ),
                             ),
