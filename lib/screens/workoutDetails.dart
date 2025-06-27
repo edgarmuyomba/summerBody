@@ -174,6 +174,13 @@ class _WorkoutDetailsState extends State<WorkoutDetails> {
                                         showDialog(
                                           context: context,
                                           builder: (_) => Dialog(
+                                            surfaceTintColor: Colors.white,
+                                            backgroundColor: Colors.white,
+                                            shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(
+                                                        10.0)),
+                                            alignment: Alignment.center,
                                             child: AspectRatio(
                                               aspectRatio: 16 / 9,
                                               child: VideoPlayerScreen(
@@ -254,7 +261,75 @@ class _WorkoutDetailsState extends State<WorkoutDetails> {
                                           },
                                         ),
                                       )),
-                                ]
+                                ],
+                                if (state.workout.videoUrl?[gender] !=
+                                    null) ...[
+                                  GestureDetector(
+                                      onTap: () {
+                                        showDialog(
+                                          context: context,
+                                          builder: (_) => Dialog(
+                                            surfaceTintColor: Colors.white,
+                                            backgroundColor: Colors.white,
+                                            shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(
+                                                        10.0)),
+                                            alignment: Alignment.center,
+                                            child: AspectRatio(
+                                              aspectRatio: 16 / 9,
+                                              child: VideoPlayerScreen(
+                                                  videoUrl: state.workout
+                                                      .videoUrl![gender]!),
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                          boxShadow: const [
+                                            BoxShadow(
+                                              color: Colors.black12,
+                                              offset: Offset(2, 4),
+                                              blurRadius: 4,
+                                              spreadRadius: 0.5,
+                                            ),
+                                          ],
+                                          color: Colors.grey[100],
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                        ),
+                                        height: double.infinity,
+                                        width: 0.6 *
+                                            MediaQuery.of(context).size.width,
+                                        child: Stack(
+                                          children: [
+                                            ClipRRect(
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                              child: Image.network(
+                                                Utilities.getYouTubeThumbnail(
+                                                    state.workout
+                                                        .videoUrl![gender]!),
+                                                fit: BoxFit.cover,
+                                                width: double.infinity,
+                                                height: double.infinity,
+                                              ),
+                                            ),
+                                            Positioned.fill(
+                                              child: Center(
+                                                child: Icon(
+                                                  Icons.play_circle_fill,
+                                                  size: 60,
+                                                  color: Colors.white
+                                                      .withOpacity(0.8),
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      )),
+                                ],
                               ],
                             ),
                           )

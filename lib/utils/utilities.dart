@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:video_thumbnail/video_thumbnail.dart';
+import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 class Utilities {
   static Map<String, String> parseDate(String dateString) {
@@ -63,5 +64,10 @@ class Utilities {
       quality: 100,
     );
     return filePath != null ? File(filePath) : null;
+  }
+
+  static String getYouTubeThumbnail(String videoUrl) {
+    final videoId = YoutubePlayer.convertUrlToId(videoUrl);
+    return "https://img.youtube.com/vi/$videoId/0.jpg";
   }
 }
