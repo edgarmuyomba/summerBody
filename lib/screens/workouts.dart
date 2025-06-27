@@ -41,6 +41,23 @@ class _WorkoutsState extends State<Workouts> {
     "reps2": FormControl<String?>(),
   });
 
+  late FocusNode nameFocusNode;
+
+  @override
+  void initState() {
+    super.initState();
+    nameFocusNode = FocusNode();
+    nameFocusNode.addListener(() {
+      setState(() {}); // rebuild on focus change
+    });
+  }
+
+  @override
+  void dispose() {
+    nameFocusNode.dispose();
+    super.dispose();
+  }
+
   Stream<List<WorkoutPreset>>? _presetStream;
 
   void _searchPresets(String input) {
@@ -160,35 +177,78 @@ class _WorkoutsState extends State<Workouts> {
                         child: Column(
                           children: [
                             Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Expanded(
-                                  child: ReactiveTextField(
-                                    formControlName: 'name',
-                                    validationMessages: {
-                                      ValidationMessage.required: (error) =>
-                                          'This field is required.',
-                                    },
-                                    decoration: InputDecoration(
-                                        hintText: "Workout Name",
-                                        fillColor: Colors.grey[100],
-                                        filled: true,
-                                        contentPadding: EdgeInsets.symmetric(
-                                            horizontal: 16.0.w,
-                                            vertical: 12.0.h),
-                                        border: OutlineInputBorder(
-                                            borderSide: BorderSide.none,
-                                            borderRadius:
-                                                BorderRadius.circular(5))),
-                                    onChanged: (control) {
-                                      form.control('name').value =
-                                          control.value;
-                                      _searchPresets(
-                                          (control.value as String?) ?? "");
-                                    },
-                                    style: GoogleFonts.monda(
-                                      fontSize: 20.sp,
-                                      color: Colors.black87,
-                                    ),
+                                  child: Column(
+                                    children: [
+                                      ReactiveTextField(
+                                        focusNode: nameFocusNode,
+                                        formControlName: 'name',
+                                        validationMessages: {
+                                          ValidationMessage.required: (error) =>
+                                              'This field is required.',
+                                        },
+                                        decoration: InputDecoration(
+                                            hintText: "Workout Name",
+                                            fillColor: Colors.grey[100],
+                                            filled: true,
+                                            contentPadding:
+                                                EdgeInsets.symmetric(
+                                                    horizontal: 16.0.w,
+                                                    vertical: 12.0.h),
+                                            border: OutlineInputBorder(
+                                                borderSide: BorderSide.none,
+                                                borderRadius:
+                                                    BorderRadius.circular(5))),
+                                        onChanged: (control) {
+                                          form.control('name').value =
+                                              control.value;
+                                          _searchPresets(
+                                              (control.value as String?) ?? "");
+                                        },
+                                        style: GoogleFonts.monda(
+                                          fontSize: 20.sp,
+                                          color: Colors.black87,
+                                        ),
+                                      ),
+                                      if (_presetStream != null &&
+                                          nameFocusNode.hasFocus) ...[
+                                        SizedBox(
+                                          height: 0.4 *
+                                              MediaQuery.of(context)
+                                                  .size
+                                                  .height,
+                                          child: StreamBuilder<
+                                              List<WorkoutPreset>>(
+                                            stream: _presetStream,
+                                            builder: (context, snapshot) {
+                                              if (!snapshot.hasData ||
+                                                  snapshot.data!.isEmpty) {
+                                                return const SizedBox();
+                                              }
+                                              final results = snapshot.data!;
+                                              return ListView.builder(
+                                                itemCount: results.length,
+                                                itemBuilder: (context, index) {
+                                                  final preset = results[index];
+                                                  return ListTile(
+                                                    title: Text(preset.name!),
+                                                    onTap: () {
+                                                      form
+                                                          .control('name')
+                                                          .value = preset.name;
+                                                      FocusScope.of(context)
+                                                          .unfocus();
+                                                    },
+                                                  );
+                                                },
+                                              );
+                                            },
+                                          ),
+                                        ),
+                                      ]
+                                    ],
                                   ),
                                 ),
                                 SizedBox(width: 10.w),
@@ -467,33 +527,6 @@ class _WorkoutsState extends State<Workouts> {
                       child: const Divider(),
                     ),
                   ],
-                  Container(
-                    height: 0.5 * MediaQuery.of(context).size.height,
-                    decoration:
-                        BoxDecoration(border: Border.all(color: Colors.red)),
-                    child: StreamBuilder<List<WorkoutPreset>>(
-                      stream: _presetStream,
-                      builder: (context, snapshot) {
-                        if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                          return const SizedBox();
-                        }
-                        final results = snapshot.data!;
-                        return ListView.builder(
-                          itemCount: results.length,
-                          itemBuilder: (context, index) {
-                            final preset = results[index];
-                            return ListTile(
-                              title: Text(preset.name!),
-                              onTap: () {
-                                form.control('name').value = preset.name;
-                                FocusScope.of(context).unfocus();
-                              },
-                            );
-                          },
-                        );
-                      },
-                    ),
-                  ),
                   ...state.workouts.map((workout) {
                     Map<String, dynamic> workoutMap = {
                       "id": workout.id,
