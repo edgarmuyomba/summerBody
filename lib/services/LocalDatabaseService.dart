@@ -103,8 +103,13 @@ class LocalDatabaseService {
 
   Future<void> createWorkoutPresets(
       List<Map<String, dynamic>> workoutPresets, int? muscleGroupId) async {
-    List<WorkoutPreset> presets =
-        workoutPresets.map((e) => WorkoutPreset.fromMap(e, muscleGroupId)).toList();
+    List<WorkoutPreset> presets = workoutPresets
+        .map((e) => WorkoutPreset.fromMap(e, muscleGroupId))
+        .toList();
     await _appDatabase.workoutPresetDao.insertWorkoutPresets(presets);
+  }
+
+  Stream<List<WorkoutPreset>> searchWorkoutPresets(String query) {
+    return _appDatabase.workoutPresetDao.searchWorkoutPresets("%$query%");
   }
 }

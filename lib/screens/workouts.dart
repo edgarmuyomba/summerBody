@@ -7,12 +7,21 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:summerbody/blocs/Schedule/schedule_bloc.dart';
 import 'package:reactive_forms/reactive_forms.dart';
+import 'package:summerbody/database/tables/WorkoutPreset.dart';
 import 'package:summerbody/database/typeConverters/datetimeConverter.dart';
+import 'package:summerbody/services/DIService.dart';
+import 'package:summerbody/services/LocalDatabaseService.dart';
 import 'package:summerbody/widgets/workoutWidget.dart';
 
 class Workouts extends StatefulWidget {
   final String muscleGroupName;
-  const Workouts({super.key, required this.muscleGroupName});
+  final LocalDatabaseService _localDatabaseService;
+  Workouts(
+      {super.key,
+      required this.muscleGroupName,
+      LocalDatabaseService? localDatabaseService})
+      : _localDatabaseService = localDatabaseService ??
+            DIService().locator.get<LocalDatabaseService>();
 
   @override
   State<Workouts> createState() => _WorkoutsState();
@@ -31,6 +40,14 @@ class _WorkoutsState extends State<Workouts> {
     "weight2": FormControl<String?>(),
     "reps2": FormControl<String?>(),
   });
+
+  Stream<List<WorkoutPreset>>? _presetStream;
+
+  void _searchPresets(String input) {
+    setState(() {
+      _presetStream = widget._localDatabaseService.searchWorkoutPresets(input);
+    });
+  }
 
   Future<void> _selectDate(BuildContext context, FormGroup form) async {
     DateTime initialDate = DateTime.now();
@@ -165,6 +182,8 @@ class _WorkoutsState extends State<Workouts> {
                                     onChanged: (control) {
                                       form.control('name').value =
                                           control.value;
+                                      _searchPresets(
+                                          (control.value as String?) ?? "");
                                     },
                                     style: GoogleFonts.monda(
                                       fontSize: 20.sp,
@@ -448,6 +467,32 @@ class _WorkoutsState extends State<Workouts> {
                       child: const Divider(),
                     ),
                   ],
+                  Container(
+                    decoration:
+                        BoxDecoration(border: Border.all(color: Colors.red)),
+                    child: StreamBuilder<List<WorkoutPreset>>(
+                      stream: _presetStream,
+                      builder: (context, snapshot) {
+                        if (!snapshot.hasData) return const SizedBox();
+                        final results = snapshot.data!;
+                        return ListView.builder(
+                          shrinkWrap: true,
+                          itemCount: results.length,
+                          itemBuilder: (context, index) {
+                            final preset = results[index];
+                            return ListTile(
+                              title: Text(preset.name!),
+                              onTap: () {
+                                form.control('name').value = preset.name;
+                                FocusScope.of(context)
+                                    .unfocus(); // Hide keyboard
+                              },
+                            );
+                          },
+                        );
+                      },
+                    ),
+                  ),
                   ...state.workouts.map((workout) {
                     Map<String, dynamic> workoutMap = {
                       "id": workout.id,
