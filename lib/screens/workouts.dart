@@ -61,9 +61,14 @@ class _WorkoutsState extends State<Workouts> {
   Stream<List<WorkoutPreset>>? _presetStream;
 
   void _searchPresets(String input) {
-    setState(() {
-      _presetStream = widget._localDatabaseService.searchWorkoutPresets(input);
-    });
+    if (input.isNotEmpty) {
+      setState(() {
+        _presetStream =
+            widget._localDatabaseService.searchWorkoutPresets(input);
+      });
+    } else {
+      _presetStream = null;
+    }
   }
 
   Future<void> _selectDate(BuildContext context, FormGroup form) async {
@@ -204,6 +209,7 @@ class _WorkoutsState extends State<Workouts> {
                                         onChanged: (control) {
                                           form.control('name').value =
                                               control.value;
+
                                           _searchPresets(
                                               (control.value as String?) ?? "");
                                         },
@@ -214,38 +220,77 @@ class _WorkoutsState extends State<Workouts> {
                                       ),
                                       if (_presetStream != null &&
                                           nameFocusNode.hasFocus) ...[
-                                        SizedBox(
-                                          height: 0.4 *
-                                              MediaQuery.of(context)
-                                                  .size
-                                                  .height,
-                                          child: StreamBuilder<
-                                              List<WorkoutPreset>>(
-                                            stream: _presetStream,
-                                            builder: (context, snapshot) {
-                                              if (!snapshot.hasData ||
-                                                  snapshot.data!.isEmpty) {
-                                                return const SizedBox();
-                                              }
-                                              final results = snapshot.data!;
-                                              return ListView.builder(
-                                                itemCount: results.length,
-                                                itemBuilder: (context, index) {
-                                                  final preset = results[index];
-                                                  return ListTile(
-                                                    title: Text(preset.name!),
-                                                    onTap: () {
-                                                      form
-                                                          .control('name')
-                                                          .value = preset.name;
-                                                      FocusScope.of(context)
-                                                          .unfocus();
-                                                    },
-                                                  );
-                                                },
-                                              );
-                                            },
-                                          ),
+                                        StreamBuilder<List<WorkoutPreset>>(
+                                          stream: _presetStream,
+                                          builder: (context, snapshot) {
+                                            if (!snapshot.hasData ||
+                                                snapshot.data!.isEmpty) {
+                                              return const SizedBox.shrink();
+                                            }
+                                            final results = snapshot.data!;
+                                            if (results.isEmpty) {
+                                              return const SizedBox.shrink();
+                                            }
+                                            return Padding(
+                                              padding:
+                                                  EdgeInsets.only(top: 10.0.h),
+                                              child: ConstrainedBox(
+                                                constraints: BoxConstraints(
+                                                    maxHeight: 0.4 *
+                                                        MediaQuery.of(context)
+                                                            .size
+                                                            .height),
+                                                child: Container(
+                                                  decoration: BoxDecoration(
+                                                      color: Colors.white,
+                                                      boxShadow: const [
+                                                        BoxShadow(
+                                                          color: Colors.black12,
+                                                          offset: Offset(2, 4),
+                                                          blurRadius: 4,
+                                                          spreadRadius: 0.5,
+                                                        ),
+                                                      ],
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              5)),
+                                                  child: Padding(
+                                                    padding:
+                                                        const EdgeInsets.all(
+                                                            8.0),
+                                                    child: ListView.builder(
+                                                      shrinkWrap: true,
+                                                      physics:
+                                                          const ClampingScrollPhysics(),
+                                                      itemCount: results.length,
+                                                      itemBuilder:
+                                                          (context, index) {
+                                                        final preset =
+                                                            results[index];
+                                                        return ListTile(
+                                                          title: Text(
+                                                            preset.name!,
+                                                            style: const TextStyle(
+                                                                color: Colors
+                                                                    .black54),
+                                                          ),
+                                                          onTap: () {
+                                                            form
+                                                                    .control('name')
+                                                                    .value =
+                                                                preset.name;
+                                                            FocusScope.of(
+                                                                    context)
+                                                                .unfocus();
+                                                          },
+                                                        );
+                                                      },
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                            );
+                                          },
                                         ),
                                       ]
                                     ],
