@@ -3,11 +3,22 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:logger/logger.dart';
 import 'package:summerbody/blocs/Schedule/schedule_bloc.dart';
+import 'package:summerbody/screens/videoPlayer.dart';
+import 'package:summerbody/services/SharedPreferencesService.dart';
+import 'package:summerbody/services/DIService.dart';
+import 'package:summerbody/utils/utilities.dart';
 
 class WorkoutDetails extends StatefulWidget {
   final int workoutId;
-  const WorkoutDetails({super.key, required this.workoutId});
+  final SharedPreferencesService _sharedPreferencesService;
+  WorkoutDetails(
+      {super.key,
+      required this.workoutId,
+      SharedPreferencesService? sharedPreferencesService})
+      : _sharedPreferencesService = sharedPreferencesService ??
+            DIService().locator.get<SharedPreferencesService>();
 
   @override
   State<WorkoutDetails> createState() => _WorkoutDetailsState();
@@ -15,6 +26,19 @@ class WorkoutDetails extends StatefulWidget {
 
 class _WorkoutDetailsState extends State<WorkoutDetails> {
   String workoutName = "";
+  late String gender;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    widget._sharedPreferencesService.getStringValue("gender").then((value) {
+      setState(() {
+        gender = value!;
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final bloc = context.read<ScheduleBloc>();
@@ -56,7 +80,38 @@ class _WorkoutDetailsState extends State<WorkoutDetails> {
                 return Padding(
                     padding: EdgeInsets.all(16.0.h),
                     child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+                        if ((state.workout.steps ?? []).isNotEmpty) ...[
+                          Row(
+                            children: [
+                              const Icon(
+                                Icons.checklist,
+                                color: Colors.black87,
+                              ),
+                              SizedBox(
+                                width: 10.w,
+                              ),
+                              Text(
+                                "Steps",
+                                style: TextStyle(
+                                    fontSize: 20.sp,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black87),
+                              ),
+                            ],
+                          )
+                        ],
+                        ...(state.workout.steps ?? []).map((step) {
+                          return Text(
+                            "• $step",
+                            style: TextStyle(
+                                fontSize: 16.sp, color: Colors.black87),
+                          );
+                        }),
+                        SizedBox(
+                          height: 10.h,
+                        ),
                         Row(
                           children: [
                             const Icon(
@@ -80,7 +135,77 @@ class _WorkoutDetailsState extends State<WorkoutDetails> {
                               ),
                             ]
                           ],
-                        )
+                        ),
+                        if (state.workout.gifUrl?[gender] != null ||
+                            state.workout.videoUrl?[gender] != null) ...[
+                          SizedBox(
+                            height: 10.h,
+                          ),
+                          Row(
+                            children: [
+                              const Icon(
+                                Icons.play_circle_filled,
+                                color: Colors.black87,
+                              ),
+                              SizedBox(
+                                width: 10.w,
+                              ),
+                              Text(
+                                "Guides",
+                                style: TextStyle(
+                                    fontSize: 20.sp,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black87),
+                              ),
+                            ],
+                          ),
+                          SizedBox(
+                            height: 10.h,
+                          ),
+                          SizedBox(
+                            height: 0.4 * MediaQuery.of(context).size.height,
+                            child: ListView(
+                              scrollDirection: Axis.horizontal,
+                              children: [
+                                if (state.workout.gifUrl?[gender] != null) ...[
+                                  GestureDetector(
+                                      onTap: () {
+                                        // show video player dialog
+                                        showDialog(
+                                          context: context,
+                                          builder: (_) => Dialog(
+                                            child: AspectRatio(
+                                              aspectRatio: 16 / 9,
+                                              child: VideoPlayerScreen(
+                                                  videoUrl: state.workout
+                                                      .gifUrl![gender]!),
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                      child: FutureBuilder(
+                                          future: Utilities.getVideoThumbnail(
+                                              state.workout.gifUrl![gender]!),
+                                          builder: (context, snapshot) {
+                                            if (snapshot.hasData) {
+                                              return Image.file(snapshot.data!,
+                                                  fit: BoxFit.cover);
+                                            } else if (snapshot.hasError) {
+                                              Logger().e(snapshot.error);
+                                              return const SizedBox.shrink();
+                                            } else {
+                                              return const SizedBox(
+                                                  height: 150,
+                                                  child: Center(
+                                                      child:
+                                                          CircularProgressIndicator()));
+                                            }
+                                          })),
+                                ]
+                              ],
+                            ),
+                          )
+                        ],
                       ],
                     ));
               } else {

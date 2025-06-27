@@ -77,11 +77,11 @@ class WorkoutPreset extends Equatable {
           ? StringListConverter().decode(map['steps'] as String)
           : List<String>.from(map['steps'] ?? []),
       videoUrl: map['videoUrl'] is String
-          ? StringMapConverter().decode(map['videoUrl'] as String)
-          : Map<String, String?>.from(map['videoUrl'] ?? {}),
+          ? StringMapConverter().decode(map['video_url'] as String)
+          : Map<String, String?>.from(map['video_url'] ?? {}),
       gifUrl: map['gifUrl'] is String
-          ? StringMapConverter().decode(map['gifUrl'] as String)
-          : Map<String, String?>.from(map['gifUrl'] ?? {}),
+          ? StringMapConverter().decode(map['gif_url'] as String)
+          : Map<String, String?>.from(map['gif_url'] ?? {}),
       muscleGroup: muscleGroupId,
     );
   }
