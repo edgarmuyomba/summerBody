@@ -5,5 +5,7 @@ class Routes {
 
   static const String workout = "workout";
 
+  static const String workoutDetails = "workoutDetails";
+
   static const String timer = "timer";
 }

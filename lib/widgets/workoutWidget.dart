@@ -23,12 +23,10 @@ class WorkoutWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     Map<String, dynamic>? latestSet = workout["sets"][0];
 
-    String setString =
-        "${latestSet?["weight1"]}Kg/${latestSet?["reps1"]} reps";
+    String setString = "${latestSet?["weight1"]}Kg/${latestSet?["reps1"]} reps";
 
     if (latestSet?["weight2"] != null) {
-      setString +=
-          ", ${latestSet?["weight2"]}Kg/${latestSet?["reps2"]} reps";
+      setString += ", ${latestSet?["weight2"]}Kg/${latestSet?["reps2"]} reps";
     }
 
     Map<String, dynamic> parsedDate = Utilities.parseDate(latestSet?["date"]);
@@ -68,9 +66,16 @@ class WorkoutWidget extends StatelessWidget {
                 onTap: !editable
                     ? null
                     : () {
-                        context.pushNamed(Routes.workout, pathParameters: {
-                          "workoutId": workout["id"].toString()
-                        });
+                        if (workout["isSuggested"] == true) {
+                          context.pushNamed(Routes.workoutDetails,
+                              pathParameters: {
+                                "workoutId": workout["id"].toString()
+                              });
+                        } else {
+                          context.pushNamed(Routes.workout, pathParameters: {
+                            "workoutId": workout["id"].toString()
+                          });
+                        }
                       },
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -98,7 +103,7 @@ class WorkoutWidget extends StatelessWidget {
               ),
             ),
             if (canDelete) ...[
-              const Expanded(child: SizedBox()),
+              // const Expanded(child: SizedBox()),
               IconButton(
                   onPressed: () {
                     context

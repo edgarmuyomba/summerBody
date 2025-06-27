@@ -5,24 +5,14 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:logger/logger.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 import 'package:summerbody/blocs/Schedule/schedule_bloc.dart';
 import 'package:summerbody/database/tables/Set.dart';
-import 'package:summerbody/database/tables/WorkoutPreset.dart';
-import 'package:summerbody/services/DIService.dart';
-import 'package:summerbody/services/LocalDatabaseService.dart';
 import 'package:summerbody/utils/utilities.dart';
 
 class Workout extends StatefulWidget {
   final int workoutId;
-  final LocalDatabaseService _localDatabaseService;
-  Workout(
-      {super.key,
-      required this.workoutId,
-      LocalDatabaseService? localDatabaseService})
-      : _localDatabaseService = localDatabaseService ??
-            DIService().locator.get<LocalDatabaseService>();
+  const Workout({super.key, required this.workoutId});
 
   @override
   State<Workout> createState() => _WorkoutState();
@@ -47,14 +37,6 @@ class _WorkoutState extends State<Workout> {
     "weight2": FormControl<String?>(),
     "reps2": FormControl<String?>(),
   });
-
-  Stream<List<WorkoutPreset>>? _presetStream;
-
-  void _searchPresets(String input) {
-    setState(() {
-      _presetStream = widget._localDatabaseService.searchWorkoutPresets(input);
-    });
-  }
 
   Future<void> _selectDate(
       BuildContext context, FormGroup form, StateSetter? setModalState) async {
@@ -190,8 +172,6 @@ class _WorkoutState extends State<Workout> {
                                     onChanged: (control) {
                                       form.control('name').value =
                                           control.value;
-                                      _searchPresets(
-                                          (control.value as String?) ?? "");
                                     },
                                     style: GoogleFonts.monda(
                                       fontSize: 20.sp,

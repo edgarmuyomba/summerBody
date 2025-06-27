@@ -4,6 +4,7 @@ import 'package:summerbody/screens/day.dart';
 import 'package:summerbody/screens/splash.dart';
 import 'package:summerbody/screens/timer.dart';
 import 'package:summerbody/screens/workout.dart';
+import 'package:summerbody/screens/workoutDetails.dart';
 import 'package:summerbody/screens/workouts.dart';
 
 final GoRouter router = GoRouter(routes: [
@@ -42,5 +43,12 @@ final GoRouter router = GoRouter(routes: [
       builder: (BuildContext context, GoRouterState state) {
         final String workoutId = state.pathParameters["workoutId"] ?? "";
         return Workout(workoutId: int.parse(workoutId));
+      }),
+  GoRoute(
+      name: 'workoutDetails',
+      path: '/workoutDetails/:workoutId',
+      builder: (BuildContext context, GoRouterState state) {
+        final String workoutId = state.pathParameters["workoutId"] ?? "";
+        return WorkoutDetails(workoutId: int.parse(workoutId));
       })
 ]);

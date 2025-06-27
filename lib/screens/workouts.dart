@@ -5,7 +5,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:logger/logger.dart';
 import 'package:summerbody/blocs/Schedule/schedule_bloc.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 import 'package:summerbody/database/tables/WorkoutPreset.dart';
@@ -580,7 +579,6 @@ class _WorkoutsState extends State<Workouts> {
                     ),
                   ],
                   ...state.workouts.map((workout) {
-                    Logger().d(workout);
                     Map<String, dynamic> workoutMap = {
                       "id": workout.id,
                       "name": workout.name,

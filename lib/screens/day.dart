@@ -5,12 +5,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:logger/logger.dart';
 import 'package:summerbody/blocs/Schedule/schedule_bloc.dart';
 import 'package:summerbody/database/tables/MuscleGroup.dart';
 import 'package:summerbody/routing/routes.dart';
 import 'package:summerbody/services/DIService.dart';
-import 'package:summerbody/services/FirebaseService.dart';
 import 'package:summerbody/services/LocalDatabaseService.dart';
 import 'package:summerbody/services/SharedPreferencesService.dart';
 import 'package:summerbody/widgets/workoutWidget.dart';
@@ -361,6 +359,7 @@ class _DayState extends State<Day> {
                             Map<String, dynamic> workoutMap = {
                               "id": workout.id,
                               "name": workout.name,
+                              "isSuggested": workout.isSuggested,
                               "sets": (state.sets[workout.id] ?? []).map((set) {
                                 return {
                                   "weight1": set.weight1,
