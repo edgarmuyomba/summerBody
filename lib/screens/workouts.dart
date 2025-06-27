@@ -468,15 +468,17 @@ class _WorkoutsState extends State<Workouts> {
                     ),
                   ],
                   Container(
+                    height: 0.5 * MediaQuery.of(context).size.height,
                     decoration:
                         BoxDecoration(border: Border.all(color: Colors.red)),
                     child: StreamBuilder<List<WorkoutPreset>>(
                       stream: _presetStream,
                       builder: (context, snapshot) {
-                        if (!snapshot.hasData) return const SizedBox();
+                        if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                          return const SizedBox();
+                        }
                         final results = snapshot.data!;
                         return ListView.builder(
-                          shrinkWrap: true,
                           itemCount: results.length,
                           itemBuilder: (context, index) {
                             final preset = results[index];
@@ -484,8 +486,7 @@ class _WorkoutsState extends State<Workouts> {
                               title: Text(preset.name!),
                               onTap: () {
                                 form.control('name').value = preset.name;
-                                FocusScope.of(context)
-                                    .unfocus(); // Hide keyboard
+                                FocusScope.of(context).unfocus();
                               },
                             );
                           },
