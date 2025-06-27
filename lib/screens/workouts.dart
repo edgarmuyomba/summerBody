@@ -5,10 +5,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:logger/logger.dart';
 import 'package:summerbody/blocs/Schedule/schedule_bloc.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 import 'package:summerbody/database/tables/WorkoutPreset.dart';
-import 'package:summerbody/database/typeConverters/datetimeConverter.dart';
 import 'package:summerbody/services/DIService.dart';
 import 'package:summerbody/services/LocalDatabaseService.dart';
 import 'package:summerbody/widgets/workoutWidget.dart';
@@ -107,6 +107,8 @@ class _WorkoutsState extends State<Workouts> {
       form.control('date').value = pickedDate;
     }
   }
+
+  WorkoutPreset? selectedWorkout;
 
   @override
   Widget build(BuildContext context) {
@@ -279,6 +281,10 @@ class _WorkoutsState extends State<Workouts> {
                                                                     .control('name')
                                                                     .value =
                                                                 preset.name;
+                                                            setState(() {
+                                                              selectedWorkout =
+                                                                  preset;
+                                                            });
                                                             FocusScope.of(
                                                                     context)
                                                                 .unfocus();
@@ -508,6 +514,7 @@ class _WorkoutsState extends State<Workouts> {
                                 return ElevatedButton(
                                     onPressed: () {
                                       context.read<ScheduleBloc>().add(AddWorkout(
+                                          workoutPreset: selectedWorkout,
                                           workoutName:
                                               form.control('name').value,
                                           date: form.control('date').value,
@@ -573,6 +580,7 @@ class _WorkoutsState extends State<Workouts> {
                     ),
                   ],
                   ...state.workouts.map((workout) {
+                    Logger().d(workout);
                     Map<String, dynamic> workoutMap = {
                       "id": workout.id,
                       "name": workout.name,

@@ -40,7 +40,20 @@ class LocalDatabaseService {
     await _appDatabase.muscleGroupDao.updateMuscleGroupDay(id, day);
   }
 
-  Future<int> createWorkout(int muscleGroupId, String workoutName) async {
+  Future<int> createWorkout(int muscleGroupId, String? workoutName,
+      WorkoutPreset? workoutPreset) async {
+    if (workoutPreset != null) {
+      return await _appDatabase.workoutDao.createWorkout(Workout(
+          id: null,
+          name: workoutPreset.name,
+          muscleGroup: muscleGroupId,
+          isSuggested: true,
+          equipment: workoutPreset.equipment,
+          subMuscles: workoutPreset.subMuscles,
+          steps: workoutPreset.steps,
+          videoUrl: workoutPreset.videoUrl,
+          gifUrl: workoutPreset.gifUrl));
+    }
     return await _appDatabase.workoutDao.createWorkout(Workout(
         id: null,
         name: workoutName,

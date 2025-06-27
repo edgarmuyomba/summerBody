@@ -7,6 +7,7 @@ import 'package:meta/meta.dart';
 import 'package:summerbody/database/tables/Set.dart';
 import 'package:summerbody/database/tables/MuscleGroup.dart';
 import 'package:summerbody/database/tables/Workout.dart';
+import 'package:summerbody/database/tables/WorkoutPreset.dart';
 import 'package:summerbody/services/DIService.dart';
 import 'package:summerbody/services/FirebaseService.dart';
 import 'package:summerbody/services/LocalDatabaseService.dart';
@@ -174,7 +175,8 @@ class ScheduleBloc extends Bloc<ScheduleEvent, ScheduleState> {
     if (state is ScheduleReady) {
       try {
         int workoutId = await _localDatabaseService.createWorkout(
-            state.musclegroup!.id!, event.workoutName);
+            state.musclegroup!.id!, event.workoutName, event.workoutPreset);
+
         await _localDatabaseService.createSet(workoutId, event.date,
             event.weight1, event.reps1, event.weight2, event.reps2);
 
