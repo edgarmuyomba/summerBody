@@ -2,6 +2,7 @@ import 'package:summerbody/database/database.dart';
 import 'package:summerbody/database/tables/Set.dart';
 import 'package:summerbody/database/tables/MuscleGroup.dart';
 import 'package:summerbody/database/tables/Workout.dart';
+import 'package:summerbody/database/tables/WorkoutPreset.dart';
 import 'package:summerbody/services/DIService.dart';
 
 class LocalDatabaseService {
@@ -40,8 +41,11 @@ class LocalDatabaseService {
   }
 
   Future<int> createWorkout(int muscleGroupId, String workoutName) async {
-    return await _appDatabase.workoutDao
-        .createWorkout(Workout(id: null, name: workoutName, muscleGroup: muscleGroupId, isSuggested: false));
+    return await _appDatabase.workoutDao.createWorkout(Workout(
+        id: null,
+        name: workoutName,
+        muscleGroup: muscleGroupId,
+        isSuggested: false));
   }
 
   Future<Workout?> getWorkoutByKey(String key, dynamic value) async {
@@ -95,5 +99,12 @@ class LocalDatabaseService {
 
   Future<void> deleteSet(int workoutId, int setId) async {
     await _appDatabase.setDao.deleteSetById(workoutId, setId);
+  }
+
+  Future<void> createWorkoutPresets(
+      List<Map<String, dynamic>> workoutPresets, int? muscleGroupId) async {
+    List<WorkoutPreset> presets =
+        workoutPresets.map((e) => WorkoutPreset.fromMap(e, muscleGroupId)).toList();
+    await _appDatabase.workoutPresetDao.insertWorkoutPresets(presets);
   }
 }

@@ -19,16 +19,27 @@ class FirebaseService {
     }
   }
 
-  Future<List<Map<String, dynamic>>> fetchWorkoutSuggestions(
-      String muscleGroup, String query) async {
-    if (query.length < 5) return [];
+  Stream<List<Map<String, dynamic>>> workoutStream(String muscleGroup) async* {
+    DocumentSnapshot? lastDoc;
+    bool hasMore = true;
 
-    final collection = FirebaseFirestore.instance.collection(muscleGroup);
-    final snapshot = await collection
-        .where('name', isGreaterThanOrEqualTo: query)
-        .where('name', isLessThanOrEqualTo: '$query\uf8ff')
-        .get();
+    while (hasMore) {
+      final query = FirebaseFirestore.instance
+          .collection(muscleGroup)
+          .orderBy('name')
+          .limit(100);
 
-    return snapshot.docs.map((doc) => doc.data()).toList();
+      final snapshot = await (lastDoc == null
+          ? query.get()
+          : query.startAfterDocument(lastDoc).get());
+
+      if (snapshot.docs.isEmpty) {
+        hasMore = false;
+        break;
+      }
+
+      lastDoc = snapshot.docs.last;
+      yield snapshot.docs.map((doc) => doc.data()).toList();
+    }
   }
 }

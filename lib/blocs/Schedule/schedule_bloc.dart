@@ -1,10 +1,14 @@
+import 'dart:async';
+
 import 'package:bloc/bloc.dart';
+import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
 import 'package:summerbody/database/tables/Set.dart';
 import 'package:summerbody/database/tables/MuscleGroup.dart';
 import 'package:summerbody/database/tables/Workout.dart';
 import 'package:summerbody/services/DIService.dart';
+import 'package:summerbody/services/FirebaseService.dart';
 import 'package:summerbody/services/LocalDatabaseService.dart';
 import 'package:logger/logger.dart';
 import 'package:summerbody/utils/utilities.dart';
@@ -14,10 +18,15 @@ part 'schedule_state.dart';
 
 class ScheduleBloc extends Bloc<ScheduleEvent, ScheduleState> {
   final LocalDatabaseService _localDatabaseService;
+  final FirebaseService _firebaseService;
 
-  ScheduleBloc({LocalDatabaseService? localDatabaseService})
+  ScheduleBloc(
+      {LocalDatabaseService? localDatabaseService,
+      FirebaseService? firebaseService})
       : _localDatabaseService =
             localDatabaseService ?? DIService().locator<LocalDatabaseService>(),
+        _firebaseService =
+            firebaseService ?? DIService().locator<FirebaseService>(),
         super(ScheduleInitial()) {
     on<Initialize>(_onInitialize);
     on<SetDay>(_onSetDay);
@@ -77,7 +86,7 @@ class ScheduleBloc extends Bloc<ScheduleEvent, ScheduleState> {
     Map<String, dynamic> muscleGroupAndWorkouts =
         await _getMuscleGroupAndWorkouts(currentDay);
 
-    selectDay = currentDay; 
+    selectDay = currentDay;
 
     emit(ScheduleReady(
         currentDay: currentDay,
@@ -99,6 +108,13 @@ class ScheduleBloc extends Bloc<ScheduleEvent, ScheduleState> {
         sets: muscleGroupAndWorkouts["sets"]));
   }
 
+  Stream<int> numberStream() async* {
+    for (int i = 0; i <= 10; i++) {
+      await Future.delayed(const Duration(seconds: 2));
+      yield i;
+    }
+  }
+
   Future<void> _onAddMuscleGroup(AddMuscleGroup event, Emitter emit) async {
     final state = this.state;
     if (state is ScheduleReady) {
@@ -112,11 +128,23 @@ class ScheduleBloc extends Bloc<ScheduleEvent, ScheduleState> {
 
           Map<String, dynamic> muscleGroupAndWorkouts =
               await _getMuscleGroupAndWorkouts(event.day);
+
           emit(ScheduleReady(
               currentDay: event.day,
               musclegroup: muscleGroupAndWorkouts["muscleGroup"],
               workouts: muscleGroupAndWorkouts["workouts"],
               sets: muscleGroupAndWorkouts["sets"]));
+
+          StreamSubscription<List<Map<String, dynamic>>>? subscription;
+
+          subscription =
+              _firebaseService.workoutStream(muscleGroup.name!).listen((value) {
+            _localDatabaseService.createWorkoutPresets(value, muscleGroup.id);
+            Logger().d("Processed ${value.length} items");
+          }, onDone: () {
+            Logger().i("Stream Completed");
+            subscription?.cancel();
+          });
         } else {
           throw Exception(
               "MuscleGroup with name ${event.muscleGroupName} not found!");
@@ -147,8 +175,8 @@ class ScheduleBloc extends Bloc<ScheduleEvent, ScheduleState> {
       try {
         int workoutId = await _localDatabaseService.createWorkout(
             state.musclegroup!.id!, event.workoutName);
-        await _localDatabaseService.createSet(
-            workoutId, event.date, event.weight1, event.reps1, event.weight2, event.reps2);
+        await _localDatabaseService.createSet(workoutId, event.date,
+            event.weight1, event.reps1, event.weight2, event.reps2);
 
         Map<String, dynamic> muscleGroupAndWorkouts =
             await _getMuscleGroupAndWorkouts(state.currentDay);

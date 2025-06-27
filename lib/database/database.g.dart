@@ -76,6 +76,8 @@ class _$AppDatabase extends AppDatabase {
 
   WorkoutDao? _workoutDaoInstance;
 
+  WorkoutPresetDao? _workoutPresetDaoInstance;
+
   MuscleGroupDao? _muscleGroupDaoInstance;
 
   Future<sqflite.Database> open(
@@ -105,6 +107,8 @@ class _$AppDatabase extends AppDatabase {
             'CREATE TABLE IF NOT EXISTS `MuscleGroups` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `name` TEXT, `day` TEXT, `icon` TEXT)');
         await database.execute(
             'CREATE TABLE IF NOT EXISTS `Workouts` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `name` TEXT, `isSuggested` INTEGER NOT NULL, `equipment` TEXT, `subMuscles` TEXT, `steps` TEXT, `videoUrl` TEXT, `gifUrl` TEXT, `muscleGroupId` INTEGER, FOREIGN KEY (`muscleGroupId`) REFERENCES `MuscleGroups` (`id`) ON UPDATE NO ACTION ON DELETE CASCADE)');
+        await database.execute(
+            'CREATE TABLE IF NOT EXISTS `WorkoutPresets` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `name` TEXT, `equipment` TEXT, `subMuscles` TEXT, `steps` TEXT, `videoUrl` TEXT, `gifUrl` TEXT, `muscleGroupId` INTEGER, FOREIGN KEY (`muscleGroupId`) REFERENCES `MuscleGroups` (`id`) ON UPDATE NO ACTION ON DELETE CASCADE)');
 
         await callback?.onCreate?.call(database, version);
       },
@@ -120,6 +124,12 @@ class _$AppDatabase extends AppDatabase {
   @override
   WorkoutDao get workoutDao {
     return _workoutDaoInstance ??= _$WorkoutDao(database, changeListener);
+  }
+
+  @override
+  WorkoutPresetDao get workoutPresetDao {
+    return _workoutPresetDaoInstance ??=
+        _$WorkoutPresetDao(database, changeListener);
   }
 
   @override
@@ -361,6 +371,60 @@ class _$WorkoutDao extends WorkoutDao {
   @override
   Future<void> editWorkout(Workout workout) async {
     await _workoutUpdateAdapter.update(workout, OnConflictStrategy.abort);
+  }
+}
+
+class _$WorkoutPresetDao extends WorkoutPresetDao {
+  _$WorkoutPresetDao(
+    this.database,
+    this.changeListener,
+  )   : _queryAdapter = QueryAdapter(database, changeListener),
+        _workoutPresetInsertionAdapter = InsertionAdapter(
+            database,
+            'WorkoutPresets',
+            (WorkoutPreset item) => <String, Object?>{
+                  'id': item.id,
+                  'name': item.name,
+                  'equipment': _stringListConverter.encode(item.equipment),
+                  'subMuscles': _stringListConverter.encode(item.subMuscles),
+                  'steps': _stringListConverter.encode(item.steps),
+                  'videoUrl': _stringMapConverter.encode(item.videoUrl),
+                  'gifUrl': _stringMapConverter.encode(item.gifUrl),
+                  'muscleGroupId': item.muscleGroup
+                },
+            changeListener);
+
+  final sqflite.DatabaseExecutor database;
+
+  final StreamController<String> changeListener;
+
+  final QueryAdapter _queryAdapter;
+
+  final InsertionAdapter<WorkoutPreset> _workoutPresetInsertionAdapter;
+
+  @override
+  Stream<List<WorkoutPreset>> searchWorkoutPresets(String query) {
+    return _queryAdapter.queryListStream(
+        'SELECT * FROM WorkoutPresets WHERE name LIKE ?1',
+        mapper: (Map<String, Object?> row) => WorkoutPreset(
+            id: row['id'] as int?,
+            name: row['name'] as String?,
+            equipment: _stringListConverter.decode(row['equipment'] as String?),
+            subMuscles:
+                _stringListConverter.decode(row['subMuscles'] as String?),
+            steps: _stringListConverter.decode(row['steps'] as String?),
+            videoUrl: _stringMapConverter.decode(row['videoUrl'] as String?),
+            gifUrl: _stringMapConverter.decode(row['gifUrl'] as String?),
+            muscleGroup: row['muscleGroupId'] as int?),
+        arguments: [query],
+        queryableName: 'WorkoutPresets',
+        isView: false);
+  }
+
+  @override
+  Future<void> insertWorkoutPresets(List<WorkoutPreset> presets) async {
+    await _workoutPresetInsertionAdapter.insertList(
+        presets, OnConflictStrategy.replace);
   }
 }
 

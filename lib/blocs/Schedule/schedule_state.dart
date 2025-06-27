@@ -1,9 +1,12 @@
 part of 'schedule_bloc.dart';
 
 @immutable
-sealed class ScheduleState {}
+sealed class ScheduleState extends Equatable {}
 
-final class ScheduleInitial extends ScheduleState {}
+final class ScheduleInitial extends ScheduleState {
+  @override
+  List<Object?> get props => [];
+}
 
 final class ScheduleReady extends ScheduleState {
   final String currentDay;
@@ -16,6 +19,9 @@ final class ScheduleReady extends ScheduleState {
       required this.musclegroup,
       required this.workouts,
       required this.sets});
+
+  @override
+  List<Object?> get props => [currentDay, musclegroup, workouts, sets];
 }
 
 final class WorkoutReady extends ScheduleState {
@@ -23,4 +29,7 @@ final class WorkoutReady extends ScheduleState {
   final List<Set> sets;
 
   WorkoutReady({required this.workout, required this.sets});
+
+  @override
+  List<Object?> get props => [workout, sets];
 }
