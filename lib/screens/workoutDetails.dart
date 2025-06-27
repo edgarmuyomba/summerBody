@@ -183,24 +183,77 @@ class _WorkoutDetailsState extends State<WorkoutDetails> {
                                           ),
                                         );
                                       },
-                                      child: FutureBuilder(
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                          boxShadow: const [
+                                            BoxShadow(
+                                              color: Colors.black12,
+                                              offset: Offset(2, 4),
+                                              blurRadius: 4,
+                                              spreadRadius: 0.5,
+                                            ),
+                                          ],
+                                          color: Colors.grey[100],
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                        ),
+                                        height: double.infinity,
+                                        width: 0.6 *
+                                            MediaQuery.of(context).size.width,
+                                        child: FutureBuilder(
                                           future: Utilities.getVideoThumbnail(
-                                              state.workout.gifUrl![gender]!),
+                                            state.workout.gifUrl![gender]!,
+                                            (0.4 *
+                                                    MediaQuery.of(context)
+                                                        .size
+                                                        .height)
+                                                .toInt(),
+                                          ),
                                           builder: (context, snapshot) {
                                             if (snapshot.hasData) {
-                                              return Image.file(snapshot.data!,
-                                                  fit: BoxFit.cover);
+                                              return Stack(
+                                                children: [
+                                                  ClipRRect(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            10),
+                                                    child: Image.file(
+                                                      snapshot.data!,
+                                                      fit: BoxFit.cover,
+                                                      width: double.infinity,
+                                                      height: double.infinity,
+                                                    ),
+                                                  ),
+                                                  Positioned.fill(
+                                                    child: Center(
+                                                      child: Icon(
+                                                        Icons.play_circle_fill,
+                                                        size: 60,
+                                                        color: Colors.white
+                                                            .withOpacity(0.8),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              );
                                             } else if (snapshot.hasError) {
                                               Logger().e(snapshot.error);
                                               return const SizedBox.shrink();
                                             } else {
-                                              return const SizedBox(
-                                                  height: 150,
-                                                  child: Center(
-                                                      child:
-                                                          CircularProgressIndicator()));
+                                              return Center(
+                                                child: SizedBox(
+                                                  height: 20.h,
+                                                  width: 20.h,
+                                                  child:
+                                                      const CircularProgressIndicator(
+                                                          color:
+                                                              Colors.black87),
+                                                ),
+                                              );
                                             }
-                                          })),
+                                          },
+                                        ),
+                                      )),
                                 ]
                               ],
                             ),

@@ -52,14 +52,15 @@ class Utilities {
     );
   }
 
-  static Future<File?> getVideoThumbnail(String videoUrl) async {
+  static Future<File?> getVideoThumbnail(String videoUrl, int height) async {
     final tempDir = await getTemporaryDirectory();
     final filePath = await VideoThumbnail.thumbnailFile(
       video: videoUrl,
       thumbnailPath: tempDir.path,
-      imageFormat: ImageFormat.JPEG,
-      maxHeight: 150,
-      quality: 75,
+      imageFormat: ImageFormat.PNG,
+      maxHeight: height,
+      maxWidth: height * 16 ~/ 9,
+      quality: 100,
     );
     return filePath != null ? File(filePath) : null;
   }
