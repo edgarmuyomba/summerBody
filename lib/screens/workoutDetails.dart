@@ -6,6 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:logger/logger.dart';
 import 'package:summerbody/blocs/Schedule/schedule_bloc.dart';
 import 'package:summerbody/screens/videoPlayer.dart';
+import 'package:summerbody/screens/youtubeVideoPlayer.dart';
 import 'package:summerbody/services/SharedPreferencesService.dart';
 import 'package:summerbody/services/DIService.dart';
 import 'package:summerbody/utils/utilities.dart';
@@ -264,6 +265,7 @@ class _WorkoutDetailsState extends State<WorkoutDetails> {
                                 ],
                                 if (state.workout.videoUrl?[gender] !=
                                     null) ...[
+                                      SizedBox(width: 10.w),
                                   GestureDetector(
                                       onTap: () {
                                         showDialog(
@@ -278,9 +280,12 @@ class _WorkoutDetailsState extends State<WorkoutDetails> {
                                             alignment: Alignment.center,
                                             child: AspectRatio(
                                               aspectRatio: 16 / 9,
-                                              child: VideoPlayerScreen(
-                                                  videoUrl: state.workout
-                                                      .videoUrl![gender]!),
+                                              child: YoutubeVideoPlayer(
+                                                  videoId:
+                                                      Utilities.extractVideoId(
+                                                          state.workout
+                                                                  .videoUrl![
+                                                              gender]!)!),
                                             ),
                                           ),
                                         );
@@ -302,31 +307,62 @@ class _WorkoutDetailsState extends State<WorkoutDetails> {
                                         height: double.infinity,
                                         width: 0.6 *
                                             MediaQuery.of(context).size.width,
-                                        child: Stack(
-                                          children: [
-                                            ClipRRect(
-                                              borderRadius:
-                                                  BorderRadius.circular(10),
-                                              child: Image.network(
+                                        child: ClipRRect(
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                          child: Stack(
+                                            children: [
+                                              Image.network(
                                                 Utilities.getYouTubeThumbnail(
                                                     state.workout
                                                         .videoUrl![gender]!),
                                                 fit: BoxFit.cover,
                                                 width: double.infinity,
                                                 height: double.infinity,
+                                                errorBuilder: (context, error,
+                                                    stackTrace) {
+                                                  // Fallback to lower quality thumbnail
+                                                  return Image.network(
+                                                    Utilities
+                                                        .getYouTubeThumbnail(
+                                                            state.workout
+                                                                    .videoUrl![
+                                                                gender]!,
+                                                            quality:
+                                                                'hqdefault'),
+                                                    fit: BoxFit.cover,
+                                                    width: double.infinity,
+                                                    height: double.infinity,
+                                                    errorBuilder: (context,
+                                                        error, stackTrace) {
+                                                      return Container(
+                                                        color: Colors.grey[300],
+                                                        child: const Icon(
+                                                            Icons
+                                                                .play_circle_outline,
+                                                            size: 50),
+                                                      );
+                                                    },
+                                                  );
+                                                },
                                               ),
-                                            ),
-                                            Positioned.fill(
-                                              child: Center(
-                                                child: Icon(
-                                                  Icons.play_circle_fill,
-                                                  size: 60,
-                                                  color: Colors.white
-                                                      .withOpacity(0.8),
+                                              // Play button overlay
+                                              Center(
+                                                child: Container(
+                                                  decoration:
+                                                      const BoxDecoration(
+                                                    color: Colors.black54,
+                                                    shape: BoxShape.circle,
+                                                  ),
+                                                  child: const Icon(
+                                                    Icons.play_arrow,
+                                                    color: Colors.white,
+                                                    size: 40,
+                                                  ),
                                                 ),
                                               ),
-                                            ),
-                                          ],
+                                            ],
+                                          ),
                                         ),
                                       )),
                                 ],

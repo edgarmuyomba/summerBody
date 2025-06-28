@@ -3,8 +3,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:video_thumbnail/video_thumbnail.dart';
-import 'package:youtube_player_flutter/youtube_player_flutter.dart';
-
 class Utilities {
   static Map<String, String> parseDate(String dateString) {
     DateTime date = DateTime.parse(dateString);
@@ -66,8 +64,25 @@ class Utilities {
     return filePath != null ? File(filePath) : null;
   }
 
-  static String getYouTubeThumbnail(String videoUrl) {
-    final videoId = YoutubePlayer.convertUrlToId(videoUrl);
-    return "https://img.youtube.com/vi/$videoId/0.jpg";
+  static String getYouTubeThumbnail(String videoUrl,
+      {String quality = 'maxresdefault'}) {
+    // Extract video ID from URL
+    String? videoId = extractVideoId(videoUrl);
+    if (videoId == null) return '';
+
+    // Return thumbnail URL
+    return 'https://img.youtube.com/vi/$videoId/$quality.jpg';
+  }
+
+  static String? extractVideoId(String url) {
+    // Handle different YouTube URL formats
+    RegExp regExp = RegExp(
+      r'(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})',
+      caseSensitive: false,
+      multiLine: false,
+    );
+
+    Match? match = regExp.firstMatch(url);
+    return match?.group(1);
   }
 }

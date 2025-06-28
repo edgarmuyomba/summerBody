@@ -57,11 +57,12 @@ dependencies:
   chewie: ^1.8.7
   video_thumbnail: ^0.5.6
   youtube_player_iframe: ^5.1.2
+  youtube_player_flutter: ^9.1.1
 
 
 dev_dependencies:
-  integration_test:
-    sdk: flutter
+  # integration_test:
+  #   sdk: flutter
     
   flutter_test:
     sdk: flutter
