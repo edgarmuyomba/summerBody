@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:logger/logger.dart';
 import 'package:summerbody/blocs/Schedule/schedule_bloc.dart';
+import 'package:summerbody/routing/routes.dart';
 import 'package:summerbody/screens/videoPlayer.dart';
 import 'package:summerbody/screens/youtubeVideoPlayer.dart';
 import 'package:summerbody/services/SharedPreferencesService.dart';
@@ -26,7 +27,7 @@ class WorkoutDetails extends StatefulWidget {
 }
 
 class _WorkoutDetailsState extends State<WorkoutDetails> {
-  String workoutName = "";
+  int workoutId = -1;
   late String gender;
 
   @override
@@ -47,7 +48,8 @@ class _WorkoutDetailsState extends State<WorkoutDetails> {
 
     return PopScope(
         canPop: false,
-        onPopInvoked: (didPop) async {
+        onPopInvokedWithResult: (didPop, result) async {
+          if (didPop) return;
           bloc.add(SetDay(day: bloc.selectDay!));
           context.pop();
         },
@@ -61,18 +63,28 @@ class _WorkoutDetailsState extends State<WorkoutDetails> {
                 },
                 icon: const Icon(Icons.arrow_back)),
             title: Text(
-              workoutName,
+              "Workout Details",
               style: GoogleFonts.monda(
                   fontSize: 24.sp,
                   color: Colors.black87,
                   fontWeight: FontWeight.bold),
             ),
+            actions: [
+              if (workoutId != -1) ...[
+                IconButton(
+                    onPressed: () {
+                      context.pushNamed(Routes.workout,
+                          pathParameters: {"workoutId": workoutId.toString()});
+                    },
+                    icon: const Icon(Icons.edit)),
+              ]
+            ],
           ),
           body: BlocConsumer<ScheduleBloc, ScheduleState>(
             listener: (context, state) {
               if (state is WorkoutReady) {
                 setState(() {
-                  workoutName = state.workout.name!;
+                  workoutId = state.workout.id!;
                 });
               }
             },
@@ -84,6 +96,17 @@ class _WorkoutDetailsState extends State<WorkoutDetails> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
+                          Text(
+                            state.workout.name!,
+                            style: TextStyle(
+                                fontSize: 25.sp,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black87),
+                          ),
+                          const Padding(
+                            padding: EdgeInsets.symmetric(vertical: 8.0),
+                            child: Divider(),
+                          ),
                           if ((state.workout.equipment ?? []).isNotEmpty) ...[
                             Row(
                               children: [
@@ -427,7 +450,14 @@ class _WorkoutDetailsState extends State<WorkoutDetails> {
                       ),
                     ));
               } else {
-                return const CircularProgressIndicator();
+                return Center(
+                  child: SizedBox(
+                    height: 20.h,
+                    width: 20.h,
+                    child:
+                        const CircularProgressIndicator(color: Colors.black87),
+                  ),
+                );
               }
             },
           ),

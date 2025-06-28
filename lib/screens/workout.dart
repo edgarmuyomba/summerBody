@@ -89,7 +89,8 @@ class _WorkoutState extends State<Workout> {
 
     return PopScope(
       canPop: false,
-      onPopInvoked: (didPop) async {
+      onPopInvokedWithResult: (didPop, result) async {
+        if (didPop) return;
         bloc.add(SetDay(day: bloc.selectDay!));
         context.pop();
       },
