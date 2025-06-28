@@ -265,7 +265,7 @@ class _WorkoutDetailsState extends State<WorkoutDetails> {
                                 ],
                                 if (state.workout.videoUrl?[gender] !=
                                     null) ...[
-                                      SizedBox(width: 10.w),
+                                  SizedBox(width: 10.w),
                                   GestureDetector(
                                       onTap: () {
                                         showDialog(
@@ -281,11 +281,8 @@ class _WorkoutDetailsState extends State<WorkoutDetails> {
                                             child: AspectRatio(
                                               aspectRatio: 16 / 9,
                                               child: YoutubeVideoPlayer(
-                                                  videoId:
-                                                      Utilities.extractVideoId(
-                                                          state.workout
-                                                                  .videoUrl![
-                                                              gender]!)!),
+                                                  videoUrl: state.workout
+                                                      .videoUrl![gender]!),
                                             ),
                                           ),
                                         );

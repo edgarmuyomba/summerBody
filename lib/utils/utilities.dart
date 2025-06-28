@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:video_thumbnail/video_thumbnail.dart';
+
 class Utilities {
   static Map<String, String> parseDate(String dateString) {
     DateTime date = DateTime.parse(dateString);
