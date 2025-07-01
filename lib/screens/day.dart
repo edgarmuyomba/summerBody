@@ -190,6 +190,14 @@ class _DayState extends State<Day> {
               color: Colors.black87,
               fontWeight: FontWeight.bold),
         ),
+        actions: [
+          IconButton(
+              onPressed: () => context.pushNamed(Routes.settings),
+              icon: const Icon(
+                Icons.settings,
+                color: Colors.black87,
+              ))
+        ],
       ),
       body: BlocBuilder<ScheduleBloc, ScheduleState>(
         builder: (context, state) {

@@ -5,6 +5,7 @@ import 'package:summerbody/services/FirebaseService.dart';
 import 'package:summerbody/services/LocalDatabaseService.dart';
 import 'package:summerbody/services/SharedPreferencesService.dart';
 import 'package:get_it/get_it.dart';
+import 'package:summerbody/state/SyncState.dart';
 
 class DIService {
   DIService._();
@@ -48,5 +49,7 @@ class DIService {
     locator.registerSingleton<ConnectivityService>(ConnectivityService());
 
     locator.registerSingleton<FirebaseService>(FirebaseService());
+
+    locator.registerSingleton<SyncStateModal>(SyncStateModal());
   }
 }

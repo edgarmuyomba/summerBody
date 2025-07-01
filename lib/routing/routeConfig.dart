@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:summerbody/screens/day.dart';
+import 'package:summerbody/screens/settings.dart';
 import 'package:summerbody/screens/splash.dart';
 import 'package:summerbody/screens/timer.dart';
 import 'package:summerbody/screens/workout.dart';
@@ -25,6 +26,13 @@ final GoRouter router = GoRouter(routes: [
           path: '/timer',
           builder: (BuildContext context, GoRouterState state) {
             return const Timer();
+          },
+        ),
+        GoRoute(
+          name: 'settings',
+          path: '/settings',
+          builder: (BuildContext context, GoRouterState state) {
+            return Settings();
           },
         ),
       ]),

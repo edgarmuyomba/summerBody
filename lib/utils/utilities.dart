@@ -1,7 +1,14 @@
+import 'dart:async';
 import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:logger/logger.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:summerbody/database/tables/MuscleGroup.dart';
+import 'package:summerbody/services/DIService.dart';
+import 'package:summerbody/services/FirebaseService.dart';
+import 'package:summerbody/services/LocalDatabaseService.dart';
+import 'package:summerbody/state/SyncState.dart';
 import 'package:video_thumbnail/video_thumbnail.dart';
 
 class Utilities {
@@ -85,5 +92,66 @@ class Utilities {
 
     Match? match = regExp.firstMatch(url);
     return match?.group(1);
+  }
+
+  static Future<void> syncWorkoutPresets() async {
+    final FirebaseService _firebaseService =
+        DIService().locator.get<FirebaseService>();
+    final LocalDatabaseService _localDatabaseService =
+        DIService().locator.get<LocalDatabaseService>();
+    final SyncStateModal _syncStateModal =
+        DIService().locator.get<SyncStateModal>();
+
+    // get all musclegroups
+    List<MuscleGroup> muscleGroups =
+        await _localDatabaseService.getAllMuscleGroups();
+
+    List<MuscleGroup> muscleGroupsToSync = [];
+
+    int totalCount = 0;
+    double syncProgress = 0;
+
+    _syncStateModal.update(isSyncing: true, syncProgress: 0, active: false);
+
+    for (final muscleGroup in muscleGroups) {
+      bool presetsAvailable =
+          ((await _localDatabaseService.countWorkoutPresets(muscleGroup.id!) ??
+                  0)) >
+              0;
+
+      if (presetsAvailable) {
+        // firebase count
+
+        int firebaseCount =
+            await _firebaseService.getRecordCount(muscleGroup.name!);
+
+        totalCount += firebaseCount;
+        muscleGroupsToSync.add(muscleGroup);
+      }
+
+      syncProgress += (1 / muscleGroups.length) * 0.1;
+      _syncStateModal.update(syncProgress: syncProgress);
+    }
+
+    for (final muscleGroup in muscleGroupsToSync) {
+      await _localDatabaseService.deleteWorkoutPresets(muscleGroup.id!);
+
+      StreamSubscription<List<Map<String, dynamic>>>? subscription;
+
+      subscription =
+          _firebaseService.workoutStream(muscleGroup.name!).listen((value) {
+        _localDatabaseService.createWorkoutPresets(value, muscleGroup.id);
+        syncProgress += (value.length / totalCount) * 0.9;
+        _syncStateModal.update(syncProgress: syncProgress);
+      }, onDone: () async {
+        subscription?.cancel();
+        if (syncProgress == 1.0) {
+          _syncStateModal.update(isSyncing: false);
+          await Future.delayed(const Duration(seconds: 5), () {
+            _syncStateModal.update(syncProgress: 0, active: true);
+          });
+        }
+      });
+    }
   }
 }

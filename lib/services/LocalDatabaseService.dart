@@ -129,4 +129,9 @@ class LocalDatabaseService {
   Stream<List<WorkoutPreset>> searchWorkoutPresets(String query) {
     return _appDatabase.workoutPresetDao.searchWorkoutPresets("%$query%");
   }
+
+  Future<int?> countWorkoutPresets(int muscleGroupId) async {
+    return await _appDatabase.workoutPresetDao
+        .countByMuscleGroupId(muscleGroupId);
+  }
 }

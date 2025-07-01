@@ -42,4 +42,10 @@ class FirebaseService {
       yield snapshot.docs.map((doc) => doc.data()).toList();
     }
   }
+
+  Future<int> getRecordCount(String muscleGroup) async {
+    final querySnapshot =
+        await FirebaseFirestore.instance.collection(muscleGroup).count().get();
+    return querySnapshot.count ?? 0;
+  }
 }

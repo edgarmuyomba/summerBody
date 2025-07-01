@@ -8,4 +8,6 @@ class Routes {
   static const String workoutDetails = "workoutDetails";
 
   static const String timer = "timer";
+
+  static const String settings = "settings";
 }

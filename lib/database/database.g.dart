@@ -429,6 +429,14 @@ class _$WorkoutPresetDao extends WorkoutPresetDao {
   }
 
   @override
+  Future<int?> countByMuscleGroupId(int muscleGroupId) async {
+    return _queryAdapter.query(
+        'SELECT COUNT(*) FROM WorkoutPresets WHERE muscleGroupId = ?1',
+        mapper: (Map<String, Object?> row) => row.values.first as int,
+        arguments: [muscleGroupId]);
+  }
+
+  @override
   Future<void> insertWorkoutPresets(List<WorkoutPreset> presets) async {
     await _workoutPresetInsertionAdapter.insertList(
         presets, OnConflictStrategy.replace);
