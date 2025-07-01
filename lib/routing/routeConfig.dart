@@ -39,10 +39,15 @@ final GoRouter router = GoRouter(routes: [
   ),
   GoRoute(
       name: 'workout',
-      path: '/workout/:workoutId',
+      path: '/workout/:workoutId/:triggerSetup',
       builder: (BuildContext context, GoRouterState state) {
         final String workoutId = state.pathParameters["workoutId"] ?? "";
-        return Workout(workoutId: int.parse(workoutId));
+        final bool triggerSetup =
+            bool.parse(state.pathParameters["triggerSetup"] ?? 'false');
+        return Workout(
+          workoutId: int.parse(workoutId),
+          triggerSetup: triggerSetup,
+        );
       }),
   GoRoute(
       name: 'workoutDetails',

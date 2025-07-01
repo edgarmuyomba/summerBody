@@ -73,8 +73,10 @@ class _WorkoutDetailsState extends State<WorkoutDetails> {
               if (workoutId != -1) ...[
                 IconButton(
                     onPressed: () {
+                      // bloc.add(SetDay(day: bloc.selectDay!));
+                      // context.pop();
                       context.pushNamed(Routes.workout,
-                          pathParameters: {"workoutId": workoutId.toString()});
+                          pathParameters: {"workoutId": workoutId.toString(), "triggerSetup": "true"});
                     },
                     icon: const Icon(Icons.edit)),
               ]
@@ -99,13 +101,12 @@ class _WorkoutDetailsState extends State<WorkoutDetails> {
                           Text(
                             state.workout.name!,
                             style: TextStyle(
-                                fontSize: 25.sp,
+                                fontSize: 30.sp,
                                 fontWeight: FontWeight.bold,
-                                color: Colors.black87),
+                                color: Colors.black45),
                           ),
-                          const Padding(
-                            padding: EdgeInsets.symmetric(vertical: 8.0),
-                            child: Divider(),
+                          SizedBox(
+                            height: 15.h,
                           ),
                           if ((state.workout.equipment ?? []).isNotEmpty) ...[
                             Row(
@@ -126,8 +127,9 @@ class _WorkoutDetailsState extends State<WorkoutDetails> {
                                 ),
                               ],
                             ),
-                            SizedBox(
-                              height: 10.h,
+                            const Padding(
+                              padding: EdgeInsets.symmetric(vertical: 8.0),
+                              child: Divider(),
                             ),
                             Text(
                               state.workout.equipment!.join(", "),
@@ -156,18 +158,19 @@ class _WorkoutDetailsState extends State<WorkoutDetails> {
                                       color: Colors.black87),
                                 ),
                               ],
-                            )
+                            ),
+                            const Padding(
+                              padding: EdgeInsets.symmetric(vertical: 8.0),
+                              child: Divider(),
+                            ),
+                            ...(state.workout.steps ?? []).map((step) {
+                              return Text(
+                                "• $step",
+                                style: TextStyle(
+                                    fontSize: 16.sp, color: Colors.black87),
+                              );
+                            }),
                           ],
-                          SizedBox(
-                            height: 10.h,
-                          ),
-                          ...(state.workout.steps ?? []).map((step) {
-                            return Text(
-                              "• $step",
-                              style: TextStyle(
-                                  fontSize: 16.sp, color: Colors.black87),
-                            );
-                          }),
                           if (state.workout.gifUrl?[gender] != null ||
                               state.workout.videoUrl?[gender] != null) ...[
                             SizedBox(
@@ -191,8 +194,9 @@ class _WorkoutDetailsState extends State<WorkoutDetails> {
                                 ),
                               ],
                             ),
-                            SizedBox(
-                              height: 10.h,
+                            const Padding(
+                              padding: EdgeInsets.symmetric(vertical: 8.0),
+                              child: Divider(),
                             ),
                             SizedBox(
                               height: 0.4 * MediaQuery.of(context).size.height,
@@ -426,8 +430,9 @@ class _WorkoutDetailsState extends State<WorkoutDetails> {
                                 ),
                               ],
                             ),
-                            SizedBox(
-                              height: 10.h,
+                            const Padding(
+                              padding: EdgeInsets.symmetric(vertical: 8.0),
+                              child: Divider(),
                             ),
                             Wrap(
                                 spacing: 4.0,

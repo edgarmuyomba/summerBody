@@ -73,7 +73,8 @@ class WorkoutWidget extends StatelessWidget {
                               });
                         } else {
                           context.pushNamed(Routes.workout, pathParameters: {
-                            "workoutId": workout["id"].toString()
+                            "workoutId": workout["id"].toString(),
+                            "triggerSetup": 'false'
                           });
                         }
                       },

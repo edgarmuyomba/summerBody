@@ -12,7 +12,9 @@ import 'package:summerbody/utils/utilities.dart';
 
 class Workout extends StatefulWidget {
   final int workoutId;
-  const Workout({super.key, required this.workoutId});
+  final bool triggerSetup;
+  const Workout(
+      {super.key, required this.workoutId, required this.triggerSetup});
 
   @override
   State<Workout> createState() => _WorkoutState();
@@ -82,10 +84,45 @@ class _WorkoutState extends State<Workout> {
     }
   }
 
+  void _runSetup(WorkoutReady state) {
+    setState(() {
+      loading = false;
+
+      workoutName = state.workout.name!;
+
+      form.control('name').value = state.workout.name;
+      form.control('date').value = state.sets.first.date;
+      form.control('weight1').value = state.sets[0].weight1.toString();
+      form.control('reps1').value = state.sets[0].reps1.toString();
+      form.control('weight2').value = state.sets[0].weight2?.toString();
+      form.control('reps2').value = state.sets[0].reps2?.toString();
+
+      firstSetValid = true;
+
+      if (form.control('weight2').value != null &&
+          form.control('weight2').value != "" &&
+          form.control('reps2').value != null &&
+          form.control('reps2').value != "") {
+        secondSetEnabled = true;
+      }
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    final bloc = context.read<ScheduleBloc>();
+    if (widget.triggerSetup) {
+      final state = context.read<ScheduleBloc>().state as WorkoutReady;
+      _runSetup(state);
+    } else {
+      bloc.add(LoadWorkout(workoutId: widget.workoutId));
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final bloc = context.read<ScheduleBloc>();
-    bloc.add(LoadWorkout(workoutId: widget.workoutId));
 
     return PopScope(
       canPop: false,
@@ -114,29 +151,7 @@ class _WorkoutState extends State<Workout> {
         body: BlocConsumer<ScheduleBloc, ScheduleState>(
           listener: (context, state) {
             if (state is WorkoutReady) {
-              setState(() {
-                loading = false;
-
-                workoutName = state.workout.name!;
-
-                form.control('name').value = state.workout.name;
-                form.control('date').value = state.sets.first.date;
-                form.control('weight1').value =
-                    state.sets[0].weight1.toString();
-                form.control('reps1').value = state.sets[0].reps1.toString();
-                form.control('weight2').value =
-                    state.sets[0].weight2?.toString();
-                form.control('reps2').value = state.sets[0].reps2?.toString();
-
-                firstSetValid = true;
-
-                if (form.control('weight2').value != null &&
-                    form.control('weight2').value != "" &&
-                    form.control('reps2').value != null &&
-                    form.control('reps2').value != "") {
-                  secondSetEnabled = true;
-                }
-              });
+              _runSetup(state);
             }
           },
           builder: (context, state) {
