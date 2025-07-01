@@ -422,6 +422,13 @@ class _$WorkoutPresetDao extends WorkoutPresetDao {
   }
 
   @override
+  Future<void> deleteByMuscleGroupId(int muscleGroupId) async {
+    await _queryAdapter.queryNoReturn(
+        'DELETE FROM WorkoutPresets WHERE muscleGroupId = ?1',
+        arguments: [muscleGroupId]);
+  }
+
+  @override
   Future<void> insertWorkoutPresets(List<WorkoutPreset> presets) async {
     await _workoutPresetInsertionAdapter.insertList(
         presets, OnConflictStrategy.replace);

@@ -109,13 +109,6 @@ class ScheduleBloc extends Bloc<ScheduleEvent, ScheduleState> {
         sets: muscleGroupAndWorkouts["sets"]));
   }
 
-  Stream<int> numberStream() async* {
-    for (int i = 0; i <= 10; i++) {
-      await Future.delayed(const Duration(seconds: 2));
-      yield i;
-    }
-  }
-
   Future<void> _onAddMuscleGroup(AddMuscleGroup event, Emitter emit) async {
     final state = this.state;
     if (state is ScheduleReady) {
@@ -135,6 +128,8 @@ class ScheduleBloc extends Bloc<ScheduleEvent, ScheduleState> {
               musclegroup: muscleGroupAndWorkouts["muscleGroup"],
               workouts: muscleGroupAndWorkouts["workouts"],
               sets: muscleGroupAndWorkouts["sets"]));
+
+          await _localDatabaseService.deleteWorkoutPresets(muscleGroup.id!);
 
           StreamSubscription<List<Map<String, dynamic>>>? subscription;
 

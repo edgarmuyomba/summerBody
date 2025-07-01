@@ -122,6 +122,10 @@ class LocalDatabaseService {
     await _appDatabase.workoutPresetDao.insertWorkoutPresets(presets);
   }
 
+  Future<void> deleteWorkoutPresets(int muscleGroupId) async {
+    await _appDatabase.workoutPresetDao.deleteByMuscleGroupId(muscleGroupId);
+  }
+
   Stream<List<WorkoutPreset>> searchWorkoutPresets(String query) {
     return _appDatabase.workoutPresetDao.searchWorkoutPresets("%$query%");
   }
