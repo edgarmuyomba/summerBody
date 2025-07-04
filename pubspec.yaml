@@ -59,6 +59,7 @@ dependencies:
   youtube_player_iframe: ^5.1.2
   youtube_player_flutter: ^9.1.1
   rxdart: ^0.28.0
+  flutter_expandable_fab: ^2.5.2
 
 
 dev_dependencies:

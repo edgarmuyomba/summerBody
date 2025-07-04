@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_expandable_fab/flutter_expandable_fab.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -32,7 +33,6 @@ class Day extends StatefulWidget {
 }
 
 class _DayState extends State<Day> {
-  
   String? selectMuscleGroupName;
 
   @override
@@ -147,12 +147,40 @@ class _DayState extends State<Day> {
                     )
                   ] else ...[
                     SizedBox(height: 8.0.h),
-                    Center(
-                      child: Image(
-                          height: 300.h,
-                          image: AssetImage(
-                            state.musclegroup!.icon!,
-                          )),
+                    Stack(
+                      alignment: Alignment.bottomRight,
+                      children: [
+                        Center(
+                          child: Image(
+                              height: 300.h,
+                              image: AssetImage(
+                                state.musclegroup!.icon!,
+                              )),
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            Icon(
+                              Icons.add,
+                              size: 17.sp,
+                            ),
+                            SizedBox(
+                              width: 15.w,
+                            ),
+                            Icon(
+                              Icons.edit,
+                              size: 17.sp,
+                            ),
+                            SizedBox(
+                              width: 15.w,
+                            ),
+                            Icon(
+                              Icons.cancel,
+                              size: 17.sp,
+                            ),
+                          ],
+                        ),
+                      ],
                     ),
                     Padding(
                       padding: EdgeInsets.symmetric(vertical: 8.0.h),
@@ -260,24 +288,6 @@ class _DayState extends State<Day> {
           return const SizedBox.shrink();
         },
       ),
-      // floatingActionButton: FloatingActionButton(
-      //   onPressed: () async {
-      //     // context.pushNamed(Routes.timer);
-      //     List<Map<String, dynamic>> results = await DIService()
-      //         .locator
-      //         .get<FirebaseService>()
-      //         .fetchWorkoutSuggestions("Arms", "Band Bayesi");
-      //     if (results.isNotEmpty) {
-      //       Logger().d(results.first);
-      //     } else {
-      //       Logger().d("No results");
-      //     }
-      //   },
-      //   backgroundColor: Colors.black87,
-      //   foregroundColor: Colors.white,
-      //   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
-      //   child: const Icon(Icons.timer),
-      // ),
     );
   }
 
