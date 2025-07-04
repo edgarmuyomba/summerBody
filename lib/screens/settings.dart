@@ -1,22 +1,43 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:summerbody/models/SyncState.dart';
 import 'package:summerbody/services/DIService.dart';
+import 'package:summerbody/services/SharedPreferencesService.dart';
 import 'package:summerbody/state/SyncState.dart';
 import 'package:summerbody/utils/utilities.dart';
 
 class Settings extends StatefulWidget {
   final SyncStateModal _syncStateModal;
-  Settings({super.key, SyncStateModal? syncStateModal})
+  final SharedPreferencesService _sharedPreferencesService;
+  Settings(
+      {super.key,
+      SyncStateModal? syncStateModal,
+      SharedPreferencesService? sharedPreferencesService})
       : _syncStateModal =
-            syncStateModal ?? DIService().locator.get<SyncStateModal>();
+            syncStateModal ?? DIService().locator.get<SyncStateModal>(),
+        _sharedPreferencesService = sharedPreferencesService ??
+            DIService().locator.get<SharedPreferencesService>();
 
   @override
   State<Settings> createState() => _SettingsState();
 }
 
 class _SettingsState extends State<Settings> {
+  String gender = "";
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    widget._sharedPreferencesService.getStringValue("gender").then((value) {
+      setState(() {
+        gender = value!;
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -128,6 +149,31 @@ class _SettingsState extends State<Settings> {
                             ],
                           );
                         })
+                  ],
+                ),
+              ),
+            ),
+            Card(
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadiusGeometry.circular(5)),
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Row(
+                  children: [
+                    TextButton(
+                      onPressed: () async {
+                        await Utilities.showGenderSelector(
+                            context, widget._sharedPreferencesService);
+                        setState(() {});
+                      },
+                      child: Text(
+                        "Edit Gender",
+                        style: GoogleFonts.monda(
+                            fontSize: 16.sp,
+                            color: Colors.deepPurpleAccent,
+                            fontWeight: FontWeight.w600),
+                      ),
+                    )
                   ],
                 ),
               ),

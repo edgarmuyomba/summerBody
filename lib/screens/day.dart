@@ -11,6 +11,7 @@ import 'package:summerbody/routing/routes.dart';
 import 'package:summerbody/services/DIService.dart';
 import 'package:summerbody/services/LocalDatabaseService.dart';
 import 'package:summerbody/services/SharedPreferencesService.dart';
+import 'package:summerbody/utils/utilities.dart';
 import 'package:summerbody/widgets/workoutWidget.dart';
 
 class Day extends StatefulWidget {
@@ -31,149 +32,15 @@ class Day extends StatefulWidget {
 }
 
 class _DayState extends State<Day> {
-  Future<void> _showGenderSelector() async {
-    String? selected;
-
-    return showDialog<void>(
-        context: context,
-        barrierDismissible: false,
-        builder: (BuildContext context) {
-          return StatefulBuilder(
-            builder: (BuildContext context, StateSetter setModalState) {
-              return AlertDialog(
-                surfaceTintColor: Colors.white,
-                backgroundColor: Colors.white,
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10.0)),
-                alignment: Alignment.center,
-                title: Text(
-                  "Please select your gender",
-                  style: TextStyle(
-                      color: Colors.black87,
-                      fontSize: 20.sp,
-                      fontWeight: FontWeight.bold),
-                ),
-                content: Row(
-                  children: [
-                    GestureDetector(
-                      onTap: () {
-                        setModalState(() {
-                          selected = "male";
-                        });
-                      },
-                      child: Card(
-                        color:
-                            selected == "male" ? Colors.black87 : Colors.white,
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(5.0)),
-                        child: Padding(
-                          padding: const EdgeInsets.all(12.0),
-                          child: SizedBox(
-                            height: 100.h,
-                            width: 100.h,
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Icon(
-                                  Icons.male,
-                                  size: 50..sp,
-                                  color: selected == "male"
-                                      ? Colors.white
-                                      : Colors.black87,
-                                ),
-                                Text(
-                                  "Male",
-                                  style: TextStyle(
-                                      color: selected == "male"
-                                          ? Colors.white
-                                          : Colors.black87,
-                                      fontSize: 17.sp),
-                                )
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                    SizedBox(
-                      width: 10.w,
-                    ),
-                    GestureDetector(
-                      onTap: () {
-                        setModalState(() {
-                          selected = "female";
-                        });
-                      },
-                      child: Card(
-                        color: selected == "female"
-                            ? Colors.black87
-                            : Colors.white,
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(5.0)),
-                        child: Padding(
-                          padding: const EdgeInsets.all(12.0),
-                          child: SizedBox(
-                            height: 100.h,
-                            width: 100.h,
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Icon(
-                                  Icons.female,
-                                  size: 50..sp,
-                                  color: selected == "female"
-                                      ? Colors.white
-                                      : Colors.black87,
-                                ),
-                                Text(
-                                  "Female",
-                                  style: TextStyle(
-                                      color: selected == "female"
-                                          ? Colors.white
-                                          : Colors.black87,
-                                      fontSize: 17.sp),
-                                )
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                    )
-                  ],
-                ),
-                actions: [
-                  TextButton(
-                      onPressed: () {
-                        if (selected != null) {
-                          widget._sharedPreferencesService
-                              .saveStringValue("gender", selected!);
-                          context.pop();
-                        }
-                      },
-                      child: Text(
-                        "Save",
-                        style: TextStyle(
-                            color: selected != null
-                                ? Colors.black87
-                                : Colors.black26),
-                      ))
-                ],
-              );
-            },
-          );
-        });
-  }
-
+  
   String? selectMuscleGroupName;
 
   @override
   void initState() {
     super.initState();
     widget._sharedPreferencesService.getStringValue("gender").then((value) {
-      if (value == null) {
-        _showGenderSelector();
+      if (value == null && mounted) {
+        Utilities.showGenderSelector(context, widget._sharedPreferencesService);
       }
     });
   }
