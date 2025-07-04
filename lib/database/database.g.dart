@@ -532,6 +532,13 @@ class _$MuscleGroupDao extends MuscleGroupDao {
   }
 
   @override
+  Future<void> clearMuscleGroupDay(int id) async {
+    await _queryAdapter.queryNoReturn(
+        'UPDATE MuscleGroups SET day = NULL WHERE id = ?1',
+        arguments: [id]);
+  }
+
+  @override
   Future<int> createMuscleGroup(MuscleGroup muscleGroup) {
     return _muscleGroupInsertionAdapter.insertAndReturnId(
         muscleGroup, OnConflictStrategy.abort);

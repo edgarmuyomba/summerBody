@@ -117,7 +117,7 @@ class ScheduleBloc extends Bloc<ScheduleEvent, ScheduleState> {
             .getMuscleGroupByKey("name", event.muscleGroupName);
 
         if (muscleGroup != null) {
-          await _localDatabaseService.addDayToMuscleGroup(
+          await _localDatabaseService.updateMuscleGroupDay(
               muscleGroup.id!, event.day);
 
           Map<String, dynamic> muscleGroupAndWorkouts =

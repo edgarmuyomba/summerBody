@@ -8,10 +8,10 @@ abstract class MuscleGroupDao {
 
   @Query('SELECT * FROM MuscleGroups WHERE id = :id')
   Future<MuscleGroup?> getMuscleGroupById(int id);
-  
+
   @Query('SELECT * FROM MuscleGroups WHERE name = :name')
   Future<List<MuscleGroup>> getMuscleGroupsByName(String name);
-  
+
   @Query('SELECT * FROM MuscleGroups WHERE day = :day')
   Future<List<MuscleGroup>> getMuscleGroupsByDay(String day);
 
@@ -20,6 +20,9 @@ abstract class MuscleGroupDao {
 
   @Query('UPDATE MuscleGroups SET day = :day WHERE id = :id')
   Future<void> updateMuscleGroupDay(int id, String day);
+
+  @Query('UPDATE MuscleGroups SET day = NULL WHERE id = :id')
+  Future<void> clearMuscleGroupDay(int id);
 
   @insert
   Future<int> createMuscleGroup(MuscleGroup muscleGroup);

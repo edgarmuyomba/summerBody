@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_expandable_fab/flutter_expandable_fab.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -160,23 +159,35 @@ class _DayState extends State<Day> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
-                            Icon(
-                              Icons.add,
-                              size: 17.sp,
+                            IconButton(
+                              onPressed: () => showActionBottomSheet("add"),
+                              tooltip: "Add muscle group",
+                              constraints: BoxConstraints(
+                                  maxWidth: 10.w, maxHeight: 10.w),
+                              icon: Icon(
+                                Icons.add,
+                                size: 17.sp,
+                              ),
                             ),
-                            SizedBox(
-                              width: 15.w,
+                            IconButton(
+                              onPressed: () => showActionBottomSheet("edit"),
+                              tooltip: "Edit muscle group",
+                              constraints: BoxConstraints(
+                                  maxWidth: 10.w, maxHeight: 10.w),
+                              icon: Icon(
+                                Icons.edit,
+                                size: 17.sp,
+                              ),
                             ),
-                            Icon(
-                              Icons.edit,
-                              size: 17.sp,
-                            ),
-                            SizedBox(
-                              width: 15.w,
-                            ),
-                            Icon(
-                              Icons.cancel,
-                              size: 17.sp,
+                            IconButton(
+                              onPressed: () => showActionBottomSheet("delete"),
+                              tooltip: "Delete muscle group",
+                              constraints: BoxConstraints(
+                                  maxWidth: 10.w, maxHeight: 10.w),
+                              icon: Icon(
+                                Icons.cancel,
+                                size: 17.sp,
+                              ),
                             ),
                           ],
                         ),
@@ -439,5 +450,45 @@ class _DayState extends State<Day> {
         selectMuscleGroupName = result;
       });
     }
+  }
+
+  showActionBottomSheet(String action) {
+    String title = "";
+
+    switch (action) {
+      case "add":
+        title = "Add muscle group";
+        break;
+      case "edit":
+        title = "Edit muscle group";
+        break;
+      case "delete":
+        title = "Delete muscle group";
+        break;
+    }
+
+    return showModalBottomSheet(
+        backgroundColor: Colors.white,
+        context: context,
+        constraints: BoxConstraints(
+          minWidth: MediaQuery.of(context).size.width,
+        ),
+        builder: (BuildContext context) {
+          return Padding(
+              padding:
+                  EdgeInsets.symmetric(horizontal: 16.0.w, vertical: 24.0.h),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    title,
+                    style: GoogleFonts.monda(
+                        fontSize: 18.sp,
+                        color: Colors.black87,
+                        fontWeight: FontWeight.bold),
+                  )
+                ],
+              ));
+        });
   }
 }

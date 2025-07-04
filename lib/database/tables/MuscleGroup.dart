@@ -1,13 +1,26 @@
 import 'package:floor/floor.dart';
 import 'package:equatable/equatable.dart';
+import 'package:summerbody/database/tables/Day.dart';
 
-@Entity(tableName: 'MuscleGroups')
+@Entity(
+  tableName: 'MuscleGroups',
+  foreignKeys: [
+    ForeignKey(
+      childColumns: ['dayId'],
+      parentColumns: ['id'],
+      entity: Day,
+      onDelete: ForeignKeyAction.cascade,
+    ),
+  ],
+)
 class MuscleGroup extends Equatable {
   @PrimaryKey(autoGenerate: true)
   final int? id;
 
   final String? name;
-  final String? day;
+
+  @ColumnInfo(name: 'dayId')
+  final int? day;
   final String? icon;
 
   const MuscleGroup(
