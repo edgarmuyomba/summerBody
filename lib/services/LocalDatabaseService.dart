@@ -19,7 +19,7 @@ class LocalDatabaseService {
     switch (key) {
       case "day":
         return (await _appDatabase.muscleGroupDao
-                .getMuscleGroupsByDay(value as String))
+                .getMuscleGroupsByDay(value as int))
             .firstOrNull;
       case "name":
         return (await _appDatabase.muscleGroupDao

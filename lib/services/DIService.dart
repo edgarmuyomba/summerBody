@@ -21,15 +21,14 @@ class DIService {
   Future<void> setupLocator() async {
     final callback = Callback(onCreate: (database, version) async {
       await database.execute('''
-      INSERT INTO MuscleGroups (id, name, day, icon) VALUES 
-      (1, 'Chest', '', 'assets/icons/chest.png'),
-      (2, 'Arms', '', 'assets/icons/arms.png'),
-      (3, 'Shoulders', '', 'assets/icons/shoulders.png'),
-      (4, 'Back', '', 'assets/icons/back.png'),
-      (5, 'Legs', '', 'assets/icons/legs.png'),
-      (6, 'Cardio', '', 'assets/icons/cardio.png'),
-      (7, 'Full Body', '', 'assets/icons/full-body.png'),
-      (8, 'Rest Day', '', 'assets/icons/rest-day.png')
+      INSERT INTO Days (id, name) VALUES 
+      (1, 'Monday'),
+      (2, 'Tuesday'),
+      (3, 'Wednesday'),
+      (4, 'Thursday'),
+      (5, 'Friday'),
+      (6, 'Saturday'),
+      (7, 'Sunday'),
     ''');
     });
 

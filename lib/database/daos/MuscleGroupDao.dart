@@ -13,7 +13,7 @@ abstract class MuscleGroupDao {
   Future<List<MuscleGroup>> getMuscleGroupsByName(String name);
 
   @Query('SELECT * FROM MuscleGroups WHERE day = :day')
-  Future<List<MuscleGroup>> getMuscleGroupsByDay(String day);
+  Future<List<MuscleGroup>> getMuscleGroupsByDay(int day);
 
   @update
   Future<void> editMuscleGroup(MuscleGroup muscleGroup);

@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:floor/floor.dart';
 import 'package:sqflite/sqflite.dart' as sqflite;
+import 'package:summerbody/database/daos/DayDao.dart';
 import 'package:summerbody/database/daos/SetDao.dart';
 import 'package:summerbody/database/daos/MuscleGroupDao.dart';
 import 'package:summerbody/database/daos/WorkoutDao.dart';
@@ -23,4 +24,5 @@ abstract class AppDatabase extends FloorDatabase {
   WorkoutDao get workoutDao;
   WorkoutPresetDao get workoutPresetDao;
   MuscleGroupDao get muscleGroupDao;
+  DayDao get dayDao;
 }

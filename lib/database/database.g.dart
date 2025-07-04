@@ -80,6 +80,8 @@ class _$AppDatabase extends AppDatabase {
 
   MuscleGroupDao? _muscleGroupDaoInstance;
 
+  DayDao? _dayDaoInstance;
+
   Future<sqflite.Database> open(
     String path,
     List<Migration> migrations, [
@@ -102,9 +104,11 @@ class _$AppDatabase extends AppDatabase {
       },
       onCreate: (database, version) async {
         await database.execute(
+            'CREATE TABLE IF NOT EXISTS `Days` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `name` TEXT)');
+        await database.execute(
             'CREATE TABLE IF NOT EXISTS `Sets` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `workoutId` INTEGER, `weight1` REAL, `reps1` INTEGER, `weight2` REAL, `reps2` INTEGER, `date` INTEGER, FOREIGN KEY (`workoutId`) REFERENCES `Workouts` (`id`) ON UPDATE NO ACTION ON DELETE CASCADE)');
         await database.execute(
-            'CREATE TABLE IF NOT EXISTS `MuscleGroups` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `name` TEXT, `day` TEXT, `icon` TEXT)');
+            'CREATE TABLE IF NOT EXISTS `MuscleGroups` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `name` TEXT, `dayId` INTEGER, `icon` TEXT, FOREIGN KEY (`dayId`) REFERENCES `Days` (`id`) ON UPDATE NO ACTION ON DELETE CASCADE)');
         await database.execute(
             'CREATE TABLE IF NOT EXISTS `Workouts` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `name` TEXT, `isSuggested` INTEGER NOT NULL, `equipment` TEXT, `subMuscles` TEXT, `steps` TEXT, `videoUrl` TEXT, `gifUrl` TEXT, `muscleGroupId` INTEGER, FOREIGN KEY (`muscleGroupId`) REFERENCES `MuscleGroups` (`id`) ON UPDATE NO ACTION ON DELETE CASCADE)');
         await database.execute(
@@ -136,6 +140,11 @@ class _$AppDatabase extends AppDatabase {
   MuscleGroupDao get muscleGroupDao {
     return _muscleGroupDaoInstance ??=
         _$MuscleGroupDao(database, changeListener);
+  }
+
+  @override
+  DayDao get dayDao {
+    return _dayDaoInstance ??= _$DayDao(database, changeListener);
   }
 }
 
@@ -454,7 +463,7 @@ class _$MuscleGroupDao extends MuscleGroupDao {
             (MuscleGroup item) => <String, Object?>{
                   'id': item.id,
                   'name': item.name,
-                  'day': item.day,
+                  'dayId': item.day,
                   'icon': item.icon
                 }),
         _muscleGroupUpdateAdapter = UpdateAdapter(
@@ -464,7 +473,7 @@ class _$MuscleGroupDao extends MuscleGroupDao {
             (MuscleGroup item) => <String, Object?>{
                   'id': item.id,
                   'name': item.name,
-                  'day': item.day,
+                  'dayId': item.day,
                   'icon': item.icon
                 });
 
@@ -484,7 +493,7 @@ class _$MuscleGroupDao extends MuscleGroupDao {
         mapper: (Map<String, Object?> row) => MuscleGroup(
             row['id'] as int?,
             row['name'] as String?,
-            row['day'] as String?,
+            row['dayId'] as int?,
             row['icon'] as String?));
   }
 
@@ -494,7 +503,7 @@ class _$MuscleGroupDao extends MuscleGroupDao {
         mapper: (Map<String, Object?> row) => MuscleGroup(
             row['id'] as int?,
             row['name'] as String?,
-            row['day'] as String?,
+            row['dayId'] as int?,
             row['icon'] as String?),
         arguments: [id]);
   }
@@ -505,18 +514,18 @@ class _$MuscleGroupDao extends MuscleGroupDao {
         mapper: (Map<String, Object?> row) => MuscleGroup(
             row['id'] as int?,
             row['name'] as String?,
-            row['day'] as String?,
+            row['dayId'] as int?,
             row['icon'] as String?),
         arguments: [name]);
   }
 
   @override
-  Future<List<MuscleGroup>> getMuscleGroupsByDay(String day) async {
+  Future<List<MuscleGroup>> getMuscleGroupsByDay(int day) async {
     return _queryAdapter.queryList('SELECT * FROM MuscleGroups WHERE day = ?1',
         mapper: (Map<String, Object?> row) => MuscleGroup(
             row['id'] as int?,
             row['name'] as String?,
-            row['day'] as String?,
+            row['dayId'] as int?,
             row['icon'] as String?),
         arguments: [day]);
   }
@@ -548,6 +557,27 @@ class _$MuscleGroupDao extends MuscleGroupDao {
   Future<void> editMuscleGroup(MuscleGroup muscleGroup) async {
     await _muscleGroupUpdateAdapter.update(
         muscleGroup, OnConflictStrategy.abort);
+  }
+}
+
+class _$DayDao extends DayDao {
+  _$DayDao(
+    this.database,
+    this.changeListener,
+  ) : _queryAdapter = QueryAdapter(database);
+
+  final sqflite.DatabaseExecutor database;
+
+  final StreamController<String> changeListener;
+
+  final QueryAdapter _queryAdapter;
+
+  @override
+  Future<Day?> getDayById(int id) async {
+    return _queryAdapter.query('SELECT * FROM Days WHERE id = ?1',
+        mapper: (Map<String, Object?> row) =>
+            Day(id: row['id'] as int?, name: row['name'] as String?),
+        arguments: [id]);
   }
 }
 
