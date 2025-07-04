@@ -347,6 +347,16 @@ class _WorkoutsState extends State<Workouts> {
                                     onChanged: (control) {
                                       form.control('weight1').value =
                                           (control.value ?? 0).toString();
+                                    },
+                                    onEditingComplete: (control) {
+                                      if (form.control('weight1').valid &&
+                                          form.control('reps1').valid) {
+                                        setState(() {
+                                          firstSetValid = true;
+                                        });
+                                      }
+                                    },
+                                    onTapOutside: (control) {
                                       if (form.control('weight1').valid &&
                                           form.control('reps1').valid) {
                                         setState(() {
@@ -383,6 +393,16 @@ class _WorkoutsState extends State<Workouts> {
                                     onChanged: (control) {
                                       form.control('reps1').value =
                                           (control.value ?? 0).toString();
+                                    },
+                                    onEditingComplete: (control) {
+                                      if (form.control('weight1').valid &&
+                                          form.control('reps1').valid) {
+                                        setState(() {
+                                          firstSetValid = true;
+                                        });
+                                      }
+                                    },
+                                    onTapOutside: (control) {
                                       if (form.control('weight1').valid &&
                                           form.control('reps1').valid) {
                                         setState(() {

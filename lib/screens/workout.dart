@@ -676,6 +676,17 @@ class _WorkoutState extends State<Workout> {
                                     onChanged: (control) {
                                       form.control('weight1').value =
                                           (control.value ?? 0).toString();
+                                    },
+                                    onEditingComplete: (control) {
+                                      if (form.control('weight1').valid &&
+                                          form.control('reps1').valid) {
+                                        setModalState(() {
+                                          dialogFirstSetValid = true;
+                                        });
+                                        setState(() {});
+                                      }
+                                    },
+                                    onTapOutside: (control) {
                                       if (form.control('weight1').valid &&
                                           form.control('reps1').valid) {
                                         setModalState(() {
@@ -714,6 +725,17 @@ class _WorkoutState extends State<Workout> {
                                     onChanged: (control) {
                                       form.control('reps1').value =
                                           (control.value ?? 0).toString();
+                                    },
+                                    onEditingComplete: (control) {
+                                      if (form.control('weight1').valid &&
+                                          form.control('reps1').valid) {
+                                        setModalState(() {
+                                          dialogFirstSetValid = true;
+                                        });
+                                        setState(() {});
+                                      }
+                                    },
+                                    onTapOutside: (control) {
                                       if (form.control('weight1').valid &&
                                           form.control('reps1').valid) {
                                         setModalState(() {
