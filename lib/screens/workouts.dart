@@ -602,6 +602,7 @@ class _WorkoutsState extends State<Workouts> {
                     Map<String, dynamic> workoutMap = {
                       "id": workout.id,
                       "name": workout.name,
+                      "isSuggested": workout.isSuggested,
                       "sets": (state.sets[workout.id] ?? []).map((set) {
                         return {
                           "weight1": set.weight1,
