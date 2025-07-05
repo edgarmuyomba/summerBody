@@ -19,7 +19,7 @@ abstract class MuscleGroupDao {
   Future<void> editMuscleGroup(MuscleGroup muscleGroup);
 
   @Query('UPDATE MuscleGroups SET day = :day WHERE id = :id')
-  Future<void> updateMuscleGroupDay(int id, String day);
+  Future<void> updateMuscleGroupDay(int id, int day);
 
   @Query('UPDATE MuscleGroups SET day = NULL WHERE id = :id')
   Future<void> clearMuscleGroupDay(int id);

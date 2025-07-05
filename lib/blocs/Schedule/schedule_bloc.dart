@@ -42,7 +42,7 @@ class ScheduleBloc extends Bloc<ScheduleEvent, ScheduleState> {
 
   String? selectDay;
 
-  Future<Map<String, dynamic>> _getMuscleGroupAndWorkouts(String day) async {
+  Future<Map<String, dynamic>> _getMuscleGroupAndWorkouts(int day) async {
     MuscleGroup? muscleGroup =
         await _localDatabaseService.getMuscleGroupByKey("day", day);
 
@@ -71,26 +71,13 @@ class ScheduleBloc extends Bloc<ScheduleEvent, ScheduleState> {
 
   Future<void> _onInitialize(Initialize event, Emitter emit) async {
     DateTime now = DateTime.now();
-    String currentDay = now.weekday == DateTime.monday
-        ? 'monday'
-        : now.weekday == DateTime.tuesday
-            ? 'tuesday'
-            : now.weekday == DateTime.wednesday
-                ? 'wednesday'
-                : now.weekday == DateTime.thursday
-                    ? 'thursday'
-                    : now.weekday == DateTime.friday
-                        ? 'friday'
-                        : now.weekday == DateTime.saturday
-                            ? 'saturday'
-                            : 'sunday';
     Map<String, dynamic> muscleGroupAndWorkouts =
-        await _getMuscleGroupAndWorkouts(currentDay);
+        await _getMuscleGroupAndWorkouts(now.weekday);
 
-    selectDay = currentDay;
+    selectDay = Utilities.intDayToString(now.weekday);
 
     emit(ScheduleReady(
-        currentDay: currentDay,
+        currentDay: selectDay!,
         musclegroup: muscleGroupAndWorkouts["muscleGroup"],
         workouts: muscleGroupAndWorkouts["workouts"],
         sets: muscleGroupAndWorkouts["sets"]));
@@ -98,7 +85,7 @@ class ScheduleBloc extends Bloc<ScheduleEvent, ScheduleState> {
 
   Future<void> _onSetDay(SetDay event, Emitter emit) async {
     Map<String, dynamic> muscleGroupAndWorkouts =
-        await _getMuscleGroupAndWorkouts(event.day);
+        await _getMuscleGroupAndWorkouts(Utilities.stringDayToInt(event.day));
 
     selectDay = event.day;
 
@@ -118,10 +105,11 @@ class ScheduleBloc extends Bloc<ScheduleEvent, ScheduleState> {
 
         if (muscleGroup != null) {
           await _localDatabaseService.updateMuscleGroupDay(
-              muscleGroup.id!, event.day);
+              muscleGroup.id!, Utilities.stringDayToInt(event.day));
 
           Map<String, dynamic> muscleGroupAndWorkouts =
-              await _getMuscleGroupAndWorkouts(event.day);
+              await _getMuscleGroupAndWorkouts(
+                  Utilities.stringDayToInt(event.day));
 
           emit(ScheduleReady(
               currentDay: event.day,
@@ -176,7 +164,8 @@ class ScheduleBloc extends Bloc<ScheduleEvent, ScheduleState> {
             event.weight1, event.reps1, event.weight2, event.reps2);
 
         Map<String, dynamic> muscleGroupAndWorkouts =
-            await _getMuscleGroupAndWorkouts(state.currentDay);
+            await _getMuscleGroupAndWorkouts(
+                Utilities.stringDayToInt(state.currentDay));
         emit(ScheduleReady(
             currentDay: state.currentDay,
             musclegroup: muscleGroupAndWorkouts["muscleGroup"],
@@ -197,7 +186,8 @@ class ScheduleBloc extends Bloc<ScheduleEvent, ScheduleState> {
         await _localDatabaseService.deleteWorkout(event.workoutId);
 
         Map<String, dynamic> muscleGroupAndWorkouts =
-            await _getMuscleGroupAndWorkouts(state.currentDay);
+            await _getMuscleGroupAndWorkouts(
+                Utilities.stringDayToInt(state.currentDay));
         emit(ScheduleReady(
             currentDay: state.currentDay,
             musclegroup: muscleGroupAndWorkouts["muscleGroup"],
@@ -227,14 +217,19 @@ class ScheduleBloc extends Bloc<ScheduleEvent, ScheduleState> {
             .getAllSets(event.workoutId))
           ..sort((a, b) => b.date!.compareTo(a.date!));
 
-        Utilities.showSnackBar(
-            "Successfully updated the workout", event.context, Colors.green);
+        if (event.context.mounted) {
+          Utilities.showSnackBar(
+              "Successfully updated the workout", event.context, Colors.green);
+        }
 
         emit(WorkoutReady(workout: workout!, sets: sets));
       } catch (e) {
         Logger().e(e);
-        Utilities.showSnackBar(
-            "Failed to update the workout", event.context, Colors.red);
+
+        if (event.context.mounted) {
+          Utilities.showSnackBar(
+              "Failed to update the workout", event.context, Colors.red);
+        }
 
         emit(state);
       }
@@ -253,14 +248,18 @@ class ScheduleBloc extends Bloc<ScheduleEvent, ScheduleState> {
             ((await _localDatabaseService.getAllSets(event.workoutId))
               ..sort((a, b) => b.date!.compareTo(a.date!)));
 
-        Utilities.showSnackBar(
-            "Successfully created the set", event.context, Colors.green);
+        if (event.context.mounted) {
+          Utilities.showSnackBar(
+              "Successfully created the set", event.context, Colors.green);
+        }
 
         emit(WorkoutReady(workout: state.workout, sets: sets));
       } catch (e) {
         Logger().e(e);
-        Utilities.showSnackBar(
-            "Failed to create set", event.context, Colors.red);
+        if (event.context.mounted) {
+          Utilities.showSnackBar(
+              "Failed to create set", event.context, Colors.red);
+        }
         emit(state);
       }
     }
@@ -277,14 +276,19 @@ class ScheduleBloc extends Bloc<ScheduleEvent, ScheduleState> {
             .getAllSets(event.workoutId))
           ..sort((a, b) => b.date!.compareTo(a.date!));
 
-        Utilities.showSnackBar(
-            "Successfully deleted the set", event.context, Colors.green);
+        if (event.context.mounted) {
+          Utilities.showSnackBar(
+              "Successfully deleted the set", event.context, Colors.green);
+        }
 
         emit(WorkoutReady(workout: state.workout, sets: sets));
       } catch (e) {
         Logger().e(e);
-        Utilities.showSnackBar(
-            "Failed to delete set", event.context, Colors.red);
+
+        if (event.context.mounted) {
+          Utilities.showSnackBar(
+              "Failed to delete set", event.context, Colors.red);
+        }
         emit(state);
       }
     }

@@ -292,4 +292,39 @@ class Utilities {
           );
         });
   }
+
+  static String intDayToString(int day) {
+    return day == DateTime.monday
+        ? 'monday'
+        : day == DateTime.tuesday
+            ? 'tuesday'
+            : day == DateTime.wednesday
+                ? 'wednesday'
+                : day == DateTime.thursday
+                    ? 'thursday'
+                    : day == DateTime.friday
+                        ? 'friday'
+                        : day == DateTime.saturday
+                            ? 'saturday'
+                            : 'sunday';
+  }
+
+  static int stringDayToInt(String day) {
+    switch (day.toLowerCase()) {
+      case 'monday':
+        return DateTime.monday;
+      case 'tuesday':
+        return DateTime.tuesday;
+      case 'wednesday':
+        return DateTime.wednesday;
+      case 'thursday':
+        return DateTime.thursday;
+      case 'friday':
+        return DateTime.friday;
+      case 'saturday':
+        return DateTime.saturday;
+      default:
+        return DateTime.sunday;
+    }
+  }
 }

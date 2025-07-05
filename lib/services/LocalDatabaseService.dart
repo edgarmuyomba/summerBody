@@ -36,7 +36,7 @@ class LocalDatabaseService {
         .getWorkoutsByMuscleGroup(muscleGroupId);
   }
 
-  Future<void> updateMuscleGroupDay(int id, String day) async {
+  Future<void> updateMuscleGroupDay(int id, int day) async {
       await _appDatabase.muscleGroupDao.updateMuscleGroupDay(id, day);
   }
 

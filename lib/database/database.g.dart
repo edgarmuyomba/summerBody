@@ -533,7 +533,7 @@ class _$MuscleGroupDao extends MuscleGroupDao {
   @override
   Future<void> updateMuscleGroupDay(
     int id,
-    String day,
+    int day,
   ) async {
     await _queryAdapter.queryNoReturn(
         'UPDATE MuscleGroups SET day = ?2 WHERE id = ?1',

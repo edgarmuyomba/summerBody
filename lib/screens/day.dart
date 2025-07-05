@@ -308,58 +308,17 @@ class _DayState extends State<Day> {
   }
 
   String getDay(String day, {bool prev = false}) {
-    int intValue = 0;
-
-    switch (day) {
-      case "monday":
-        intValue = 0;
-        break;
-      case "tuesday":
-        intValue = 1;
-        break;
-      case "wednesday":
-        intValue = 2;
-        break;
-      case "thursday":
-        intValue = 3;
-        break;
-      case "friday":
-        intValue = 4;
-        break;
-      case "saturday":
-        intValue = 5;
-        break;
-      case "sunday":
-        intValue = 6;
-        break;
-    }
+    int intValue = Utilities.stringDayToInt(day);
 
     int req = prev ? intValue - 1 : intValue + 1;
 
-    if (req < 0) {
-      req = 6;
-    } else if (req > 6) {
-      req = 0;
+    if (req < 1) {
+      req = 7;
+    } else if (req > 7) {
+      req = 1;
     }
 
-    switch (req) {
-      case 0:
-        return "monday";
-      case 1:
-        return "tuesday";
-      case 2:
-        return "wednesday";
-      case 3:
-        return "thursday";
-      case 4:
-        return "friday";
-      case 5:
-        return "saturday";
-      case 6:
-        return "sunday";
-      default:
-        return "monday";
-    }
+    return Utilities.intDayToString(req);
   }
 
   addMuscleGroup(String day) async {
