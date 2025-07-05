@@ -9,8 +9,8 @@ abstract class MuscleGroupDao {
   @Query('SELECT * FROM MuscleGroups WHERE name = :name')
   Future<List<MuscleGroup>> getMuscleGroupsByName(String name);
 
-  @Query('SELECT * FROM MuscleGroups WHERE day = :day')
-  Future<List<MuscleGroup>> getMuscleGroupsByDay(int day);
+  @Query('SELECT * FROM MuscleGroups WHERE dayId = :dayId')
+  Future<List<MuscleGroup>> getMuscleGroupsByDay(int dayId);
 
   @update
   Future<void> editMuscleGroup(MuscleGroup muscleGroup);

@@ -6,7 +6,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:reactive_forms/reactive_forms.dart';
-import 'package:summerbody/stateManagement/_Schedule/schedule_bloc.dart';
+import 'package:summerbody/stateManagement/Schedule/schedule_bloc.dart';
 import 'package:summerbody/database/tables/Set.dart';
 import 'package:summerbody/utils/utilities.dart';
 

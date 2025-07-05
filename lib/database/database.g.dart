@@ -488,16 +488,6 @@ class _$MuscleGroupDao extends MuscleGroupDao {
   final UpdateAdapter<MuscleGroup> _muscleGroupUpdateAdapter;
 
   @override
-  Future<List<MuscleGroup>> getAllMuscleGroups() async {
-    return _queryAdapter.queryList('SELECT * FROM MuscleGroups',
-        mapper: (Map<String, Object?> row) => MuscleGroup(
-            row['id'] as int?,
-            row['name'] as String?,
-            row['dayId'] as int?,
-            row['icon'] as String?));
-  }
-
-  @override
   Future<MuscleGroup?> getMuscleGroupById(int id) async {
     return _queryAdapter.query('SELECT * FROM MuscleGroups WHERE id = ?1',
         mapper: (Map<String, Object?> row) => MuscleGroup(
@@ -520,14 +510,15 @@ class _$MuscleGroupDao extends MuscleGroupDao {
   }
 
   @override
-  Future<List<MuscleGroup>> getMuscleGroupsByDay(int day) async {
-    return _queryAdapter.queryList('SELECT * FROM MuscleGroups WHERE day = ?1',
+  Future<List<MuscleGroup>> getMuscleGroupsByDay(int dayId) async {
+    return _queryAdapter.queryList(
+        'SELECT * FROM MuscleGroups WHERE dayId = ?1',
         mapper: (Map<String, Object?> row) => MuscleGroup(
             row['id'] as int?,
             row['name'] as String?,
             row['dayId'] as int?,
             row['icon'] as String?),
-        arguments: [day]);
+        arguments: [dayId]);
   }
 
   @override

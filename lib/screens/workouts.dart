@@ -5,7 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:summerbody/stateManagement/_Schedule/schedule_bloc.dart';
+import 'package:summerbody/stateManagement/Schedule/schedule_bloc.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 import 'package:summerbody/database/tables/WorkoutPreset.dart';
 import 'package:summerbody/services/DIService.dart';
