@@ -3,9 +3,6 @@ import "package:summerbody/database/tables/MuscleGroup.dart";
 
 @dao
 abstract class MuscleGroupDao {
-  @Query('SELECT * FROM MuscleGroups')
-  Future<List<MuscleGroup>> getAllMuscleGroups();
-
   @Query('SELECT * FROM MuscleGroups WHERE id = :id')
   Future<MuscleGroup?> getMuscleGroupById(int id);
 

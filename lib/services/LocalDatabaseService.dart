@@ -11,8 +11,8 @@ class LocalDatabaseService {
   LocalDatabaseService({AppDatabase? appDatabase})
       : _appDatabase = appDatabase ?? DIService().locator.get<AppDatabase>();
 
-  Future<List<MuscleGroup>> getAllMuscleGroups() async {
-    return await _appDatabase.muscleGroupDao.getAllMuscleGroups();
+  Future<List<MuscleGroup>> getMuscleGroupsByDay(int day) async {
+    return (await _appDatabase.muscleGroupDao.getMuscleGroupsByDay(day));
   }
 
   Future<MuscleGroup?> getMuscleGroupByKey(String key, dynamic value) async {
@@ -37,7 +37,7 @@ class LocalDatabaseService {
   }
 
   Future<void> updateMuscleGroupDay(int id, int day) async {
-      await _appDatabase.muscleGroupDao.updateMuscleGroupDay(id, day);
+    await _appDatabase.muscleGroupDao.updateMuscleGroupDay(id, day);
   }
 
   Future<int> createWorkout(int muscleGroupId, String? workoutName,

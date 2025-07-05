@@ -105,8 +105,7 @@ class Utilities {
         DIService().locator.get<SyncStateModal>();
 
     // get all musclegroups
-    List<MuscleGroup> muscleGroups =
-        await _localDatabaseService.getAllMuscleGroups();
+    List<MuscleGroup> muscleGroups = getAllMuscleGroups();
 
     List<MuscleGroup> muscleGroupsToSync = [];
 
@@ -326,5 +325,39 @@ class Utilities {
       default:
         return DateTime.sunday;
     }
+  }
+
+  static List<MuscleGroup> getAllMuscleGroups() {
+    List<Map<String, dynamic>> maps = [
+      {'id': 1, 'name': 'Chest', 'dayId': '', 'icon': 'assets/icons/chest.png'},
+      {'id': 2, 'name': 'Arms', 'dayId': '', 'icon': 'assets/icons/arms.png'},
+      {
+        'id': 3,
+        'name': 'Shoulders',
+        'dayId': '',
+        'icon': 'assets/icons/shoulders.png'
+      },
+      {'id': 4, 'name': 'Back', 'dayId': '', 'icon': 'assets/icons/back.png'},
+      {'id': 5, 'name': 'Legs', 'dayId': '', 'icon': 'assets/icons/legs.png'},
+      {
+        'id': 6,
+        'name': 'Cardio',
+        'dayId': '',
+        'icon': 'assets/icons/cardio.png'
+      },
+      {
+        'id': 7,
+        'name': 'Full Body',
+        'dayId': '',
+        'icon': 'assets/icons/full-body.png'
+      },
+      {
+        'id': 8,
+        'name': 'Rest Day',
+        'dayId': '',
+        'icon': 'assets/icons/rest-day.png'
+      }
+    ];
+    return maps.map((group) => MuscleGroup.fromMap(group)).toList();
   }
 }

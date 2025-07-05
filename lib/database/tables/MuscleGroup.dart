@@ -45,4 +45,13 @@ class MuscleGroup extends Equatable {
 
   @override
   int get hashCode => Object.hash(id, name, day, icon);
+
+  factory MuscleGroup.fromMap(Map<String, dynamic> map) {
+    return MuscleGroup(
+      map['id'] as int?,
+      map['name'] as String?,
+      map['dayId'] as int?,
+      map['icon'] as String?,
+    );
+  }
 }

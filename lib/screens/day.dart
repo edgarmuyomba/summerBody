@@ -322,6 +322,8 @@ class _DayState extends State<Day> {
   }
 
   addMuscleGroup(String day) async {
+    List<MuscleGroup> muscleGroups = Utilities.getAllMuscleGroups();
+
     String? result = await showModalBottomSheet(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
         context: context,
@@ -333,75 +335,63 @@ class _DayState extends State<Day> {
                   horizontal: 16.w,
                   vertical: 24.h,
                 ),
-                child: FutureBuilder(
-                    future: widget._localDatabaseService.getAllMuscleGroups(),
-                    builder: (BuildContext context, snapshot) {
-                      if (snapshot.hasData) {
-                        List<MuscleGroup> muscleGroups = snapshot.data!;
-                        return Column(children: [
-                          if (selectMuscleGroupName != null) ...[
-                            GestureDetector(
-                              onTap: () {
-                                Navigator.pop(context);
-                                context.read<ScheduleBloc>().add(AddMuscleGroup(
-                                    muscleGroupName: selectMuscleGroupName!,
-                                    day: day));
-                              },
-                              child: Container(
-                                  width: double.infinity,
-                                  height: 50.h,
-                                  alignment: Alignment.center,
-                                  decoration: BoxDecoration(
-                                      color: Colors.black87,
-                                      borderRadius: BorderRadius.circular(50)),
-                                  child: Text(
-                                    "Add ${selectMuscleGroupName!}",
-                                    style: const TextStyle(color: Colors.white),
-                                  )),
+                child: Column(children: [
+                  if (selectMuscleGroupName != null) ...[
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.pop(context);
+                        context.read<ScheduleBloc>().add(AddMuscleGroup(
+                            muscleGroupName: selectMuscleGroupName!, day: day));
+                      },
+                      child: Container(
+                          width: double.infinity,
+                          height: 50.h,
+                          alignment: Alignment.center,
+                          decoration: BoxDecoration(
+                              color: Colors.black87,
+                              borderRadius: BorderRadius.circular(50)),
+                          child: Text(
+                            "Add ${selectMuscleGroupName!}",
+                            style: const TextStyle(color: Colors.white),
+                          )),
+                    ),
+                    SizedBox(height: 20.h)
+                  ],
+                  Expanded(
+                    child: GridView.count(
+                        crossAxisCount: 2,
+                        children: List.generate(muscleGroups.length, (index) {
+                          MuscleGroup muscleGroup = muscleGroups[index];
+                          return GestureDetector(
+                            onTap: () {
+                              setModalState(() {
+                                selectMuscleGroupName = muscleGroup.name;
+                              });
+                              setState(() {});
+                            },
+                            child: Container(
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(20),
+                                  border: Border.all(
+                                      color: selectMuscleGroupName ==
+                                              muscleGroup.name
+                                          ? Colors.black26
+                                          : Colors.transparent),
+                                  color:
+                                      selectMuscleGroupName == muscleGroup.name
+                                          ? Colors.black12
+                                          : Colors.transparent),
+                              child: Padding(
+                                padding: EdgeInsets.all(24.0.h),
+                                child: Image.asset(
+                                  muscleGroup.icon!,
+                                ),
+                              ),
                             ),
-                            SizedBox(height: 20.h)
-                          ],
-                          Expanded(
-                            child: GridView.count(
-                                crossAxisCount: 2,
-                                children:
-                                    List.generate(muscleGroups.length, (index) {
-                                  MuscleGroup muscleGroup = muscleGroups[index];
-                                  return GestureDetector(
-                                    onTap: () {
-                                      setModalState(() {
-                                        selectMuscleGroupName =
-                                            muscleGroup.name;
-                                      });
-                                      setState(() {});
-                                    },
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(20),
-                                          border: Border.all(
-                                              color: selectMuscleGroupName ==
-                                                      muscleGroup.name
-                                                  ? Colors.black26
-                                                  : Colors.transparent),
-                                          color: selectMuscleGroupName ==
-                                                  muscleGroup.name
-                                              ? Colors.black12
-                                              : Colors.transparent),
-                                      child: Padding(
-                                        padding: EdgeInsets.all(24.0.h),
-                                        child: Image.asset(
-                                          muscleGroup.icon!,
-                                        ),
-                                      ),
-                                    ),
-                                  );
-                                })),
-                          ),
-                        ]);
-                      }
-                      return const SizedBox.shrink();
-                    }));
+                          );
+                        })),
+                  ),
+                ]));
           });
         });
     if (result != null) {
