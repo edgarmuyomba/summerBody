@@ -1,4 +1,4 @@
-import 'package:summerbody/blocs/blocProviders.dart';
+import 'package:summerbody/stateManagement/blocProviders.dart';
 import 'package:summerbody/routing/routeConfig.dart';
 import 'package:summerbody/services/DIService.dart';
 import 'package:flutter/material.dart';
