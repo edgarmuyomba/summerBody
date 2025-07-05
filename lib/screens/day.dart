@@ -1,3 +1,4 @@
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -5,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:logger/web.dart';
 import 'package:summerbody/stateManagement/MuscleGroup/muscle_group_bloc.dart';
 import 'package:summerbody/stateManagement/Schedule/schedule_bloc.dart';
 import 'package:summerbody/database/tables/MuscleGroup.dart';
@@ -45,6 +47,9 @@ class _DayState extends State<Day> {
         Utilities.showGenderSelector(context, widget._sharedPreferencesService);
       }
     });
+    context
+        .read<MuscleGroupBloc>()
+        .add(LoadMuscleGroups(selectDay: currentDay));
   }
 
   @override
@@ -70,58 +75,265 @@ class _DayState extends State<Day> {
         ),
         body: Column(
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                GestureDetector(
-                  child: Icon(
-                    Icons.chevron_left,
-                    size: 50.sp,
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  GestureDetector(
+                    child: Icon(
+                      Icons.chevron_left,
+                      size: 50.sp,
+                    ),
+                    onTap: () {
+                      setState(() {
+                        currentDay = getDay(currentDay, prev: true);
+                      });
+                    },
                   ),
-                  onTap: () {
-                    setState(() {
-                      currentDay = getDay(currentDay, prev: true);
-                    });
-                  },
-                ),
-                Column(
-                  children: [
-                    Text(
-                      Utilities.capitalize(
-                          Utilities.intDayToString(currentDay)),
-                      style: TextStyle(
-                          fontSize: 20.sp,
-                          color: Colors.black87,
-                          fontWeight: FontWeight.w500),
-                    ),
-                    Text("Day of the week", style: TextStyle(fontSize: 10.sp))
-                  ],
-                ),
-                GestureDetector(
-                  child: Icon(Icons.chevron_right, size: 50.sp),
-                  onTap: () {
-                    setState(() {
-                      currentDay = getDay(currentDay);
-                    });
-                  },
-                )
-              ],
+                  Column(
+                    children: [
+                      Text(
+                        Utilities.capitalize(
+                            Utilities.intDayToString(currentDay)),
+                        style: TextStyle(
+                            fontSize: 20.sp,
+                            color: Colors.black87,
+                            fontWeight: FontWeight.w500),
+                      ),
+                      Text("Day of the week", style: TextStyle(fontSize: 10.sp))
+                    ],
+                  ),
+                  GestureDetector(
+                    child: Icon(Icons.chevron_right, size: 50.sp),
+                    onTap: () {
+                      setState(() {
+                        currentDay = getDay(currentDay);
+                      });
+                    },
+                  )
+                ],
+              ),
             ),
-            BlocConsumer<MuscleGroupBloc, MuscleGroupState>(
-              listener: (context, state) {},
-              builder: (context, state) {
-                if (state is MuscleGroupsLoaded) {
-                  return Padding(
-                    padding: EdgeInsets.all(16.0.h),
-                    child: const Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [],
-                    ),
-                  );
-                } else {
-                  return const SizedBox.shrink();
-                }
-              },
+            const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16.0),
+              child: Divider(),
+            ),
+            Expanded(
+              child: BlocConsumer<MuscleGroupBloc, MuscleGroupState>(
+                listener: (context, state) {},
+                builder: (context, state) {
+                  if (state is MuscleGroupsLoaded) {
+                    return Padding(
+                      padding: EdgeInsets.only(
+                          left: 16.0.h, right: 16.0.h, bottom: 16.0.h),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          if (state.muscleGroups.isEmpty) ...[
+                            GestureDetector(
+                              onTap: () async {
+                                setState(() {
+                                  selectMuscleGroupName = null;
+                                });
+                                // await addMuscleGroup(currentDay);
+                              },
+                              child: Container(
+                                width: double.infinity,
+                                height: 75.h,
+                                alignment: Alignment.center,
+                                decoration: BoxDecoration(
+                                    color: Colors.black87,
+                                    borderRadius: BorderRadius.circular(5)),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    const Icon(
+                                      Icons.add,
+                                      color: Colors.white,
+                                    ),
+                                    SizedBox(width: 10.w),
+                                    const Text(
+                                      "Add Muscle Group",
+                                      style: TextStyle(color: Colors.white),
+                                    )
+                                  ],
+                                ),
+                              ),
+                            )
+                          ] else ...[
+                            SizedBox(height: 8.0.h),
+                            Stack(
+                              alignment: Alignment.bottomRight,
+                              children: [
+                                CarouselSlider(
+                                  options: CarouselOptions(
+                                      autoPlay: false,
+                                      viewportFraction: 1,
+                                      height: 400.0),
+                                  items: state.muscleGroups.map((muscleGroup) {
+                                    return Builder(
+                                      builder: (BuildContext context) {
+                                        return Center(
+                                          child: Image(
+                                              height: 300.h,
+                                              image: AssetImage(
+                                                muscleGroup.icon!,
+                                              )),
+                                        );
+                                      },
+                                    );
+                                  }).toList(),
+                                ),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
+                                    IconButton(
+                                      onPressed: () =>
+                                          showActionBottomSheet("add"),
+                                      tooltip: "Add muscle group",
+                                      constraints: BoxConstraints(
+                                          maxWidth: 10.w, maxHeight: 10.w),
+                                      icon: Icon(
+                                        Icons.add,
+                                        size: 17.sp,
+                                      ),
+                                    ),
+                                    IconButton(
+                                      onPressed: () =>
+                                          showActionBottomSheet("edit"),
+                                      tooltip: "Edit muscle group",
+                                      constraints: BoxConstraints(
+                                          maxWidth: 10.w, maxHeight: 10.w),
+                                      icon: Icon(
+                                        Icons.edit,
+                                        size: 17.sp,
+                                      ),
+                                    ),
+                                    IconButton(
+                                      onPressed: () =>
+                                          showActionBottomSheet("delete"),
+                                      tooltip: "Delete muscle group",
+                                      constraints: BoxConstraints(
+                                          maxWidth: 10.w, maxHeight: 10.w),
+                                      icon: Icon(
+                                        Icons.cancel,
+                                        size: 17.sp,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                            Padding(
+                              padding: EdgeInsets.symmetric(vertical: 8.0.h),
+                              child: const Divider(),
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  "Workouts",
+                                  style: GoogleFonts.monda(
+                                      fontSize: 18.sp,
+                                      color: Colors.black87,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                                // if (state.workouts.isNotEmpty) ...[
+                                //   IconButton(
+                                //       onPressed: () {
+                                //         context.pushNamed(Routes.workouts,
+                                //             pathParameters: {
+                                //               "muscleGroupName":
+                                //                   state.musclegroup!.name!
+                                //             });
+                                //       },
+                                //       icon: const Icon(
+                                //         Icons.menu,
+                                //         color: Colors.black87,
+                                //       ))
+                                // ]
+                              ],
+                            ),
+                            // if (state.workouts.isEmpty) ...[
+                            //   Expanded(
+                            //       child: Center(
+                            //     child: Column(
+                            //       mainAxisAlignment: MainAxisAlignment.center,
+                            //       children: [
+                            //         RichText(
+                            //           text: TextSpan(
+                            //             text: "You have no workouts for the ",
+                            //             style: TextStyle(
+                            //                 fontSize: 12.sp,
+                            //                 color: Colors.black87),
+                            //             children: [
+                            //               TextSpan(
+                            //                 text:
+                            //                     "${state.musclegroup!.name!.toLowerCase()}.",
+                            //                 style: TextStyle(
+                            //                     fontWeight: FontWeight.bold,
+                            //                     fontSize: 12.sp,
+                            //                     color: Colors.black87),
+                            //               ),
+                            //             ],
+                            //           ),
+                            //         ),
+                            //         TextButton(
+                            //           onPressed: () {
+                            //             context.pushNamed(Routes.workouts,
+                            //                 pathParameters: {
+                            //                   "muscleGroupName":
+                            //                       state.musclegroup!.name!
+                            //                 });
+                            //           },
+                            //           child: Text(
+                            //             "Add Some",
+                            //             style: TextStyle(
+                            //                 fontSize: 12.sp,
+                            //                 color: Colors.blue,
+                            //                 fontWeight: FontWeight.bold),
+                            //           ),
+                            //         ),
+                            //       ],
+                            //     ),
+                            //   ))
+                            // ] else ...[
+                            //   Expanded(
+                            //     child: SingleChildScrollView(
+                            //         child: Column(
+                            //       children: state.workouts.map((workout) {
+                            //         Map<String, dynamic> workoutMap = {
+                            //           "id": workout.id,
+                            //           "name": workout.name,
+                            //           "isSuggested": workout.isSuggested,
+                            //           "sets": (state.sets[workout.id] ?? [])
+                            //               .map((set) {
+                            //             return {
+                            //               "weight1": set.weight1,
+                            //               "reps1": set.reps1,
+                            //               "weight2": set.weight2,
+                            //               "reps2": set.reps2,
+                            //               "date": set.date!.toString()
+                            //             };
+                            //           }).toList()
+                            //         };
+                            //         return WorkoutWidget(
+                            //           workout: workoutMap,
+                            //         );
+                            //       }).toList(),
+                            //     )),
+                            //   )
+                            // ]
+                          ]
+                        ],
+                      ),
+                    );
+                  } else {
+                    return const SizedBox.shrink();
+                  }
+                },
+              ),
             ),
           ],
         ));
