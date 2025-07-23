@@ -6,8 +6,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:logger/web.dart';
 import 'package:summerbody/blocs/Schedule/schedule_bloc.dart';
 import 'package:summerbody/database/tables/MuscleGroup.dart';
+import 'package:summerbody/database/tables/Workout.dart';
 import 'package:summerbody/routing/routes.dart';
 import 'package:summerbody/services/DIService.dart';
 import 'package:summerbody/services/LocalDatabaseService.dart';
@@ -33,7 +35,9 @@ class Day extends StatefulWidget {
 }
 
 class _DayState extends State<Day> {
+  List<Workout> workouts = [];
   MuscleGroup? selectMuscleGroup;
+  MuscleGroup? currentMuscleGroup;
 
   @override
   void initState() {
@@ -68,7 +72,7 @@ class _DayState extends State<Day> {
         ),
         body: BlocConsumer<ScheduleBloc, ScheduleState>(
           listener: (context, state) {
-            // TODO: implement listener
+            //  TODO: implement listener
           },
           builder: (context, state) {
             if (state is ScheduleReady) {
@@ -164,9 +168,19 @@ class _DayState extends State<Day> {
                             children: [
                               CarouselSlider(
                                 options: CarouselOptions(
+                                    enableInfiniteScroll: false,
                                     autoPlay: false,
                                     viewportFraction: 1,
-                                    height: 400.0),
+                                    height: 400.0,
+                                    onPageChanged: (index, reason) async {
+                                      currentMuscleGroup =
+                                          state.muscleGroups[index];
+                                      workouts = await widget
+                                          ._localDatabaseService
+                                          .getWorkoutsByMuscleGroup(
+                                              currentMuscleGroup!.id!);
+                                      setState(() {});
+                                    }),
                                 items: state.muscleGroups.map((muscleGroup) {
                                   return Builder(
                                     builder: (BuildContext context) {
@@ -185,8 +199,12 @@ class _DayState extends State<Day> {
                                 mainAxisAlignment: MainAxisAlignment.end,
                                 children: [
                                   IconButton(
-                                    onPressed: () =>
-                                        showActionBottomSheet("add"),
+                                    onPressed: () async {
+                                      setState(() {
+                                        selectMuscleGroup = null;
+                                      });
+                                      handleAction("add", state.currentDay);
+                                    },
                                     tooltip: "Add muscle group",
                                     constraints: BoxConstraints(
                                         maxWidth: 10.w, maxHeight: 10.w),
@@ -197,7 +215,7 @@ class _DayState extends State<Day> {
                                   ),
                                   IconButton(
                                     onPressed: () =>
-                                        showActionBottomSheet("edit"),
+                                        handleAction("edit", state.currentDay),
                                     tooltip: "Edit muscle group",
                                     constraints: BoxConstraints(
                                         maxWidth: 10.w, maxHeight: 10.w),
@@ -207,8 +225,8 @@ class _DayState extends State<Day> {
                                     ),
                                   ),
                                   IconButton(
-                                    onPressed: () =>
-                                        showActionBottomSheet("delete"),
+                                    onPressed: () => handleAction(
+                                        "delete", state.currentDay),
                                     tooltip: "Delete muscle group",
                                     constraints: BoxConstraints(
                                         maxWidth: 10.w, maxHeight: 10.w),
@@ -235,92 +253,106 @@ class _DayState extends State<Day> {
                                     color: Colors.black87,
                                     fontWeight: FontWeight.bold),
                               ),
-                              // if (state.workouts.isNotEmpty) ...[
-                              //   IconButton(
-                              //       onPressed: () {
-                              //         context.pushNamed(Routes.workouts,
-                              //             pathParameters: {
-                              //               "muscleGroupName":
-                              //                   state.musclegroup!.name!
-                              //             });
-                              //       },
-                              //       icon: const Icon(
-                              //         Icons.menu,
-                              //         color: Colors.black87,
-                              //       ))
-                              // ]
+                              if (workouts.isNotEmpty) ...[
+                                IconButton(
+                                    onPressed: () {
+                                      context.pushNamed(Routes.workouts,
+                                          pathParameters: {
+                                            "muscleGroupName":
+                                                (currentMuscleGroup ??
+                                                        state.muscleGroups[0])
+                                                    .name!
+                                          });
+                                    },
+                                    icon: const Icon(
+                                      Icons.menu,
+                                      color: Colors.black87,
+                                    ))
+                              ]
                             ],
                           ),
-                          // if (state.workouts.isEmpty) ...[
-                          //   Expanded(
-                          //       child: Center(
-                          //     child: Column(
-                          //       mainAxisAlignment: MainAxisAlignment.center,
-                          //       children: [
-                          //         RichText(
-                          //           text: TextSpan(
-                          //             text: "You have no workouts for the ",
-                          //             style: TextStyle(
-                          //                 fontSize: 12.sp,
-                          //                 color: Colors.black87),
-                          //             children: [
-                          //               TextSpan(
-                          //                 text:
-                          //                     "${state.musclegroup!.name!.toLowerCase()}.",
-                          //                 style: TextStyle(
-                          //                     fontWeight: FontWeight.bold,
-                          //                     fontSize: 12.sp,
-                          //                     color: Colors.black87),
-                          //               ),
-                          //             ],
-                          //           ),
-                          //         ),
-                          //         TextButton(
-                          //           onPressed: () {
-                          //             context.pushNamed(Routes.workouts,
-                          //                 pathParameters: {
-                          //                   "muscleGroupName":
-                          //                       state.musclegroup!.name!
-                          //                 });
-                          //           },
-                          //           child: Text(
-                          //             "Add Some",
-                          //             style: TextStyle(
-                          //                 fontSize: 12.sp,
-                          //                 color: Colors.blue,
-                          //                 fontWeight: FontWeight.bold),
-                          //           ),
-                          //         ),
-                          //       ],
-                          //     ),
-                          //   ))
-                          // ] else ...[
-                          //   Expanded(
-                          //     child: SingleChildScrollView(
-                          //         child: Column(
-                          //       children: state.workouts.map((workout) {
-                          //         Map<String, dynamic> workoutMap = {
-                          //           "id": workout.id,
-                          //           "name": workout.name,
-                          //           "isSuggested": workout.isSuggested,
-                          //           "sets": (state.sets[workout.id] ?? [])
-                          //               .map((set) {
-                          //             return {
-                          //               "weight1": set.weight1,
-                          //               "reps1": set.reps1,
-                          //               "weight2": set.weight2,
-                          //               "reps2": set.reps2,
-                          //               "date": set.date!.toString()
-                          //             };
-                          //           }).toList()
-                          //         };
-                          //         return WorkoutWidget(
-                          //           workout: workoutMap,
-                          //         );
-                          //       }).toList(),
-                          //     )),
-                          //   )
-                          // ]
+                          if (workouts.isEmpty) ...[
+                            Expanded(
+                                child: Center(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  RichText(
+                                    text: TextSpan(
+                                      text: "You have no workouts for the ",
+                                      style: TextStyle(
+                                          fontSize: 12.sp,
+                                          color: Colors.black87),
+                                      children: [
+                                        TextSpan(
+                                          text:
+                                              "${(currentMuscleGroup ?? state.muscleGroups[0]).name!.toLowerCase()}.",
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 12.sp,
+                                              color: Colors.black87),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  TextButton(
+                                    onPressed: () {
+                                      context.pushNamed(Routes.workouts,
+                                          pathParameters: {
+                                            "muscleGroupName":
+                                                (currentMuscleGroup ??
+                                                        state.muscleGroups[0])
+                                                    .name!
+                                          });
+                                    },
+                                    child: Text(
+                                      "Add Some",
+                                      style: TextStyle(
+                                          fontSize: 12.sp,
+                                          color: Colors.blue,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ))
+                          ] else ...[
+                            Expanded(
+                              child: SingleChildScrollView(
+                                  child: Column(
+                                children: workouts.map((workout) {
+                                  return FutureBuilder(
+                                      future: widget._localDatabaseService
+                                          .getAllSets(workout.id!),
+                                      builder:
+                                          (BuildContext context, snapshot) {
+                                        if (snapshot.hasData) {
+                                          Map<String, dynamic> workoutMap = {
+                                            "id": workout.id,
+                                            "name": workout.name,
+                                            "isSuggested": workout.isSuggested,
+                                            "sets": (snapshot.data ?? [])
+                                                .map((set) {
+                                              return {
+                                                "weight1": set.weight1,
+                                                "reps1": set.reps1,
+                                                "weight2": set.weight2,
+                                                "reps2": set.reps2,
+                                                "date": set.date!.toString()
+                                              };
+                                            }).toList()
+                                          };
+                                          return WorkoutWidget(
+                                            workout: workoutMap,
+                                          );
+                                        } else {
+                                          return const SizedBox.shrink();
+                                        }
+                                      });
+                                }).toList(),
+                              )),
+                            )
+                          ]
                         ]
                       ],
                     ),
@@ -414,43 +446,39 @@ class _DayState extends State<Day> {
     }
   }
 
-  showActionBottomSheet(String action) {
-    String title = "";
-
+  handleAction(String action, int day) async {
     switch (action) {
       case "add":
-        title = "Add muscle group";
+        await addMuscleGroup(day);
         break;
       case "edit":
-        title = "Edit muscle group";
         break;
       case "delete":
-        title = "Delete muscle group";
         break;
     }
 
-    return showModalBottomSheet(
-        backgroundColor: Colors.white,
-        context: context,
-        constraints: BoxConstraints(
-          minWidth: MediaQuery.of(context).size.width,
-        ),
-        builder: (BuildContext context) {
-          return Padding(
-              padding:
-                  EdgeInsets.symmetric(horizontal: 16.0.w, vertical: 24.0.h),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    title,
-                    style: GoogleFonts.monda(
-                        fontSize: 18.sp,
-                        color: Colors.black87,
-                        fontWeight: FontWeight.bold),
-                  )
-                ],
-              ));
-        });
+    // return showModalBottomSheet(
+    //     backgroundColor: Colors.white,
+    //     context: context,
+    //     constraints: BoxConstraints(
+    //       minWidth: MediaQuery.of(context).size.width,
+    //     ),
+    //     builder: (BuildContext context) {
+    //       return Padding(
+    //           padding:
+    //               EdgeInsets.symmetric(horizontal: 16.0.w, vertical: 24.0.h),
+    //           child: Column(
+    //             mainAxisSize: MainAxisSize.min,
+    //             children: [
+    //               Text(
+    //                 title,
+    //                 style: GoogleFonts.monda(
+    //                     fontSize: 18.sp,
+    //                     color: Colors.black87,
+    //                     fontWeight: FontWeight.bold),
+    //               )
+    //             ],
+    //           ));
+    //     });
   }
 }
