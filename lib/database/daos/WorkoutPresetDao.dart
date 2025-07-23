@@ -9,8 +9,8 @@ abstract class WorkoutPresetDao {
   @Query('SELECT * FROM WorkoutPresets WHERE name LIKE :query')
   Stream<List<WorkoutPreset>> searchWorkoutPresets(String query);
 
-  @Query('DELETE FROM WorkoutPresets WHERE muscleGroupId = :muscleGroupId')
-  Future<void> deleteByMuscleGroupId(int muscleGroupId);
+  @Query('DELETE FROM WorkoutPresets WHERE muscleGroupName = :muscleGroupName')
+  Future<void> deleteByMuscleGroupName(String muscleGroupName);
 
   @Query('SELECT COUNT(*) FROM WorkoutPresets WHERE muscleGroupId = :muscleGroupId')
   Future<int?> countByMuscleGroupId(int muscleGroupId);

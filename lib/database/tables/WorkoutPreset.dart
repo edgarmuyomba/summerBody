@@ -10,7 +10,7 @@ import 'MuscleGroup.dart';
   tableName: 'WorkoutPresets',
   foreignKeys: [
     ForeignKey(
-      childColumns: ['muscleGroupId'],
+      childColumns: ['muscleGroupName'],
       parentColumns: ['id'],
       entity: MuscleGroup,
       onDelete: ForeignKeyAction.cascade,
@@ -25,10 +25,10 @@ class WorkoutPreset extends Equatable {
   final List<String>? subMuscles;
   final List<String>? steps;
   final Map<String, String?>? videoUrl;
-  final Map<String, String?>? gifUrl;
+  final Map<String, String?>? gifUrl; 
 
-  @ColumnInfo(name: 'muscleGroupId')
-  final int? muscleGroup;
+  @ColumnInfo(name: 'muscleGroupName')
+  final String? muscleGroup;
 
   const WorkoutPreset({
     this.id,
@@ -49,7 +49,7 @@ class WorkoutPreset extends Equatable {
     List<String>? steps,
     Map<String, String?>? videoUrl,
     Map<String, String?>? gifUrl,
-    int? muscleGroup,
+    String? muscleGroup,
   }) {
     return WorkoutPreset(
       id: id ?? this.id,
@@ -63,7 +63,7 @@ class WorkoutPreset extends Equatable {
     );
   }
 
-  factory WorkoutPreset.fromMap(Map<String, dynamic> map, int? muscleGroupId) {
+  factory WorkoutPreset.fromMap(Map<String, dynamic> map, String? muscleGroupName) {
     return WorkoutPreset(
       id: map['id'] as int?,
       name: map['name'] as String?,
@@ -82,7 +82,7 @@ class WorkoutPreset extends Equatable {
       gifUrl: map['gifUrl'] is String
           ? StringMapConverter().decode(map['gif_url'] as String)
           : Map<String, String?>.from(map['gif_url'] ?? {}),
-      muscleGroup: muscleGroupId,
+      muscleGroup: muscleGroupName,
     );
   }
 

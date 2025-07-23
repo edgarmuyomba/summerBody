@@ -135,13 +135,13 @@ class Utilities {
     }
 
     for (final muscleGroup in muscleGroupsToSync) {
-      await _localDatabaseService.deleteWorkoutPresets(muscleGroup.id!);
+      await _localDatabaseService.deleteWorkoutPresets(muscleGroup.name!);
 
       StreamSubscription<List<Map<String, dynamic>>>? subscription;
 
       subscription =
           _firebaseService.workoutStream(muscleGroup.name!).listen((value) {
-        _localDatabaseService.createWorkoutPresets(value, muscleGroup.id);
+        _localDatabaseService.createWorkoutPresets(value, muscleGroup.name);
         syncProgress += (value.length / totalCount) * 0.9;
         _syncStateModal.update(syncProgress: syncProgress);
       }, onDone: () async {
@@ -329,32 +329,37 @@ class Utilities {
 
   static List<MuscleGroup> getAllMuscleGroups() {
     List<Map<String, dynamic>> maps = [
-      {'id': 1, 'name': 'Chest', 'dayId': '', 'icon': 'assets/icons/chest.png'},
-      {'id': 2, 'name': 'Arms', 'dayId': '', 'icon': 'assets/icons/arms.png'},
       {
-        'id': 3,
+        'id': null,
+        'name': 'Chest',
+        'dayId': null,
+        'icon': 'assets/icons/chest.png'
+      },
+      {'id': null, 'name': 'Arms', 'dayId': null, 'icon': 'assets/icons/arms.png'},
+      {
+        'id': null,
         'name': 'Shoulders',
-        'dayId': '',
+        'dayId': null,
         'icon': 'assets/icons/shoulders.png'
       },
-      {'id': 4, 'name': 'Back', 'dayId': '', 'icon': 'assets/icons/back.png'},
-      {'id': 5, 'name': 'Legs', 'dayId': '', 'icon': 'assets/icons/legs.png'},
+      {'id': null, 'name': 'Back', 'dayId': null, 'icon': 'assets/icons/back.png'},
+      {'id': null, 'name': 'Legs', 'dayId': null, 'icon': 'assets/icons/legs.png'},
       {
-        'id': 6,
+        'id': null,
         'name': 'Cardio',
-        'dayId': '',
+        'dayId': null,
         'icon': 'assets/icons/cardio.png'
       },
       {
-        'id': 7,
+        'id': null,
         'name': 'Full Body',
-        'dayId': '',
+        'dayId': null,
         'icon': 'assets/icons/full-body.png'
       },
       {
-        'id': 8,
+        'id': null,
         'name': 'Rest Day',
-        'dayId': '',
+        'dayId': null,
         'icon': 'assets/icons/rest-day.png'
       }
     ];
@@ -362,7 +367,6 @@ class Utilities {
   }
 
   static String capitalize(String input) {
-    
     if (input.isEmpty) return input;
     return input[0].toUpperCase() + input.substring(1);
   }

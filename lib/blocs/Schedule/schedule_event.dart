@@ -5,17 +5,16 @@ sealed class ScheduleEvent {}
 
 final class Initialize extends ScheduleEvent {}
 
-final class SetDay extends ScheduleEvent {
-  final String day;
+final class ChangeDay extends ScheduleEvent {
+  final bool next;
 
-  SetDay({required this.day});
+  ChangeDay({required this.next});
 }
 
 final class AddMuscleGroup extends ScheduleEvent {
-  final String muscleGroupName;
-  final String day;
+  final MuscleGroup muscleGroup;
 
-  AddMuscleGroup({required this.muscleGroupName, required this.day});
+  AddMuscleGroup({required this.muscleGroup});
 }
 
 final class LoadWorkout extends ScheduleEvent {

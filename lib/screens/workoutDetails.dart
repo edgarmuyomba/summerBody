@@ -4,7 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:logger/logger.dart';
-import 'package:summerbody/stateManagement/Schedule/schedule_bloc.dart';
+import 'package:summerbody/blocs/Schedule/schedule_bloc.dart';
 import 'package:summerbody/routing/routes.dart';
 import 'package:summerbody/screens/videoPlayer.dart';
 import 'package:summerbody/screens/youtubeVideoPlayer.dart';
@@ -50,7 +50,7 @@ class _WorkoutDetailsState extends State<WorkoutDetails> {
         canPop: false,
         onPopInvokedWithResult: (didPop, result) async {
           if (didPop) return;
-          bloc.add(SetDay(day: bloc.selectDay!));
+          // bloc.add(SetDay(day: bloc.selectDay!));
           context.pop();
         },
         child: Scaffold(
@@ -58,7 +58,7 @@ class _WorkoutDetailsState extends State<WorkoutDetails> {
             centerTitle: true,
             leading: IconButton(
                 onPressed: () {
-                  bloc.add(SetDay(day: bloc.selectDay!));
+                  // bloc.add(SetDay(day: bloc.selectDay!));
                   context.pop();
                 },
                 icon: const Icon(Icons.arrow_back)),

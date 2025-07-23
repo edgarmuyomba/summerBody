@@ -15,6 +15,10 @@ class LocalDatabaseService {
     return (await _appDatabase.muscleGroupDao.getMuscleGroupsByDay(day));
   }
 
+  Future<int> createMuscleGroup(MuscleGroup muscleGroup) async {
+    return await _appDatabase.muscleGroupDao.createMuscleGroup(muscleGroup);
+  }
+
   Future<MuscleGroup?> getMuscleGroupByKey(String key, dynamic value) async {
     switch (key) {
       case "day":
@@ -36,8 +40,8 @@ class LocalDatabaseService {
         .getWorkoutsByMuscleGroup(muscleGroupId);
   }
 
-  Future<void> updateMuscleGroupDay(int id, int day) async {
-    await _appDatabase.muscleGroupDao.updateMuscleGroupDay(id, day);
+  Future<void> updateMuscleGroupDay(int id, int dayId) async {
+    await _appDatabase.muscleGroupDao.updateMuscleGroupDay(id, dayId);
   }
 
   Future<int> createWorkout(int muscleGroupId, String? workoutName,
@@ -115,15 +119,15 @@ class LocalDatabaseService {
   }
 
   Future<void> createWorkoutPresets(
-      List<Map<String, dynamic>> workoutPresets, int? muscleGroupId) async {
+      List<Map<String, dynamic>> workoutPresets, String? muscleGroupName) async {
     List<WorkoutPreset> presets = workoutPresets
-        .map((e) => WorkoutPreset.fromMap(e, muscleGroupId))
+        .map((e) => WorkoutPreset.fromMap(e, muscleGroupName))
         .toList();
     await _appDatabase.workoutPresetDao.insertWorkoutPresets(presets);
   }
 
-  Future<void> deleteWorkoutPresets(int muscleGroupId) async {
-    await _appDatabase.workoutPresetDao.deleteByMuscleGroupId(muscleGroupId);
+  Future<void> deleteWorkoutPresets(String muscleGroupName) async {
+    await _appDatabase.workoutPresetDao.deleteByMuscleGroupName(muscleGroupName);
   }
 
   Stream<List<WorkoutPreset>> searchWorkoutPresets(String query) {

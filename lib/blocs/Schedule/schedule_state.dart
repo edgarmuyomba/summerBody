@@ -9,19 +9,16 @@ final class ScheduleInitial extends ScheduleState {
 }
 
 final class ScheduleReady extends ScheduleState {
-  final String currentDay;
-  final MuscleGroup? musclegroup;
-  final List<Workout> workouts;
-  final Map<int, List<Set>> sets;
+  final int currentDay;
+  final List<MuscleGroup> muscleGroups;
 
-  ScheduleReady(
-      {required this.currentDay,
-      required this.musclegroup,
-      required this.workouts,
-      required this.sets});
+  ScheduleReady({
+    required this.currentDay,
+    required this.muscleGroups,
+  });
 
   @override
-  List<Object?> get props => [currentDay, musclegroup, workouts, sets];
+  List<Object?> get props => [currentDay, muscleGroups];
 }
 
 final class WorkoutReady extends ScheduleState {

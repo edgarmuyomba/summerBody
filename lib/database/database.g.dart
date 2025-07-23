@@ -112,7 +112,7 @@ class _$AppDatabase extends AppDatabase {
         await database.execute(
             'CREATE TABLE IF NOT EXISTS `Workouts` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `name` TEXT, `isSuggested` INTEGER NOT NULL, `equipment` TEXT, `subMuscles` TEXT, `steps` TEXT, `videoUrl` TEXT, `gifUrl` TEXT, `muscleGroupId` INTEGER, FOREIGN KEY (`muscleGroupId`) REFERENCES `MuscleGroups` (`id`) ON UPDATE NO ACTION ON DELETE CASCADE)');
         await database.execute(
-            'CREATE TABLE IF NOT EXISTS `WorkoutPresets` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `name` TEXT, `equipment` TEXT, `subMuscles` TEXT, `steps` TEXT, `videoUrl` TEXT, `gifUrl` TEXT, `muscleGroupId` INTEGER, FOREIGN KEY (`muscleGroupId`) REFERENCES `MuscleGroups` (`id`) ON UPDATE NO ACTION ON DELETE CASCADE)');
+            'CREATE TABLE IF NOT EXISTS `WorkoutPresets` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `name` TEXT, `equipment` TEXT, `subMuscles` TEXT, `steps` TEXT, `videoUrl` TEXT, `gifUrl` TEXT, `muscleGroupName` TEXT, FOREIGN KEY (`muscleGroupName`) REFERENCES `MuscleGroups` (`id`) ON UPDATE NO ACTION ON DELETE CASCADE)');
 
         await callback?.onCreate?.call(database, version);
       },
@@ -399,7 +399,7 @@ class _$WorkoutPresetDao extends WorkoutPresetDao {
                   'steps': _stringListConverter.encode(item.steps),
                   'videoUrl': _stringMapConverter.encode(item.videoUrl),
                   'gifUrl': _stringMapConverter.encode(item.gifUrl),
-                  'muscleGroupId': item.muscleGroup
+                  'muscleGroupName': item.muscleGroup
                 },
             changeListener);
 
@@ -424,17 +424,17 @@ class _$WorkoutPresetDao extends WorkoutPresetDao {
             steps: _stringListConverter.decode(row['steps'] as String?),
             videoUrl: _stringMapConverter.decode(row['videoUrl'] as String?),
             gifUrl: _stringMapConverter.decode(row['gifUrl'] as String?),
-            muscleGroup: row['muscleGroupId'] as int?),
+            muscleGroup: row['muscleGroupName'] as String?),
         arguments: [query],
         queryableName: 'WorkoutPresets',
         isView: false);
   }
 
   @override
-  Future<void> deleteByMuscleGroupId(int muscleGroupId) async {
+  Future<void> deleteByMuscleGroupName(String muscleGroupName) async {
     await _queryAdapter.queryNoReturn(
-        'DELETE FROM WorkoutPresets WHERE muscleGroupId = ?1',
-        arguments: [muscleGroupId]);
+        'DELETE FROM WorkoutPresets WHERE muscleGroupName = ?1',
+        arguments: [muscleGroupName]);
   }
 
   @override
@@ -524,11 +524,11 @@ class _$MuscleGroupDao extends MuscleGroupDao {
   @override
   Future<void> updateMuscleGroupDay(
     int id,
-    int day,
+    int dayId,
   ) async {
     await _queryAdapter.queryNoReturn(
-        'UPDATE MuscleGroups SET day = ?2 WHERE id = ?1',
-        arguments: [id, day]);
+        'UPDATE MuscleGroups SET dayId = ?2 WHERE id = ?1',
+        arguments: [id, dayId]);
   }
 
   @override
