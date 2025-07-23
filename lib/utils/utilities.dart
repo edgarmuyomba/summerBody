@@ -115,10 +115,10 @@ class Utilities {
     _syncStateModal.update(isSyncing: true, syncProgress: 0, active: false);
 
     for (final muscleGroup in muscleGroups) {
-      bool presetsAvailable =
-          ((await _localDatabaseService.countWorkoutPresets(muscleGroup.id!) ??
-                  0)) >
-              0;
+      bool presetsAvailable = ((await _localDatabaseService
+                  .countWorkoutPresets(muscleGroup.name!) ??
+              0)) >
+          0;
 
       if (presetsAvailable) {
         // firebase count
@@ -335,15 +335,30 @@ class Utilities {
         'dayId': null,
         'icon': 'assets/icons/chest.png'
       },
-      {'id': null, 'name': 'Arms', 'dayId': null, 'icon': 'assets/icons/arms.png'},
+      {
+        'id': null,
+        'name': 'Arms',
+        'dayId': null,
+        'icon': 'assets/icons/arms.png'
+      },
       {
         'id': null,
         'name': 'Shoulders',
         'dayId': null,
         'icon': 'assets/icons/shoulders.png'
       },
-      {'id': null, 'name': 'Back', 'dayId': null, 'icon': 'assets/icons/back.png'},
-      {'id': null, 'name': 'Legs', 'dayId': null, 'icon': 'assets/icons/legs.png'},
+      {
+        'id': null,
+        'name': 'Back',
+        'dayId': null,
+        'icon': 'assets/icons/back.png'
+      },
+      {
+        'id': null,
+        'name': 'Legs',
+        'dayId': null,
+        'icon': 'assets/icons/legs.png'
+      },
       {
         'id': null,
         'name': 'Cardio',

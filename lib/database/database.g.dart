@@ -438,11 +438,11 @@ class _$WorkoutPresetDao extends WorkoutPresetDao {
   }
 
   @override
-  Future<int?> countByMuscleGroupId(int muscleGroupId) async {
+  Future<int?> countByMuscleGroupId(String muscleGroupName) async {
     return _queryAdapter.query(
-        'SELECT COUNT(*) FROM WorkoutPresets WHERE muscleGroupId = ?1',
+        'SELECT COUNT(*) FROM WorkoutPresets WHERE muscleGroupName = ?1',
         mapper: (Map<String, Object?> row) => row.values.first as int,
-        arguments: [muscleGroupId]);
+        arguments: [muscleGroupName]);
   }
 
   @override

@@ -134,8 +134,8 @@ class LocalDatabaseService {
     return _appDatabase.workoutPresetDao.searchWorkoutPresets("%$query%");
   }
 
-  Future<int?> countWorkoutPresets(int muscleGroupId) async {
+  Future<int?> countWorkoutPresets(String muscleGroupName) async {
     return await _appDatabase.workoutPresetDao
-        .countByMuscleGroupId(muscleGroupId);
+        .countByMuscleGroupId(muscleGroupName);
   }
 }
