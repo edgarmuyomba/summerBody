@@ -258,10 +258,8 @@ class _DayState extends State<Day> {
                                     onPressed: () {
                                       context.pushNamed(Routes.workouts,
                                           pathParameters: {
-                                            "muscleGroupName":
-                                                (currentMuscleGroup ??
-                                                        state.muscleGroups[0])
-                                                    .name!
+                                            "muscleGroupId":
+                                                "${(currentMuscleGroup ?? state.muscleGroups[0]).id!}"
                                           });
                                     },
                                     icon: const Icon(
@@ -299,10 +297,8 @@ class _DayState extends State<Day> {
                                     onPressed: () {
                                       context.pushNamed(Routes.workouts,
                                           pathParameters: {
-                                            "muscleGroupName":
-                                                (currentMuscleGroup ??
-                                                        state.muscleGroups[0])
-                                                    .name!
+                                            "muscleGroupId":
+                                                "${(currentMuscleGroup ?? state.muscleGroups[0]).id!}"
                                           });
                                     },
                                     child: Text(

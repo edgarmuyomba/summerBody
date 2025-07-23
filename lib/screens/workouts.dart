@@ -5,7 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:summerbody/blocs/Schedule/schedule_bloc.dart';
+import 'package:summerbody/blocs/MuscleGroup/muscleGroup_bloc.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 import 'package:summerbody/database/tables/WorkoutPreset.dart';
 import 'package:summerbody/services/DIService.dart';
@@ -13,11 +13,11 @@ import 'package:summerbody/services/LocalDatabaseService.dart';
 import 'package:summerbody/widgets/workoutWidget.dart';
 
 class Workouts extends StatefulWidget {
-  final String muscleGroupName;
+  final int muscleGroupId;
   final LocalDatabaseService _localDatabaseService;
   Workouts(
       {super.key,
-      required this.muscleGroupName,
+      required this.muscleGroupId,
       LocalDatabaseService? localDatabaseService})
       : _localDatabaseService = localDatabaseService ??
             DIService().locator.get<LocalDatabaseService>();
@@ -44,6 +44,10 @@ class _WorkoutsState extends State<Workouts> {
 
   @override
   void initState() {
+    context
+        .read<MuscleGroupBloc>()
+        .add(LoadWorkouts(muscleGroupId: widget.muscleGroupId));
+
     super.initState();
     nameFocusNode = FocusNode();
     nameFocusNode.addListener(() {
@@ -115,16 +119,16 @@ class _WorkoutsState extends State<Workouts> {
       appBar: AppBar(
         centerTitle: true,
         title: Text(
-          "${widget.muscleGroupName} Workouts",
+          "${widget.muscleGroupId} Workouts",
           style: GoogleFonts.monda(
               fontSize: 24.sp,
               color: Colors.black87,
               fontWeight: FontWeight.bold),
         ),
       ),
-      body: BlocBuilder<ScheduleBloc, ScheduleState>(
+      body: BlocBuilder<MuscleGroupBloc, MuscleGroupState>(
           builder: (BuildContext context, state) {
-        if (state is ScheduleReady) {
+        if (state is MuscleGroupReady) {
           return Padding(
             padding: EdgeInsets.all(16.0.h),
             child: SingleChildScrollView(
@@ -532,7 +536,8 @@ class _WorkoutsState extends State<Workouts> {
                               if (form.valid) {
                                 return ElevatedButton(
                                     onPressed: () {
-                                      context.read<ScheduleBloc>().add(AddWorkout(
+                                      context.read<MuscleGroupBloc>().add(AddWorkout(
+                                          muscleGroupId: widget.muscleGroupId,
                                           workoutPreset: selectedWorkout,
                                           workoutName:
                                               form.control('name').value,
