@@ -16,7 +16,15 @@ class MuscleGroupBloc extends Bloc<MuscleGroupEvent, MuscleGroupState> {
       : _localDatabaseService = localDatabaseService ??
             DIService().locator.get<LocalDatabaseService>(),
         super(MuscleGroupInitial()) {
+    on<LoadWorkouts>(_onLoadWorkouts);
     on<AddWorkout>(_onAddWorkout);
+  }
+
+  Future<void> _onLoadWorkouts(LoadWorkouts event, Emitter emit) async {
+    List<Workout> workouts = await _localDatabaseService
+        .getWorkoutsByMuscleGroup(event.muscleGroupId);
+
+    emit(MuscleGroupReady(workouts: workouts));
   }
 
   Future<void> _onAddWorkout(AddWorkout event, Emitter emit) async {
@@ -26,8 +34,6 @@ class MuscleGroupBloc extends Bloc<MuscleGroupEvent, MuscleGroupState> {
       try {
         int workoutId = await _localDatabaseService.createWorkout(
             event.muscleGroupId, event.workoutName, event.workoutPreset);
-
-        Logger().i(workoutId);
 
         await _localDatabaseService.createSet(workoutId, event.date,
             event.weight1, event.reps1, event.weight2, event.reps2);

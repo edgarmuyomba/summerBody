@@ -38,7 +38,7 @@ final GoRouter router = GoRouter(routes: [
       ]),
   GoRoute(
     name: 'workouts',
-    path: '/workouts/:muscleGroupName',
+    path: '/workouts/:muscleGroupId',
     builder: (BuildContext context, GoRouterState state) {
       final int muscleGroupId =
           int.parse(state.pathParameters["muscleGroupId"] ?? "0");

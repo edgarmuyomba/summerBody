@@ -112,7 +112,7 @@ class _$AppDatabase extends AppDatabase {
         await database.execute(
             'CREATE TABLE IF NOT EXISTS `MuscleGroups` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `name` TEXT, `dayId` INTEGER, `icon` TEXT, FOREIGN KEY (`dayId`) REFERENCES `Days` (`id`) ON UPDATE NO ACTION ON DELETE CASCADE)');
         await database.execute(
-            'CREATE TABLE IF NOT EXISTS `MuscleGroupPresets` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `name` TEXT, `icon` TEXT)');
+            'CREATE TABLE IF NOT EXISTS `MuscleGroupPresets` (`name` TEXT, `icon` TEXT, PRIMARY KEY (`name`))');
         await database.execute(
             'CREATE TABLE IF NOT EXISTS `Workouts` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `name` TEXT, `isSuggested` INTEGER NOT NULL, `equipment` TEXT, `subMuscles` TEXT, `steps` TEXT, `videoUrl` TEXT, `gifUrl` TEXT, `muscleGroupId` INTEGER, FOREIGN KEY (`muscleGroupId`) REFERENCES `MuscleGroups` (`id`) ON UPDATE NO ACTION ON DELETE CASCADE)');
         await database.execute(
@@ -569,11 +569,8 @@ class _$MuscleGroupPresetDao extends MuscleGroupPresetDao {
         _muscleGroupPresetInsertionAdapter = InsertionAdapter(
             database,
             'MuscleGroupPresets',
-            (MuscleGroupPreset item) => <String, Object?>{
-                  'id': item.id,
-                  'name': item.name,
-                  'icon': item.icon
-                });
+            (MuscleGroupPreset item) =>
+                <String, Object?>{'name': item.name, 'icon': item.icon});
 
   final sqflite.DatabaseExecutor database;
 
@@ -587,9 +584,7 @@ class _$MuscleGroupPresetDao extends MuscleGroupPresetDao {
   Future<List<MuscleGroupPreset>> getAllMuscleGroups() async {
     return _queryAdapter.queryList('SELECT * FROM MuscleGroupPresets',
         mapper: (Map<String, Object?> row) => MuscleGroupPreset(
-            id: row['id'] as int?,
-            name: row['name'] as String?,
-            icon: row['icon'] as String?));
+            name: row['name'] as String?, icon: row['icon'] as String?));
   }
 
   @override

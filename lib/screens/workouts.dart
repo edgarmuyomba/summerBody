@@ -119,7 +119,7 @@ class _WorkoutsState extends State<Workouts> {
       appBar: AppBar(
         centerTitle: true,
         title: Text(
-          "${widget.muscleGroupId} Workouts",
+          "Workouts",
           style: GoogleFonts.monda(
               fontSize: 24.sp,
               color: Colors.black87,
@@ -603,27 +603,35 @@ class _WorkoutsState extends State<Workouts> {
                       child: const Divider(),
                     ),
                   ],
-                  // ...state.workouts.map((workout) {
-                  //   Map<String, dynamic> workoutMap = {
-                  //     "id": workout.id,
-                  //     "name": workout.name,
-                  //     "isSuggested": workout.isSuggested,
-                  //     "sets": (state.sets[workout.id] ?? []).map((set) {
-                  //       return {
-                  //         "weight1": set.weight1,
-                  //         "reps1": set.reps1,
-                  //         "weight2": set.weight2,
-                  //         "reps2": set.reps2,
-                  //         "date": set.date!.toString()
-                  //       };
-                  //     }).toList()
-                  //   };
-                  //   return WorkoutWidget(
-                  //     workout: workoutMap,
-                  //     canDelete: true,
-                  //   );
-                  // }
-                  // )
+                  ...state.workouts.map((workout) {
+                    return FutureBuilder(
+                        future: widget._localDatabaseService
+                            .getAllSets(workout.id!),
+                        builder: (BuildContext context, snapshot) {
+                          if (snapshot.hasData) {
+                            Map<String, dynamic> workoutMap = {
+                              "id": workout.id,
+                              "name": workout.name,
+                              "isSuggested": workout.isSuggested,
+                              "sets": (snapshot.data ?? []).map((set) {
+                                return {
+                                  "weight1": set.weight1,
+                                  "reps1": set.reps1,
+                                  "weight2": set.weight2,
+                                  "reps2": set.reps2,
+                                  "date": set.date!.toString()
+                                };
+                              }).toList()
+                            };
+                            return WorkoutWidget(
+                              workout: workoutMap,
+                              canDelete: true,
+                            );
+                          } else {
+                            return const SizedBox.shrink();
+                          }
+                        });
+                  })
                 ],
               ),
             ),
