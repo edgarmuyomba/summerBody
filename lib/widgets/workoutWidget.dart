@@ -17,7 +17,7 @@ class WorkoutWidget extends StatelessWidget {
       {super.key,
       required this.workout,
       this.editable = true,
-      this.canDelete = false});
+      this.canDelete = false}); 
 
   @override
   Widget build(BuildContext context) {
