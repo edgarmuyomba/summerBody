@@ -1,11 +1,13 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter/material.dart';
 import 'package:logger/web.dart';
 import 'package:summerbody/database/tables/Workout.dart';
 import 'package:summerbody/database/tables/Set.dart';
 import 'package:summerbody/database/tables/WorkoutPreset.dart';
 import 'package:summerbody/services/DIService.dart';
 import 'package:summerbody/services/LocalDatabaseService.dart';
+import 'package:summerbody/utils/utilities.dart';
 
 part 'muscleGroup_event.dart';
 part 'muscleGroup_state.dart';
@@ -20,6 +22,7 @@ class MuscleGroupBloc extends Bloc<MuscleGroupEvent, MuscleGroupState> {
     on<LoadWorkouts>(_onLoadWorkouts);
     on<AddWorkout>(_onAddWorkout);
     on<LoadWorkout>(_onLoadWorkout);
+    on<CreateSet>(_onCreateSet);
   }
 
   Future<void> _onLoadWorkouts(LoadWorkouts event, Emitter emit) async {
@@ -60,5 +63,36 @@ class MuscleGroupBloc extends Bloc<MuscleGroupEvent, MuscleGroupState> {
     List<Set> sets = await _localDatabaseService.getAllSets(event.workoutId);
 
     emit(WorkoutReady(workout: workout!, sets: sets));
+  }
+
+  Future<void> _onCreateSet(CreateSet event, Emitter emit) async {
+    final state = this.state;
+
+    if (state is WorkoutReady) {
+      try {
+        await _localDatabaseService.createSet(event.workoutId, event.date,
+            event.weight1, event.reps1, event.weight2, event.reps2);
+
+        List<Set> sets =
+            // ((
+            await _localDatabaseService.getAllSets(event.workoutId);
+        // );
+        // ..sort((a, b) => b.date!.compareTo(a.date!)));
+
+        if (event.context.mounted) {
+          Utilities.showSnackBar(
+              "Successfully created the set", event.context, Colors.green);
+        }
+
+        emit(WorkoutReady(workout: state.workout, sets: sets));
+      } catch (e) {
+        Logger().e(e);
+        if (event.context.mounted) {
+          Utilities.showSnackBar(
+              "Failed to create set", event.context, Colors.red);
+        }
+        emit(state);
+      }
+    }
   }
 }

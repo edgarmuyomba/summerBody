@@ -238,7 +238,8 @@ class _$SetDao extends SetDao {
 
   @override
   Future<List<Set>> getSetsByWorkoutId(int workoutId) async {
-    return _queryAdapter.queryList('SELECT * FROM Sets WHERE workoutId = ?1',
+    return _queryAdapter.queryList(
+        'SELECT * FROM Sets WHERE workoutId = ?1 ORDER BY date DESC',
         mapper: (Map<String, Object?> row) => Set(
             row['id'] as int?,
             row['workoutId'] as int?,

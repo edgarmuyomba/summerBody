@@ -7,7 +7,6 @@ import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 import 'package:summerbody/blocs/MuscleGroup/muscleGroup_bloc.dart';
-import 'package:summerbody/database/tables/MuscleGroup.dart';
 import 'package:summerbody/database/tables/Set.dart';
 import 'package:summerbody/utils/utilities.dart';
 
@@ -868,28 +867,31 @@ class _WorkoutState extends State<Workout> {
                                 return ElevatedButton(
                                   onPressed: () {
                                     // save the set
-                                    // context.read<ScheduleBloc>().add(CreateSet(
-                                    //     workoutId: workoutId,
-                                    //     date: form.control('date').value,
-                                    //     weight1: double.parse(
-                                    //         form.control('weight1').value),
-                                    //     reps1: int.parse(
-                                    //         form.control('reps1').value),
-                                    //     weight2: form
-                                    //                 .control('weight2')
-                                    //                 .value !=
-                                    //             null
-                                    //         ? double.parse(
-                                    //             form.control('weight2').value)
-                                    //         : null,
-                                    //     reps2:
-                                    //         form.control('reps2').value != null
-                                    //             ? int.parse(
-                                    //                 form.control('reps2').value)
-                                    //             : null,
-                                    //     context: context));
+                                    context.read<MuscleGroupBloc>().add(
+                                        CreateSet(
+                                            workoutId: workoutId,
+                                            date: form.control('date').value,
+                                            weight1: double.parse(
+                                                form.control('weight1').value),
+                                            reps1: int.parse(
+                                                form.control('reps1').value),
+                                            weight2:
+                                                form.control('weight2').value !=
+                                                        null
+                                                    ? double.parse(form
+                                                        .control('weight2')
+                                                        .value)
+                                                    : null,
+                                            reps2: form
+                                                        .control('reps2')
+                                                        .value !=
+                                                    null
+                                                ? int.parse(
+                                                    form.control('reps2').value)
+                                                : null,
+                                            context: context));
 
-                                    // context.pop();
+                                    context.pop();
                                   },
                                   style: ElevatedButton.styleFrom(
                                       backgroundColor: Colors.black87,

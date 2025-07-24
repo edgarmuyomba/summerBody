@@ -47,25 +47,6 @@ final class EditWorkout extends ScheduleEvent {
       required this.context});
 }
 
-final class CreateSet extends ScheduleEvent {
-  final int workoutId;
-  final DateTime date;
-  final double weight1;
-  final int reps1;
-  final double? weight2;
-  final int? reps2;
-  final BuildContext context;
-
-  CreateSet(
-      {required this.workoutId,
-      required this.date,
-      required this.weight1,
-      required this.reps1,
-      this.weight2,
-      this.reps2,
-      required this.context});
-}
-
 final class DeleteSet extends ScheduleEvent {
   final int workoutId;
   final int setId;

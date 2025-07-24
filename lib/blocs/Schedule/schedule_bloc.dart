@@ -35,7 +35,6 @@ class ScheduleBloc extends Bloc<ScheduleEvent, ScheduleState> {
     on<AddMuscleGroup>(_onAddMuscleGroup);
     on<DeleteWorkout>(_onDeleteWorkout);
     on<EditWorkout>(_onEditWorkout);
-    on<CreateSet>(_onCreateSet);
     on<DeleteSet>(_onDeleteSet);
   }
 
@@ -143,7 +142,6 @@ class ScheduleBloc extends Bloc<ScheduleEvent, ScheduleState> {
     }
   }
 
-
   Future<void> _onDeleteWorkout(DeleteWorkout event, Emitter emit) async {
     // final state = this.state;
 
@@ -197,35 +195,6 @@ class ScheduleBloc extends Bloc<ScheduleEvent, ScheduleState> {
     //           "Failed to update the workout", event.context, Colors.red);
     //     }
 
-    //     emit(state);
-    //   }
-    // }
-  }
-
-  Future<void> _onCreateSet(CreateSet event, Emitter emit) async {
-    // final state = this.state;
-
-    // if (state is WorkoutReady) {
-    //   try {
-    //     await _localDatabaseService.createSet(event.workoutId, event.date,
-    //         event.weight1, event.reps1, event.weight2, event.reps2);
-
-    //     List<Set> sets =
-    //         ((await _localDatabaseService.getAllSets(event.workoutId))
-    //           ..sort((a, b) => b.date!.compareTo(a.date!)));
-
-    //     if (event.context.mounted) {
-    //       Utilities.showSnackBar(
-    //           "Successfully created the set", event.context, Colors.green);
-    //     }
-
-    //     emit(WorkoutReady(workout: state.workout, sets: sets));
-    //   } catch (e) {
-    //     Logger().e(e);
-    //     if (event.context.mounted) {
-    //       Utilities.showSnackBar(
-    //           "Failed to create set", event.context, Colors.red);
-    //     }
     //     emit(state);
     //   }
     // }

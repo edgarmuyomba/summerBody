@@ -42,3 +42,22 @@ final class LoadWorkout extends MuscleGroupEvent {
 
   const LoadWorkout({required this.workoutId});
 }
+
+final class CreateSet extends MuscleGroupEvent {
+  final int workoutId;
+  final DateTime date;
+  final double weight1;
+  final int reps1;
+  final double? weight2;
+  final int? reps2;
+  final BuildContext context;
+
+  const CreateSet(
+      {required this.workoutId,
+      required this.date,
+      required this.weight1,
+      required this.reps1,
+      this.weight2,
+      this.reps2,
+      required this.context});
+}

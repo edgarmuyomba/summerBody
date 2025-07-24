@@ -18,6 +18,6 @@ abstract class SetDao {
   @Query('SELECT * FROM Sets WHERE id = :id')
   Future<Set?> getSetById(int id);
 
-  @Query('SELECT * FROM Sets WHERE workoutId = :workoutId')
+  @Query('SELECT * FROM Sets WHERE workoutId = :workoutId ORDER BY date DESC')
   Future<List<Set>> getSetsByWorkoutId(int workoutId);
 }
