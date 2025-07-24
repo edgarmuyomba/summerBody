@@ -16,12 +16,3 @@ final class AddMuscleGroup extends ScheduleEvent {
 
   AddMuscleGroup({required this.muscleGroupPreset});
 }
-
-final class DeleteSet extends ScheduleEvent {
-  final int workoutId;
-  final int setId;
-  final BuildContext context;
-
-  DeleteSet(
-      {required this.workoutId, required this.setId, required this.context});
-}

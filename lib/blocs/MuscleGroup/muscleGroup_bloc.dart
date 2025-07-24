@@ -25,6 +25,7 @@ class MuscleGroupBloc extends Bloc<MuscleGroupEvent, MuscleGroupState> {
     on<EditWorkout>(_onEditWorkout);
     on<DeleteWorkout>(_onDeleteWorkout);
     on<CreateSet>(_onCreateSet);
+    on<DeleteSet>(_onDeleteSet);
   }
 
   Future<void> _onLoadWorkouts(LoadWorkouts event, Emitter emit) async {
@@ -152,6 +153,34 @@ class MuscleGroupBloc extends Bloc<MuscleGroupEvent, MuscleGroupState> {
         ));
       } catch (e) {
         Logger().e(e);
+        emit(state);
+      }
+    }
+  }
+
+  Future<void> _onDeleteSet(DeleteSet event, Emitter emit) async {
+    final state = this.state;
+
+    if (state is WorkoutReady) {
+      try {
+        await _localDatabaseService.deleteSet(event.workoutId, event.setId);
+
+        List<Set> sets =
+            await _localDatabaseService.getAllSets(event.workoutId);
+
+        if (event.context.mounted) {
+          Utilities.showSnackBar(
+              "Successfully deleted the set", event.context, Colors.green);
+        }
+
+        emit(WorkoutReady(workout: state.workout, sets: sets));
+      } catch (e) {
+        Logger().e(e);
+
+        if (event.context.mounted) {
+          Utilities.showSnackBar(
+              "Failed to delete set", event.context, Colors.red);
+        }
         emit(state);
       }
     }

@@ -551,11 +551,11 @@ class _WorkoutState extends State<Workout> {
                                       if (lastIndex != 0) ...[
                                         GestureDetector(
                                           onTap: () {
-                                            // context.read<ScheduleBloc>().add(
-                                            //     DeleteSet(
-                                            //         workoutId: widget.workoutId,
-                                            //         setId: set.id!,
-                                            //         context: context));
+                                            context.read<MuscleGroupBloc>().add(
+                                                DeleteSet(
+                                                    workoutId: widget.workoutId,
+                                                    setId: set.id!,
+                                                    context: context));
                                           },
                                           child: Icon(
                                             Icons.delete_outline,

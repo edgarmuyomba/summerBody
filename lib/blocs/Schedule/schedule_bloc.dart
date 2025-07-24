@@ -30,7 +30,6 @@ class ScheduleBloc extends Bloc<ScheduleEvent, ScheduleState> {
     on<Initialize>(_onInitialize);
     on<ChangeDay>(_onChangeDay);
     on<AddMuscleGroup>(_onAddMuscleGroup);
-    on<DeleteSet>(_onDeleteSet);
   }
 
   int? selectDay;
@@ -135,34 +134,5 @@ class ScheduleBloc extends Bloc<ScheduleEvent, ScheduleState> {
         emit(state);
       }
     }
-  }
-
-  Future<void> _onDeleteSet(DeleteSet event, Emitter emit) async {
-    // final state = this.state;
-
-    // if (state is WorkoutReady) {
-    //   try {
-    //     await _localDatabaseService.deleteSet(event.workoutId, event.setId);
-
-    //     List<Set> sets = (await _localDatabaseService
-    //         .getAllSets(event.workoutId))
-    //       ..sort((a, b) => b.date!.compareTo(a.date!));
-
-    //     if (event.context.mounted) {
-    //       Utilities.showSnackBar(
-    //           "Successfully deleted the set", event.context, Colors.green);
-    //     }
-
-    //     emit(WorkoutReady(workout: state.workout, sets: sets));
-    //   } catch (e) {
-    //     Logger().e(e);
-
-    //     if (event.context.mounted) {
-    //       Utilities.showSnackBar(
-    //           "Failed to delete set", event.context, Colors.red);
-    //     }
-    //     emit(state);
-    //   }
-    // }
   }
 }

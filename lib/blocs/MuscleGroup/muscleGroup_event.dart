@@ -91,3 +91,12 @@ final class DeleteWorkout extends MuscleGroupEvent {
 
   const DeleteWorkout({required this.workoutId});
 }
+
+final class DeleteSet extends MuscleGroupEvent {
+  final int workoutId;
+  final int setId;
+  final BuildContext context;
+
+  const DeleteSet(
+      {required this.workoutId, required this.setId, required this.context});
+}
