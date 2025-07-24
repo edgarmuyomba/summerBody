@@ -85,3 +85,9 @@ final class EditWorkout extends MuscleGroupEvent {
       this.reps2,
       required this.context});
 }
+
+final class DeleteWorkout extends MuscleGroupEvent {
+  final int workoutId;
+
+  const DeleteWorkout({required this.workoutId});
+}

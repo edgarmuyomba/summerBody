@@ -5,7 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:summerbody/blocs/Schedule/schedule_bloc.dart';
+import 'package:summerbody/blocs/MuscleGroup/muscleGroup_bloc.dart';
 import 'package:summerbody/routing/routes.dart';
 import 'package:summerbody/utils/utilities.dart';
 
@@ -17,7 +17,7 @@ class WorkoutWidget extends StatelessWidget {
       {super.key,
       required this.workout,
       this.editable = true,
-      this.canDelete = false}); 
+      this.canDelete = false});
 
   @override
   Widget build(BuildContext context) {
@@ -104,11 +104,10 @@ class WorkoutWidget extends StatelessWidget {
               ),
             ),
             if (canDelete) ...[
-              // const Expanded(child: SizedBox()),
               IconButton(
                   onPressed: () {
                     context
-                        .read<ScheduleBloc>()
+                        .read<MuscleGroupBloc>()
                         .add(DeleteWorkout(workoutId: workout["id"]));
                   },
                   icon: const Icon(

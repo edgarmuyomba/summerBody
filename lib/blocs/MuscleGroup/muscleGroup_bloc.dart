@@ -23,6 +23,7 @@ class MuscleGroupBloc extends Bloc<MuscleGroupEvent, MuscleGroupState> {
     on<AddWorkout>(_onAddWorkout);
     on<LoadWorkout>(_onLoadWorkout);
     on<EditWorkout>(_onEditWorkout);
+    on<DeleteWorkout>(_onDeleteWorkout);
     on<CreateSet>(_onCreateSet);
   }
 
@@ -124,6 +125,33 @@ class MuscleGroupBloc extends Bloc<MuscleGroupEvent, MuscleGroupState> {
               "Failed to update the workout", event.context, Colors.red);
         }
 
+        emit(state);
+      }
+    }
+  }
+
+  Future<void> _onDeleteWorkout(DeleteWorkout event, Emitter emit) async {
+    final state = this.state;
+
+    if (state is MuscleGroupReady) {
+      try {
+        List<Workout> updatedWorkouts = [];
+
+        try {
+          await _localDatabaseService.deleteWorkout(event.workoutId);
+          updatedWorkouts = state.workouts
+              .where((workout) => workout.id != event.workoutId)
+              .toList();
+        } catch (error) {
+          Logger().e("Failed to delete workout:: $error");
+          updatedWorkouts = state.workouts;
+        }
+
+        emit(MuscleGroupReady(
+          workouts: updatedWorkouts,
+        ));
+      } catch (e) {
+        Logger().e(e);
         emit(state);
       }
     }

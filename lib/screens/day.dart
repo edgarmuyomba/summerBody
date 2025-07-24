@@ -6,7 +6,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:logger/web.dart';
 import 'package:summerbody/blocs/Schedule/schedule_bloc.dart';
 import 'package:summerbody/database/tables/MuscleGroup.dart';
 import 'package:summerbody/database/tables/MuscleGroupPreset.dart';

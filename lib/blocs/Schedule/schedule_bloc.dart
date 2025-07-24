@@ -30,7 +30,6 @@ class ScheduleBloc extends Bloc<ScheduleEvent, ScheduleState> {
     on<Initialize>(_onInitialize);
     on<ChangeDay>(_onChangeDay);
     on<AddMuscleGroup>(_onAddMuscleGroup);
-    on<DeleteWorkout>(_onDeleteWorkout);
     on<DeleteSet>(_onDeleteSet);
   }
 
@@ -136,28 +135,6 @@ class ScheduleBloc extends Bloc<ScheduleEvent, ScheduleState> {
         emit(state);
       }
     }
-  }
-
-  Future<void> _onDeleteWorkout(DeleteWorkout event, Emitter emit) async {
-    // final state = this.state;
-
-    // if (state is ScheduleReady) {
-    //   try {
-    //     await _localDatabaseService.deleteWorkout(event.workoutId);
-
-    //     Map<String, dynamic> muscleGroupAndWorkouts =
-    //         await _getMuscleGroupAndWorkouts(
-    //             Utilities.stringDayToInt(state.currentDay));
-    //     emit(ScheduleReady(
-    //         currentDay: state.currentDay,
-    //         musclegroup: muscleGroupAndWorkouts["muscleGroup"],
-    //         workouts: muscleGroupAndWorkouts["workouts"],
-    //         sets: muscleGroupAndWorkouts["sets"]));
-    //   } catch (e) {
-    //     Logger().e(e);
-    //     emit(state);
-    //   }
-    // }
   }
 
   Future<void> _onDeleteSet(DeleteSet event, Emitter emit) async {
