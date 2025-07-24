@@ -1,4 +1,5 @@
 import 'package:summerbody/database/database.dart';
+import 'package:summerbody/database/tables/MuscleGroupPreset.dart';
 import 'package:summerbody/database/tables/Set.dart';
 import 'package:summerbody/database/tables/MuscleGroup.dart';
 import 'package:summerbody/database/tables/Workout.dart';
@@ -13,6 +14,10 @@ class LocalDatabaseService {
 
   Future<List<MuscleGroup>> getMuscleGroupsByDay(int day) async {
     return (await _appDatabase.muscleGroupDao.getMuscleGroupsByDay(day));
+  }
+
+  Future<List<MuscleGroupPreset>> getAllMuscleGroupPresets() async {
+    return _appDatabase.muscleGroupPresetDao.getAllMuscleGroups();
   }
 
   Future<int> createMuscleGroup(MuscleGroup muscleGroup) async {

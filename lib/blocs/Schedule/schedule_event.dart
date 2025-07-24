@@ -12,9 +12,9 @@ final class ChangeDay extends ScheduleEvent {
 }
 
 final class AddMuscleGroup extends ScheduleEvent {
-  final MuscleGroup muscleGroup;
+  final MuscleGroupPreset muscleGroupPreset;
 
-  AddMuscleGroup({required this.muscleGroup});
+  AddMuscleGroup({required this.muscleGroupPreset});
 }
 
 final class LoadWorkout extends ScheduleEvent {

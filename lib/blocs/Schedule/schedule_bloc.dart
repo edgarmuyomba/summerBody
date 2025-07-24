@@ -4,6 +4,7 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
+import 'package:summerbody/database/tables/MuscleGroupPreset.dart';
 import 'package:summerbody/database/tables/Set.dart';
 import 'package:summerbody/database/tables/MuscleGroup.dart';
 import 'package:summerbody/database/tables/Workout.dart';
@@ -98,8 +99,11 @@ class ScheduleBloc extends Bloc<ScheduleEvent, ScheduleState> {
     final state = this.state;
     if (state is ScheduleReady) {
       try {
+        Map<String, dynamic> presetMap = event.muscleGroupPreset.toMap();
+        MuscleGroup muscleGroup = MuscleGroup.fromMap(presetMap);
+
         int muscleGroupId =
-            await _localDatabaseService.createMuscleGroup(event.muscleGroup);
+            await _localDatabaseService.createMuscleGroup(muscleGroup);
 
         await _localDatabaseService.updateMuscleGroupDay(
             muscleGroupId, selectDay!);

@@ -6,6 +6,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:summerbody/database/tables/MuscleGroup.dart';
+import 'package:summerbody/database/tables/MuscleGroupPreset.dart';
 import 'package:summerbody/services/DIService.dart';
 import 'package:summerbody/services/FirebaseService.dart';
 import 'package:summerbody/services/LocalDatabaseService.dart';
@@ -105,16 +106,17 @@ class Utilities {
         DIService().locator.get<SyncStateModal>();
 
     // get all musclegroups
-    List<MuscleGroup> muscleGroups = getAllMuscleGroups();
+    List<MuscleGroupPreset> muscleGroupPresets =
+        await LocalDatabaseService().getAllMuscleGroupPresets();
 
-    List<MuscleGroup> muscleGroupsToSync = [];
+    List<MuscleGroupPreset> presetsToSync = [];
 
     int totalCount = 0;
     double syncProgress = 0;
 
     _syncStateModal.update(isSyncing: true, syncProgress: 0, active: false);
 
-    for (final muscleGroup in muscleGroups) {
+    for (final muscleGroup in muscleGroupPresets) {
       bool presetsAvailable = ((await _localDatabaseService
                   .countWorkoutPresets(muscleGroup.name!) ??
               0)) >
@@ -127,21 +129,21 @@ class Utilities {
             await _firebaseService.getRecordCount(muscleGroup.name!);
 
         totalCount += firebaseCount;
-        muscleGroupsToSync.add(muscleGroup);
+        presetsToSync.add(muscleGroup);
       }
 
-      syncProgress += (1 / muscleGroups.length) * 0.1;
+      syncProgress += (1 / muscleGroupPresets.length) * 0.1;
       _syncStateModal.update(syncProgress: syncProgress);
     }
 
-    for (final muscleGroup in muscleGroupsToSync) {
-      await _localDatabaseService.deleteWorkoutPresets(muscleGroup.name!);
+    for (final preset in presetsToSync) {
+      await _localDatabaseService.deleteWorkoutPresets(preset.name!);
 
       StreamSubscription<List<Map<String, dynamic>>>? subscription;
 
       subscription =
-          _firebaseService.workoutStream(muscleGroup.name!).listen((value) {
-        _localDatabaseService.createWorkoutPresets(value, muscleGroup.name);
+          _firebaseService.workoutStream(preset.name!).listen((value) {
+        _localDatabaseService.createWorkoutPresets(value, preset.name);
         syncProgress += (value.length / totalCount) * 0.9;
         _syncStateModal.update(syncProgress: syncProgress);
       }, onDone: () async {
@@ -325,60 +327,6 @@ class Utilities {
       default:
         return DateTime.sunday;
     }
-  }
-
-  static List<MuscleGroup> getAllMuscleGroups() {
-    List<Map<String, dynamic>> maps = [
-      {
-        'id': null,
-        'name': 'Chest',
-        'dayId': null,
-        'icon': 'assets/icons/chest.png'
-      },
-      {
-        'id': null,
-        'name': 'Arms',
-        'dayId': null,
-        'icon': 'assets/icons/arms.png'
-      },
-      {
-        'id': null,
-        'name': 'Shoulders',
-        'dayId': null,
-        'icon': 'assets/icons/shoulders.png'
-      },
-      {
-        'id': null,
-        'name': 'Back',
-        'dayId': null,
-        'icon': 'assets/icons/back.png'
-      },
-      {
-        'id': null,
-        'name': 'Legs',
-        'dayId': null,
-        'icon': 'assets/icons/legs.png'
-      },
-      {
-        'id': null,
-        'name': 'Cardio',
-        'dayId': null,
-        'icon': 'assets/icons/cardio.png'
-      },
-      {
-        'id': null,
-        'name': 'Full Body',
-        'dayId': null,
-        'icon': 'assets/icons/full-body.png'
-      },
-      {
-        'id': null,
-        'name': 'Rest Day',
-        'dayId': null,
-        'icon': 'assets/icons/rest-day.png'
-      }
-    ];
-    return maps.map((group) => MuscleGroup.fromMap(group)).toList();
   }
 
   static String capitalize(String input) {

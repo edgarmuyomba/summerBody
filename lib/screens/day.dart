@@ -9,6 +9,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:logger/web.dart';
 import 'package:summerbody/blocs/Schedule/schedule_bloc.dart';
 import 'package:summerbody/database/tables/MuscleGroup.dart';
+import 'package:summerbody/database/tables/MuscleGroupPreset.dart';
 import 'package:summerbody/database/tables/Workout.dart';
 import 'package:summerbody/routing/routes.dart';
 import 'package:summerbody/services/DIService.dart';
@@ -36,7 +37,7 @@ class Day extends StatefulWidget {
 
 class _DayState extends State<Day> {
   List<Workout> workouts = [];
-  MuscleGroup? selectMuscleGroup;
+  MuscleGroupPreset? selectMuscleGroupPreset;
   MuscleGroup? currentMuscleGroup;
 
   @override
@@ -134,7 +135,7 @@ class _DayState extends State<Day> {
                           GestureDetector(
                             onTap: () async {
                               setState(() {
-                                selectMuscleGroup = null;
+                                selectMuscleGroupPreset = null;
                               });
                               await addMuscleGroup(state.currentDay);
                             },
@@ -201,7 +202,7 @@ class _DayState extends State<Day> {
                                   IconButton(
                                     onPressed: () async {
                                       setState(() {
-                                        selectMuscleGroup = null;
+                                        selectMuscleGroupPreset = null;
                                       });
                                       handleAction("add", state.currentDay);
                                     },
@@ -363,9 +364,12 @@ class _DayState extends State<Day> {
   }
 
   addMuscleGroup(int day) async {
-    List<MuscleGroup> muscleGroups = Utilities.getAllMuscleGroups();
+    // List<MuscleGroup> muscleGroups = Utilities.getAllMuscleGroups();
 
-    MuscleGroup? result = await showModalBottomSheet(
+    List<MuscleGroupPreset> muscleGroupPresets =
+        await widget._localDatabaseService.getAllMuscleGroupPresets();
+
+    MuscleGroupPreset? result = await showModalBottomSheet(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
         context: context,
         builder: (BuildContext context) {
@@ -377,12 +381,12 @@ class _DayState extends State<Day> {
                   vertical: 24.h,
                 ),
                 child: Column(children: [
-                  if (selectMuscleGroup != null) ...[
+                  if (selectMuscleGroupPreset != null) ...[
                     GestureDetector(
                       onTap: () {
                         Navigator.pop(context);
-                        context.read<ScheduleBloc>().add(
-                            AddMuscleGroup(muscleGroup: selectMuscleGroup!));
+                        context.read<ScheduleBloc>().add(AddMuscleGroup(
+                            muscleGroupPreset: selectMuscleGroupPreset!));
                       },
                       child: Container(
                           width: double.infinity,
@@ -392,7 +396,7 @@ class _DayState extends State<Day> {
                               color: Colors.black87,
                               borderRadius: BorderRadius.circular(50)),
                           child: Text(
-                            "Add ${selectMuscleGroup!.name!}",
+                            "Add ${selectMuscleGroupPreset!.name!}",
                             style: const TextStyle(color: Colors.white),
                           )),
                     ),
@@ -401,12 +405,14 @@ class _DayState extends State<Day> {
                   Expanded(
                     child: GridView.count(
                         crossAxisCount: 2,
-                        children: List.generate(muscleGroups.length, (index) {
-                          MuscleGroup muscleGroup = muscleGroups[index];
+                        children:
+                            List.generate(muscleGroupPresets.length, (index) {
+                          MuscleGroupPreset muscleGroupPreset =
+                              muscleGroupPresets[index];
                           return GestureDetector(
                             onTap: () {
                               setModalState(() {
-                                selectMuscleGroup = muscleGroup;
+                                selectMuscleGroupPreset = muscleGroupPreset;
                               });
                               setState(() {});
                             },
@@ -414,18 +420,18 @@ class _DayState extends State<Day> {
                               decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(20),
                                   border: Border.all(
-                                      color: selectMuscleGroup?.name ==
-                                              muscleGroup.name
+                                      color: selectMuscleGroupPreset?.name ==
+                                              muscleGroupPreset.name
                                           ? Colors.black26
                                           : Colors.transparent),
-                                  color: selectMuscleGroup?.name ==
-                                          muscleGroup.name
+                                  color: selectMuscleGroupPreset?.name ==
+                                          muscleGroupPreset.name
                                       ? Colors.black12
                                       : Colors.transparent),
                               child: Padding(
                                 padding: EdgeInsets.all(24.0.h),
                                 child: Image.asset(
-                                  muscleGroup.icon!,
+                                  muscleGroupPreset.icon!,
                                 ),
                               ),
                             ),
@@ -437,7 +443,7 @@ class _DayState extends State<Day> {
         });
     if (result != null) {
       setState(() {
-        selectMuscleGroup = result;
+        selectMuscleGroupPreset = result;
       });
     }
   }
