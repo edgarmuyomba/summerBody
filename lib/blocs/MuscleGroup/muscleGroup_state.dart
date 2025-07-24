@@ -17,3 +17,14 @@ final class MuscleGroupReady extends MuscleGroupState {
   @override
   List<Object> get props => [workouts];
 }
+
+final class WorkoutReady extends MuscleGroupState {
+  final Workout workout;
+  final List<Set> sets;
+
+  const WorkoutReady({required this.workout, required this.sets});
+
+  @override
+  // TODO: implement props
+  List<Object> get props => [workout, sets];
+}

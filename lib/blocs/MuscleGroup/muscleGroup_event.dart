@@ -36,3 +36,9 @@ final class AddWorkout extends MuscleGroupEvent {
       this.weight2,
       this.reps2});
 }
+
+final class LoadWorkout extends MuscleGroupEvent {
+  final int workoutId;
+
+  const LoadWorkout({required this.workoutId});
+}

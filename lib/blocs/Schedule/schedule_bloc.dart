@@ -34,7 +34,6 @@ class ScheduleBloc extends Bloc<ScheduleEvent, ScheduleState> {
     on<ChangeDay>(_onChangeDay);
     on<AddMuscleGroup>(_onAddMuscleGroup);
     on<LoadWorkout>(_onLoadWorkout);
-    on<AddWorkout>(_onAddWorkout);
     on<DeleteWorkout>(_onDeleteWorkout);
     on<EditWorkout>(_onEditWorkout);
     on<CreateSet>(_onCreateSet);
@@ -154,32 +153,6 @@ class ScheduleBloc extends Bloc<ScheduleEvent, ScheduleState> {
     //   List<Set> sets = state.sets[workout.id] ?? [];
 
     // emit(WorkoutReady(workout: workout, sets: sets));
-    // }
-  }
-
-  Future<void> _onAddWorkout(AddWorkout event, Emitter emit) async {
-    // final state = this.state;
-
-    // if (state is ScheduleReady) {
-    //   try {
-    //     int workoutId = await _localDatabaseService.createWorkout(
-    //         state.musclegroup!.id!, event.workoutName, event.workoutPreset);
-
-    //     await _localDatabaseService.createSet(workoutId, event.date,
-    //         event.weight1, event.reps1, event.weight2, event.reps2);
-
-    //     Map<String, dynamic> muscleGroupAndWorkouts =
-    //         await _getMuscleGroupAndWorkouts(
-    //             Utilities.stringDayToInt(state.currentDay));
-    //     emit(ScheduleReady(
-    //         currentDay: state.currentDay,
-    //         musclegroup: muscleGroupAndWorkouts["muscleGroup"],
-    //         workouts: muscleGroupAndWorkouts["workouts"],
-    //         sets: muscleGroupAndWorkouts["sets"]));
-    //   } catch (e) {
-    //     Logger().e(e);
-    //     emit(state);
-    //   }
     // }
   }
 

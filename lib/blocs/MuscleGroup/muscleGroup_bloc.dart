@@ -2,6 +2,7 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:logger/web.dart';
 import 'package:summerbody/database/tables/Workout.dart';
+import 'package:summerbody/database/tables/Set.dart';
 import 'package:summerbody/database/tables/WorkoutPreset.dart';
 import 'package:summerbody/services/DIService.dart';
 import 'package:summerbody/services/LocalDatabaseService.dart';
@@ -18,6 +19,7 @@ class MuscleGroupBloc extends Bloc<MuscleGroupEvent, MuscleGroupState> {
         super(MuscleGroupInitial()) {
     on<LoadWorkouts>(_onLoadWorkouts);
     on<AddWorkout>(_onAddWorkout);
+    on<LoadWorkout>(_onLoadWorkout);
   }
 
   Future<void> _onLoadWorkouts(LoadWorkouts event, Emitter emit) async {
@@ -49,5 +51,14 @@ class MuscleGroupBloc extends Bloc<MuscleGroupEvent, MuscleGroupState> {
         emit(state);
       }
     }
+  }
+
+  Future<void> _onLoadWorkout(LoadWorkout event, Emitter emit) async {
+    Workout? workout =
+        await _localDatabaseService.getWorkoutByKey("id", event.workoutId);
+
+    List<Set> sets = await _localDatabaseService.getAllSets(event.workoutId);
+
+    emit(WorkoutReady(workout: workout!, sets: sets));
   }
 }
