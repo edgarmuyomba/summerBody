@@ -4,7 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:logger/logger.dart';
-import 'package:summerbody/blocs/Schedule/schedule_bloc.dart';
+import 'package:summerbody/blocs/MuscleGroup/muscleGroup_bloc.dart';
 import 'package:summerbody/routing/routes.dart';
 import 'package:summerbody/screens/videoPlayer.dart';
 import 'package:summerbody/screens/youtubeVideoPlayer.dart';
@@ -27,13 +27,14 @@ class WorkoutDetails extends StatefulWidget {
 }
 
 class _WorkoutDetailsState extends State<WorkoutDetails> {
-  int workoutId = -1;
   late String gender;
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
+    context
+        .read<MuscleGroupBloc>()
+        .add(LoadWorkout(workoutId: widget.workoutId));
     widget._sharedPreferencesService.getStringValue("gender").then((value) {
       setState(() {
         gender = value!;
@@ -43,9 +44,6 @@ class _WorkoutDetailsState extends State<WorkoutDetails> {
 
   @override
   Widget build(BuildContext context) {
-    final bloc = context.read<ScheduleBloc>();
-    bloc.add(LoadWorkout(workoutId: widget.workoutId));
-
     return PopScope(
         canPop: false,
         onPopInvokedWithResult: (didPop, result) async {
@@ -70,26 +68,20 @@ class _WorkoutDetailsState extends State<WorkoutDetails> {
                   fontWeight: FontWeight.bold),
             ),
             actions: [
-              if (workoutId != -1) ...[
-                IconButton(
-                    onPressed: () {
-                      // bloc.add(SetDay(day: bloc.selectDay!));
-                      // context.pop();
-                      context.pushNamed(Routes.workout,
-                          pathParameters: {"workoutId": workoutId.toString(), "triggerSetup": "true"});
-                    },
-                    icon: const Icon(Icons.edit)),
-              ]
+              IconButton(
+                  onPressed: () {
+                    // bloc.add(SetDay(day: bloc.selectDay!));
+                    // context.pop();
+                    context.pushNamed(Routes.workout, pathParameters: {
+                      "workoutId": widget.workoutId.toString(),
+                      "triggerSetup": "true"
+                    });
+                  },
+                  icon: const Icon(Icons.edit)),
             ],
           ),
-          body: BlocConsumer<ScheduleBloc, ScheduleState>(
-            listener: (context, state) {
-              if (state is WorkoutReady) {
-                setState(() {
-                  workoutId = state.workout.id!;
-                });
-              }
-            },
+          body: BlocConsumer<MuscleGroupBloc, MuscleGroupState>(
+            listener: (context, state) {},
             builder: (context, state) {
               if (state is WorkoutReady) {
                 return Padding(

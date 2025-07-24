@@ -33,7 +33,6 @@ class ScheduleBloc extends Bloc<ScheduleEvent, ScheduleState> {
     on<Initialize>(_onInitialize);
     on<ChangeDay>(_onChangeDay);
     on<AddMuscleGroup>(_onAddMuscleGroup);
-    on<LoadWorkout>(_onLoadWorkout);
     on<DeleteWorkout>(_onDeleteWorkout);
     on<EditWorkout>(_onEditWorkout);
     on<CreateSet>(_onCreateSet);
@@ -144,17 +143,6 @@ class ScheduleBloc extends Bloc<ScheduleEvent, ScheduleState> {
     }
   }
 
-  Future<void> _onLoadWorkout(LoadWorkout event, Emitter emit) async {
-    final state = this.state;
-
-    // if (state is ScheduleReady) {
-    //   Workout workout =
-    //       state.workouts.firstWhere((w) => w.id == event.workoutId);
-    //   List<Set> sets = state.sets[workout.id] ?? [];
-
-    // emit(WorkoutReady(workout: workout, sets: sets));
-    // }
-  }
 
   Future<void> _onDeleteWorkout(DeleteWorkout event, Emitter emit) async {
     // final state = this.state;

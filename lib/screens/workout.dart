@@ -6,7 +6,8 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:reactive_forms/reactive_forms.dart';
-import 'package:summerbody/blocs/Schedule/schedule_bloc.dart';
+import 'package:summerbody/blocs/MuscleGroup/muscleGroup_bloc.dart';
+import 'package:summerbody/database/tables/MuscleGroup.dart';
 import 'package:summerbody/database/tables/Set.dart';
 import 'package:summerbody/utils/utilities.dart';
 
@@ -111,9 +112,9 @@ class _WorkoutState extends State<Workout> {
   @override
   void initState() {
     super.initState();
-    final bloc = context.read<ScheduleBloc>();
+    final bloc = context.read<MuscleGroupBloc>();
     if (widget.triggerSetup) {
-      final state = context.read<ScheduleBloc>().state as WorkoutReady;
+      final state = context.read<MuscleGroupBloc>().state as WorkoutReady;
       _runSetup(state);
     } else {
       bloc.add(LoadWorkout(workoutId: widget.workoutId));
@@ -122,7 +123,7 @@ class _WorkoutState extends State<Workout> {
 
   @override
   Widget build(BuildContext context) {
-    final bloc = context.read<ScheduleBloc>();
+    final bloc = context.read<MuscleGroupBloc>();
 
     return PopScope(
       canPop: false,
@@ -152,7 +153,7 @@ class _WorkoutState extends State<Workout> {
                 fontWeight: FontWeight.bold),
           ),
         ),
-        body: BlocConsumer<ScheduleBloc, ScheduleState>(
+        body: BlocConsumer<MuscleGroupBloc, MuscleGroupState>(
           listener: (context, state) {
             if (state is WorkoutReady) {
               _runSetup(state);
@@ -440,33 +441,33 @@ class _WorkoutState extends State<Workout> {
                                           });
 
                                           // edit the workout
-                                          bloc.add(EditWorkout(
-                                              workoutId: widget.workoutId,
-                                              workoutName:
-                                                  form.control("name").value,
-                                              setId: state.sets[0].id!,
-                                              date: form.control('date').value,
-                                              weight1: double.parse(form
-                                                  .control("weight1")
-                                                  .value),
-                                              reps1: int.parse(
-                                                  form.control("reps1").value),
-                                              weight2: form
-                                                          .control("weight2")
-                                                          .value !=
-                                                      null
-                                                  ? double.parse(form
-                                                      .control("weight2")
-                                                      .value)
-                                                  : null,
-                                              reps2:
-                                                  form.control("reps2").value !=
-                                                          null
-                                                      ? int.parse(form
-                                                          .control("reps2")
-                                                          .value)
-                                                      : null,
-                                              context: context));
+                                          // bloc.add(EditWorkout(
+                                          //     workoutId: widget.workoutId,
+                                          //     workoutName:
+                                          //         form.control("name").value,
+                                          //     setId: state.sets[0].id!,
+                                          //     date: form.control('date').value,
+                                          //     weight1: double.parse(form
+                                          //         .control("weight1")
+                                          //         .value),
+                                          //     reps1: int.parse(
+                                          //         form.control("reps1").value),
+                                          //     weight2: form
+                                          //                 .control("weight2")
+                                          //                 .value !=
+                                          //             null
+                                          //         ? double.parse(form
+                                          //             .control("weight2")
+                                          //             .value)
+                                          //         : null,
+                                          //     reps2:
+                                          //         form.control("reps2").value !=
+                                          //                 null
+                                          //             ? int.parse(form
+                                          //                 .control("reps2")
+                                          //                 .value)
+                                          //             : null,
+                                          //     context: context));
                                         },
                                         style: ElevatedButton.styleFrom(
                                             backgroundColor: Colors.black87,
@@ -556,11 +557,11 @@ class _WorkoutState extends State<Workout> {
                                       if (lastIndex != 0) ...[
                                         GestureDetector(
                                           onTap: () {
-                                            context.read<ScheduleBloc>().add(
-                                                DeleteSet(
-                                                    workoutId: widget.workoutId,
-                                                    setId: set.id!,
-                                                    context: context));
+                                            // context.read<ScheduleBloc>().add(
+                                            //     DeleteSet(
+                                            //         workoutId: widget.workoutId,
+                                            //         setId: set.id!,
+                                            //         context: context));
                                           },
                                           child: Icon(
                                             Icons.delete_outline,
@@ -867,28 +868,28 @@ class _WorkoutState extends State<Workout> {
                                 return ElevatedButton(
                                   onPressed: () {
                                     // save the set
-                                    context.read<ScheduleBloc>().add(CreateSet(
-                                        workoutId: workoutId,
-                                        date: form.control('date').value,
-                                        weight1: double.parse(
-                                            form.control('weight1').value),
-                                        reps1: int.parse(
-                                            form.control('reps1').value),
-                                        weight2: form
-                                                    .control('weight2')
-                                                    .value !=
-                                                null
-                                            ? double.parse(
-                                                form.control('weight2').value)
-                                            : null,
-                                        reps2:
-                                            form.control('reps2').value != null
-                                                ? int.parse(
-                                                    form.control('reps2').value)
-                                                : null,
-                                        context: context));
+                                    // context.read<ScheduleBloc>().add(CreateSet(
+                                    //     workoutId: workoutId,
+                                    //     date: form.control('date').value,
+                                    //     weight1: double.parse(
+                                    //         form.control('weight1').value),
+                                    //     reps1: int.parse(
+                                    //         form.control('reps1').value),
+                                    //     weight2: form
+                                    //                 .control('weight2')
+                                    //                 .value !=
+                                    //             null
+                                    //         ? double.parse(
+                                    //             form.control('weight2').value)
+                                    //         : null,
+                                    //     reps2:
+                                    //         form.control('reps2').value != null
+                                    //             ? int.parse(
+                                    //                 form.control('reps2').value)
+                                    //             : null,
+                                    //     context: context));
 
-                                    context.pop();
+                                    // context.pop();
                                   },
                                   style: ElevatedButton.styleFrom(
                                       backgroundColor: Colors.black87,
