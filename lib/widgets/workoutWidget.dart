@@ -57,7 +57,7 @@ class WorkoutWidget extends StatelessWidget {
                       style: const TextStyle(color: Colors.white),
                     ),
                   ],
-                ),
+                ), 
               ),
             ),
             SizedBox(width: 10.w),

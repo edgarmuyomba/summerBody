@@ -20,23 +20,3 @@ final class ScheduleReady extends ScheduleState {
   @override
   List<Object?> get props => [currentDay, muscleGroups];
 }
-
-final class WorkoutReady extends ScheduleState {
-  final Workout workout;
-  final List<Set> sets;
-
-  WorkoutReady({required this.workout, required this.sets});
-
-  WorkoutReady copyWith({
-    Workout? workout,
-    List<Set>? sets,
-  }) {
-    return WorkoutReady(
-      workout: workout ?? this.workout,
-      sets: sets ?? this.sets,
-    );
-  }
-
-  @override
-  List<Object?> get props => [workout, sets];
-}
