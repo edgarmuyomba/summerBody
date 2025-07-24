@@ -21,15 +21,27 @@ class DIService {
   Future<void> setupLocator() async {
     final callback = Callback(onCreate: (database, version) async {
       await database.execute('''
-      INSERT INTO Days (id, name) VALUES 
-      (1, 'Monday'),
-      (2, 'Tuesday'),
-      (3, 'Wednesday'),
-      (4, 'Thursday'),
-      (5, 'Friday'),
-      (6, 'Saturday'),
-      (7, 'Sunday')
-    ''');
+    INSERT INTO Days (id, name) VALUES 
+    (1, 'Monday'),
+    (2, 'Tuesday'),
+    (3, 'Wednesday'),
+    (4, 'Thursday'),
+    (5, 'Friday'),
+    (6, 'Saturday'),
+    (7, 'Sunday')
+  ''');
+
+      await database.execute('''
+    INSERT INTO MuscleGroupPresets (name, icon) VALUES 
+    ('Chest', 'assets/icons/chest.png'),
+    ('Arms', 'assets/icons/arms.png'),
+    ('Shoulders', 'assets/icons/shoulders.png'),
+    ('Back', 'assets/icons/back.png'),
+    ('Legs', 'assets/icons/legs.png'),
+    ('Cardio', 'assets/icons/cardio.png'),
+    ('Full Body', 'assets/icons/full-body.png'),
+    ('Rest Day', 'assets/icons/rest-day.png')
+  ''');
     });
 
     final database = await $FloorAppDatabase

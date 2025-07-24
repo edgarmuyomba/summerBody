@@ -12,6 +12,7 @@ abstract class WorkoutPresetDao {
   @Query('DELETE FROM WorkoutPresets WHERE muscleGroupName = :muscleGroupName')
   Future<void> deleteByMuscleGroupName(String muscleGroupName);
 
-  @Query('SELECT COUNT(*) FROM WorkoutPresets WHERE muscleGroupName = :muscleGroupName')
-  Future<int?> countByMuscleGroupId(String muscleGroupName);
+  @Query(
+      'SELECT COUNT(*) FROM WorkoutPresets WHERE muscleGroupName = :muscleGroupName')
+  Future<int?> countByMuscleGroupName(String muscleGroupName);
 }

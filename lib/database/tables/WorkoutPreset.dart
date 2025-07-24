@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:floor/floor.dart';
+import 'package:summerbody/database/tables/MuscleGroupPreset.dart';
 import 'package:summerbody/database/typeConverters/stringListConverter.dart';
 import 'package:summerbody/database/typeConverters/stringMapConverter.dart';
 
@@ -11,8 +12,8 @@ import 'MuscleGroup.dart';
   foreignKeys: [
     ForeignKey(
       childColumns: ['muscleGroupName'],
-      parentColumns: ['id'],
-      entity: MuscleGroup,
+      parentColumns: ['name'],
+      entity: MuscleGroupPreset,
       onDelete: ForeignKeyAction.cascade,
     ),
   ],

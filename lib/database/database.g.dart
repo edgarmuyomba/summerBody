@@ -80,6 +80,8 @@ class _$AppDatabase extends AppDatabase {
 
   MuscleGroupDao? _muscleGroupDaoInstance;
 
+  MuscleGroupPresetDao? _muscleGroupPresetDaoInstance;
+
   DayDao? _dayDaoInstance;
 
   Future<sqflite.Database> open(
@@ -110,9 +112,11 @@ class _$AppDatabase extends AppDatabase {
         await database.execute(
             'CREATE TABLE IF NOT EXISTS `MuscleGroups` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `name` TEXT, `dayId` INTEGER, `icon` TEXT, FOREIGN KEY (`dayId`) REFERENCES `Days` (`id`) ON UPDATE NO ACTION ON DELETE CASCADE)');
         await database.execute(
+            'CREATE TABLE IF NOT EXISTS `MuscleGroupPresets` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `name` TEXT, `icon` TEXT)');
+        await database.execute(
             'CREATE TABLE IF NOT EXISTS `Workouts` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `name` TEXT, `isSuggested` INTEGER NOT NULL, `equipment` TEXT, `subMuscles` TEXT, `steps` TEXT, `videoUrl` TEXT, `gifUrl` TEXT, `muscleGroupId` INTEGER, FOREIGN KEY (`muscleGroupId`) REFERENCES `MuscleGroups` (`id`) ON UPDATE NO ACTION ON DELETE CASCADE)');
         await database.execute(
-            'CREATE TABLE IF NOT EXISTS `WorkoutPresets` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `name` TEXT, `equipment` TEXT, `subMuscles` TEXT, `steps` TEXT, `videoUrl` TEXT, `gifUrl` TEXT, `muscleGroupName` TEXT, FOREIGN KEY (`muscleGroupName`) REFERENCES `MuscleGroups` (`id`) ON UPDATE NO ACTION ON DELETE CASCADE)');
+            'CREATE TABLE IF NOT EXISTS `WorkoutPresets` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `name` TEXT, `equipment` TEXT, `subMuscles` TEXT, `steps` TEXT, `videoUrl` TEXT, `gifUrl` TEXT, `muscleGroupName` TEXT, FOREIGN KEY (`muscleGroupName`) REFERENCES `MuscleGroupPresets` (`name`) ON UPDATE NO ACTION ON DELETE CASCADE)');
 
         await callback?.onCreate?.call(database, version);
       },
@@ -140,6 +144,12 @@ class _$AppDatabase extends AppDatabase {
   MuscleGroupDao get muscleGroupDao {
     return _muscleGroupDaoInstance ??=
         _$MuscleGroupDao(database, changeListener);
+  }
+
+  @override
+  MuscleGroupPresetDao get muscleGroupPresetDao {
+    return _muscleGroupPresetDaoInstance ??=
+        _$MuscleGroupPresetDao(database, changeListener);
   }
 
   @override
@@ -438,7 +448,7 @@ class _$WorkoutPresetDao extends WorkoutPresetDao {
   }
 
   @override
-  Future<int?> countByMuscleGroupId(String muscleGroupName) async {
+  Future<int?> countByMuscleGroupName(String muscleGroupName) async {
     return _queryAdapter.query(
         'SELECT COUNT(*) FROM WorkoutPresets WHERE muscleGroupName = ?1',
         mapper: (Map<String, Object?> row) => row.values.first as int,
@@ -548,6 +558,44 @@ class _$MuscleGroupDao extends MuscleGroupDao {
   Future<void> editMuscleGroup(MuscleGroup muscleGroup) async {
     await _muscleGroupUpdateAdapter.update(
         muscleGroup, OnConflictStrategy.abort);
+  }
+}
+
+class _$MuscleGroupPresetDao extends MuscleGroupPresetDao {
+  _$MuscleGroupPresetDao(
+    this.database,
+    this.changeListener,
+  )   : _queryAdapter = QueryAdapter(database),
+        _muscleGroupPresetInsertionAdapter = InsertionAdapter(
+            database,
+            'MuscleGroupPresets',
+            (MuscleGroupPreset item) => <String, Object?>{
+                  'id': item.id,
+                  'name': item.name,
+                  'icon': item.icon
+                });
+
+  final sqflite.DatabaseExecutor database;
+
+  final StreamController<String> changeListener;
+
+  final QueryAdapter _queryAdapter;
+
+  final InsertionAdapter<MuscleGroupPreset> _muscleGroupPresetInsertionAdapter;
+
+  @override
+  Future<List<MuscleGroupPreset>> getAllMuscleGroups() async {
+    return _queryAdapter.queryList('SELECT * FROM MuscleGroupPresets',
+        mapper: (Map<String, Object?> row) => MuscleGroupPreset(
+            id: row['id'] as int?,
+            name: row['name'] as String?,
+            icon: row['icon'] as String?));
+  }
+
+  @override
+  Future<void> insertWorkoutPresets(List<MuscleGroupPreset> presets) async {
+    await _muscleGroupPresetInsertionAdapter.insertList(
+        presets, OnConflictStrategy.replace);
   }
 }
 
