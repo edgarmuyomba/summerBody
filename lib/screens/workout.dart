@@ -128,9 +128,7 @@ class _WorkoutState extends State<Workout> {
       canPop: false,
       onPopInvokedWithResult: (didPop, result) async {
         if (didPop) return;
-        if (!widget.triggerSetup) {
-          // bloc.add(SetDay(day: bloc.selectDay!));
-        }
+        if (!widget.triggerSetup) {}
         context.pop();
       },
       child: Scaffold(
@@ -138,9 +136,6 @@ class _WorkoutState extends State<Workout> {
           centerTitle: true,
           leading: IconButton(
               onPressed: () {
-                if (!widget.triggerSetup) {
-                  // bloc.add(SetDay(day: bloc.selectDay!));
-                }
                 context.pop();
               },
               icon: const Icon(Icons.arrow_back)),

@@ -71,10 +71,7 @@ class _DayState extends State<Day> {
                 ))
           ],
         ),
-        body: BlocConsumer<ScheduleBloc, ScheduleState>(
-          listener: (context, state) {
-            //  TODO: implement listener
-          },
+        body: BlocBuilder<ScheduleBloc, ScheduleState>(
           builder: (context, state) {
             if (state is ScheduleReady) {
               return Padding(
