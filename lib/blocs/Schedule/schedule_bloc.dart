@@ -34,33 +34,6 @@ class ScheduleBloc extends Bloc<ScheduleEvent, ScheduleState> {
 
   int? selectDay;
 
-  Future<Map<String, dynamic>> _getMuscleGroupAndWorkouts(int day) async {
-    MuscleGroup? muscleGroup =
-        await _localDatabaseService.getMuscleGroupByKey("day", day);
-
-    if (muscleGroup == null) {
-      return {
-        "muscleGroup": null,
-        "workouts": [].cast<Workout>(),
-        "sets": {}.cast<int, List<Set>>()
-      };
-    } else {
-      List<Workout> workouts =
-          await _localDatabaseService.getWorkoutsByMuscleGroup(muscleGroup.id!);
-
-      Map<int, List<Set>> sets = {};
-
-      for (var workout in workouts) {
-        List<Set> workoutSets =
-            await _localDatabaseService.getAllSets(workout.id!);
-        workoutSets.sort((a, b) => b.date!.compareTo(a.date!));
-        sets[workout.id!] = workoutSets;
-      }
-
-      return {"muscleGroup": muscleGroup, "workouts": workouts, "sets": sets};
-    }
-  }
-
   Future<void> _onInitialize(Initialize event, Emitter emit) async {
     DateTime now = DateTime.now();
     selectDay = now.weekday;

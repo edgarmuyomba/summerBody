@@ -1,5 +1,4 @@
 import 'package:floor/floor.dart';
-import 'package:logger/web.dart';
 import 'package:summerbody/database/database.dart';
 import 'package:summerbody/services/ConnectivityService.dart';
 import 'package:summerbody/services/FirebaseService.dart';
