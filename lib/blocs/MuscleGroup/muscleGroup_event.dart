@@ -61,3 +61,27 @@ final class CreateSet extends MuscleGroupEvent {
       this.reps2,
       required this.context});
 }
+
+final class EditWorkout extends MuscleGroupEvent {
+  final int workoutId;
+  final String workoutName;
+  final int setId;
+  final DateTime date;
+  final double weight1;
+  final int reps1;
+  final double? weight2;
+  final int? reps2;
+
+  final BuildContext context;
+
+  const EditWorkout(
+      {required this.workoutId,
+      required this.workoutName,
+      required this.setId,
+      required this.date,
+      required this.weight1,
+      required this.reps1,
+      this.weight2,
+      this.reps2,
+      required this.context});
+}

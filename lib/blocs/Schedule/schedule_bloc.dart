@@ -34,7 +34,6 @@ class ScheduleBloc extends Bloc<ScheduleEvent, ScheduleState> {
     on<ChangeDay>(_onChangeDay);
     on<AddMuscleGroup>(_onAddMuscleGroup);
     on<DeleteWorkout>(_onDeleteWorkout);
-    on<EditWorkout>(_onEditWorkout);
     on<DeleteSet>(_onDeleteSet);
   }
 
@@ -159,42 +158,6 @@ class ScheduleBloc extends Bloc<ScheduleEvent, ScheduleState> {
     //         sets: muscleGroupAndWorkouts["sets"]));
     //   } catch (e) {
     //     Logger().e(e);
-    //     emit(state);
-    //   }
-    // }
-  }
-
-  Future<void> _onEditWorkout(EditWorkout event, Emitter emit) async {
-    // final state = this.state;
-
-    // if (state is WorkoutReady) {
-    //   try {
-    //     await _localDatabaseService.editWorkout(
-    //         event.workoutId, event.workoutName);
-    //     await _localDatabaseService.editSet(event.setId, event.date,
-    //         event.weight1, event.reps1, event.weight2, event.reps2);
-
-    //     Workout? workout =
-    //         await _localDatabaseService.getWorkoutByKey("id", event.workoutId);
-
-    //     List<Set> sets = (await _localDatabaseService
-    //         .getAllSets(event.workoutId))
-    //       ..sort((a, b) => b.date!.compareTo(a.date!));
-
-    //     if (event.context.mounted) {
-    //       Utilities.showSnackBar(
-    //           "Successfully updated the workout", event.context, Colors.green);
-    //     }
-
-    //     emit(WorkoutReady(workout: workout!, sets: sets));
-    //   } catch (e) {
-    //     Logger().e(e);
-
-    //     if (event.context.mounted) {
-    //       Utilities.showSnackBar(
-    //           "Failed to update the workout", event.context, Colors.red);
-    //     }
-
     //     emit(state);
     //   }
     // }

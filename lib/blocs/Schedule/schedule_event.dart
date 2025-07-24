@@ -23,30 +23,6 @@ final class DeleteWorkout extends ScheduleEvent {
   DeleteWorkout({required this.workoutId});
 }
 
-final class EditWorkout extends ScheduleEvent {
-  final int workoutId;
-  final String workoutName;
-  final int setId;
-  final DateTime date;
-  final double weight1;
-  final int reps1;
-  final double? weight2;
-  final int? reps2;
-
-  final BuildContext context;
-
-  EditWorkout(
-      {required this.workoutId,
-      required this.workoutName,
-      required this.setId,
-      required this.date,
-      required this.weight1,
-      required this.reps1,
-      this.weight2,
-      this.reps2,
-      required this.context});
-}
-
 final class DeleteSet extends ScheduleEvent {
   final int workoutId;
   final int setId;
