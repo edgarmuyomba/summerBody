@@ -57,9 +57,11 @@ class _WorkoutDetailsState extends State<WorkoutDetails> {
             centerTitle: true,
             leading: IconButton(
                 onPressed: () {
-                  context
-                      .read<MuscleGroupBloc>()
-                      .add(LoadWorkouts(muscleGroupId: widget.muscleGroupId));
+                  if (widget.loadWorkoutsOnBack) {
+                    context
+                        .read<MuscleGroupBloc>()
+                        .add(LoadWorkouts(muscleGroupId: widget.muscleGroupId));
+                  }
                   context.pop();
                 },
                 icon: const Icon(Icons.arrow_back)),
@@ -83,8 +85,7 @@ class _WorkoutDetailsState extends State<WorkoutDetails> {
                   icon: const Icon(Icons.edit)),
             ],
           ),
-          body: BlocConsumer<MuscleGroupBloc, MuscleGroupState>(
-            listener: (context, state) {},
+          body: BlocBuilder<MuscleGroupBloc, MuscleGroupState>(
             builder: (context, state) {
               if (state is WorkoutReady) {
                 return FutureBuilder(
