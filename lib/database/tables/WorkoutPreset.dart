@@ -4,7 +4,6 @@ import 'package:summerbody/database/tables/MuscleGroupPreset.dart';
 import 'package:summerbody/database/typeConverters/stringListConverter.dart';
 import 'package:summerbody/database/typeConverters/stringMapConverter.dart';
 
-import 'MuscleGroup.dart';
 
 @TypeConverters([StringListConverter, StringMapConverter])
 @Entity(

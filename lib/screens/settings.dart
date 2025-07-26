@@ -2,7 +2,6 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:logger/logger.dart';
 import 'package:summerbody/models/SyncState.dart';
 import 'package:summerbody/services/DIService.dart';
 import 'package:summerbody/services/SharedPreferencesService.dart';
