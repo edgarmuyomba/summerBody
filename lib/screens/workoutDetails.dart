@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:logger/logger.dart';
@@ -14,14 +15,10 @@ import 'package:summerbody/utils/utilities.dart';
 
 class WorkoutDetails extends StatefulWidget {
   final int workoutId;
-  final int muscleGroupId;
-  final bool loadWorkoutsOnBack;
   final SharedPreferencesService _sharedPreferencesService;
   WorkoutDetails(
       {super.key,
       required this.workoutId,
-      required this.muscleGroupId,
-      required this.loadWorkoutsOnBack,
       SharedPreferencesService? sharedPreferencesService})
       : _sharedPreferencesService = sharedPreferencesService ??
             DIService().locator.get<SharedPreferencesService>();
@@ -34,9 +31,6 @@ class _WorkoutDetailsState extends State<WorkoutDetails> {
   @override
   void initState() {
     super.initState();
-    context
-        .read<MuscleGroupBloc>()
-        .add(LoadWorkout(workoutId: widget.workoutId));
   }
 
   @override
@@ -45,11 +39,6 @@ class _WorkoutDetailsState extends State<WorkoutDetails> {
         canPop: false,
         onPopInvokedWithResult: (didPop, result) async {
           if (didPop) return;
-          if (widget.loadWorkoutsOnBack) {
-            context
-                .read<MuscleGroupBloc>()
-                .add(LoadWorkouts(muscleGroupId: widget.muscleGroupId));
-          }
           context.pop();
         },
         child: Scaffold(
@@ -57,11 +46,6 @@ class _WorkoutDetailsState extends State<WorkoutDetails> {
             centerTitle: true,
             leading: IconButton(
                 onPressed: () {
-                  if (widget.loadWorkoutsOnBack) {
-                    context
-                        .read<MuscleGroupBloc>()
-                        .add(LoadWorkouts(muscleGroupId: widget.muscleGroupId));
-                  }
                   context.pop();
                 },
                 icon: const Icon(Icons.arrow_back)),
@@ -77,15 +61,15 @@ class _WorkoutDetailsState extends State<WorkoutDetails> {
                   onPressed: () {
                     context.pushNamed(Routes.workout, pathParameters: {
                       "workoutId": widget.workoutId.toString(),
-                      "muscleGroupId": widget.muscleGroupId.toString(),
                       "triggerSetup": "true",
-                      "loadWorkoutsOnBack": "false"
                     });
                   },
                   icon: const Icon(Icons.edit)),
             ],
           ),
           body: BlocBuilder<MuscleGroupBloc, MuscleGroupState>(
+            bloc: context.read<MuscleGroupBloc>()
+              ..add(LoadWorkout(workoutId: widget.workoutId)),
             builder: (context, state) {
               if (state is WorkoutReady) {
                 return FutureBuilder(
@@ -313,13 +297,10 @@ class _WorkoutDetailsState extends State<WorkoutDetails> {
                                                           .shrink();
                                                     } else {
                                                       return Center(
-                                                        child: SizedBox(
-                                                          height: 20.h,
-                                                          width: 20.h,
-                                                          child:
-                                                              const CircularProgressIndicator(
-                                                                  color: Colors
-                                                                      .black87),
+                                                        child:
+                                                            SpinKitFadingCircle(
+                                                          color: Colors.black,
+                                                          size: 40.0.h,
                                                         ),
                                                       );
                                                     }
@@ -500,11 +481,9 @@ class _WorkoutDetailsState extends State<WorkoutDetails> {
                     });
               } else {
                 return Center(
-                  child: SizedBox(
-                    height: 20.h,
-                    width: 20.h,
-                    child:
-                        const CircularProgressIndicator(color: Colors.black87),
+                  child: SpinKitFadingCircle(
+                    color: Colors.black,
+                    size: 40.0.h,
                   ),
                 );
               }

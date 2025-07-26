@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:youtube_player_iframe/youtube_player_iframe.dart';
 
 class YoutubeVideoPlayer extends StatefulWidget {
@@ -26,7 +27,7 @@ class _YoutubeVideoPlayerState extends State<YoutubeVideoPlayer> {
     try {
       // Extract video ID from URL using YoutubePlayerController's built-in method
       _videoId = YoutubePlayerController.convertUrlToId(widget.videoUrl);
-      
+
       if (_videoId == null || _videoId!.isEmpty) {
         setState(() {
           _hasError = true;
@@ -65,8 +66,8 @@ class _YoutubeVideoPlayerState extends State<YoutubeVideoPlayer> {
   @override
   Widget build(BuildContext context) {
     if (_isLoading) {
-      return Container(
-        height: 200,
+      return SizedBox(
+        height: 200.h,
         child: const Center(
           child: CircularProgressIndicator(),
         ),

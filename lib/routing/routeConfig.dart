@@ -47,36 +47,23 @@ final GoRouter router = GoRouter(routes: [
   ),
   GoRoute(
       name: 'workout',
-      path:
-          '/workout/:workoutId/:muscleGroupId/:triggerSetup/:loadWorkoutsOnBack',
+      path: '/workout/:workoutId/:triggerSetup',
       builder: (BuildContext context, GoRouterState state) {
         final String workoutId = state.pathParameters["workoutId"] ?? "";
-        final String muscleGroupId =
-            state.pathParameters["muscleGroupId"] ?? "";
         final bool triggerSetup =
             bool.parse(state.pathParameters["triggerSetup"] ?? 'false');
-        final bool loadWorkoutsOnBack =
-            bool.parse(state.pathParameters["loadWorkoutsOnBack"] ?? 'false');
         return Workout(
           workoutId: int.parse(workoutId),
-          muscleGroupId: int.parse(muscleGroupId),
           triggerSetup: triggerSetup,
-          loadWorkoutsOnBack: loadWorkoutsOnBack,
         );
       }),
   GoRoute(
       name: 'workoutDetails',
-      path: '/workoutDetails/:workoutId/:muscleGroupId/:loadWorkoutsOnBack',
+      path: '/workoutDetails/:workoutId',
       builder: (BuildContext context, GoRouterState state) {
         final String workoutId = state.pathParameters["workoutId"] ?? "";
-        final String muscleGroupId =
-            state.pathParameters["muscleGroupId"] ?? "";
-        final bool loadWorkoutsOnBack =
-            bool.parse(state.pathParameters["loadWorkoutsOnBack"] ?? 'false');
         return WorkoutDetails(
           workoutId: int.parse(workoutId),
-          muscleGroupId: int.parse(muscleGroupId),
-          loadWorkoutsOnBack: loadWorkoutsOnBack,
         );
       })
 ]);

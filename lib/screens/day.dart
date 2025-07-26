@@ -331,11 +331,6 @@ class _DayState extends State<Day> {
                                                 if (snapshot.hasData) {
                                                   Map<String, dynamic>
                                                       workoutMap = {
-                                                    "muscleGroupId":
-                                                        (currentMuscleGroup ??
-                                                                state.muscleGroups[
-                                                                    0])
-                                                            .id!,
                                                     "id": workout.id,
                                                     "name": workout.name,
                                                     "isSuggested":
@@ -355,7 +350,6 @@ class _DayState extends State<Day> {
                                                   };
                                                   return WorkoutWidget(
                                                     workout: workoutMap,
-                                                    loadWorkoutsOnBack: false,
                                                   );
                                                 } else {
                                                   return const SizedBox

@@ -5,7 +5,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:logger/logger.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 import 'package:summerbody/blocs/MuscleGroup/muscleGroup_bloc.dart';
 import 'package:summerbody/database/tables/Set.dart';
@@ -13,15 +12,11 @@ import 'package:summerbody/utils/utilities.dart';
 
 class Workout extends StatefulWidget {
   final int workoutId;
-  final int muscleGroupId;
   final bool triggerSetup;
-  final bool loadWorkoutsOnBack;
   const Workout(
       {super.key,
       required this.workoutId,
-      required this.muscleGroupId,
-      required this.triggerSetup,
-      required this.loadWorkoutsOnBack});
+      required this.triggerSetup,});
 
   @override
   State<Workout> createState() => _WorkoutState();
@@ -135,9 +130,6 @@ class _WorkoutState extends State<Workout> {
       canPop: false,
       onPopInvokedWithResult: (didPop, result) async {
         if (didPop) return;
-        if (widget.loadWorkoutsOnBack) {
-          bloc.add(LoadWorkouts(muscleGroupId: widget.muscleGroupId));
-        }
         context.pop();
       },
       child: Scaffold(
@@ -145,9 +137,6 @@ class _WorkoutState extends State<Workout> {
           centerTitle: true,
           leading: IconButton(
               onPressed: () {
-                if (widget.loadWorkoutsOnBack) {
-                  bloc.add(LoadWorkouts(muscleGroupId: widget.muscleGroupId));
-                }
                 context.pop();
               },
               icon: const Icon(Icons.arrow_back)),
@@ -590,7 +579,12 @@ class _WorkoutState extends State<Workout> {
                 ),
               );
             } else {
-              return const Center(child: CircularProgressIndicator());
+              return Center(
+                child: SpinKitFadingCircle(
+                  color: Colors.black,
+                  size: 40.0.h,
+                ),
+              );
             }
           },
         ),

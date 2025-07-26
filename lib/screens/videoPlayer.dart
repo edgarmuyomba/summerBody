@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:video_player/video_player.dart';
 
 class VideoPlayerScreen extends StatefulWidget {
@@ -61,7 +62,9 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
             child: SizedBox(
               height: 20.h,
               width: 20.h,
-              child: const CircularProgressIndicator(color: Colors.black87),
+              child: const SpinKitFadingCircle(
+                color: Colors.black,
+              ),
             ),
           );
   }

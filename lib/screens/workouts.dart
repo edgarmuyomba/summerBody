@@ -610,7 +610,6 @@ class _WorkoutsState extends State<Workouts> {
                           if (snapshot.hasData) {
                             Map<String, dynamic> workoutMap = {
                               "id": workout.id,
-                              "muscleGroupId": widget.muscleGroupId,
                               "name": workout.name,
                               "isSuggested": workout.isSuggested,
                               "sets": (snapshot.data ?? []).map((set) {
@@ -626,7 +625,6 @@ class _WorkoutsState extends State<Workouts> {
                             return WorkoutWidget(
                               workout: workoutMap,
                               canDelete: true,
-                              loadWorkoutsOnBack: true,
                             );
                           } else {
                             return const SizedBox.shrink();
