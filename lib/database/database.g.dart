@@ -550,6 +550,12 @@ class _$MuscleGroupDao extends MuscleGroupDao {
   }
 
   @override
+  Future<void> deleteMuscleGroupById(int id) async {
+    await _queryAdapter.queryNoReturn('DELETE FROM MuscleGroups WHERE id = ?1',
+        arguments: [id]);
+  }
+
+  @override
   Future<int> createMuscleGroup(MuscleGroup muscleGroup) {
     return _muscleGroupInsertionAdapter.insertAndReturnId(
         muscleGroup, OnConflictStrategy.abort);

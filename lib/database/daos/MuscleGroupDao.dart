@@ -23,4 +23,7 @@ abstract class MuscleGroupDao {
 
   @insert
   Future<int> createMuscleGroup(MuscleGroup muscleGroup);
+
+  @Query('DELETE FROM MuscleGroups WHERE id = :id')
+  Future<void> deleteMuscleGroupById(int id);
 }

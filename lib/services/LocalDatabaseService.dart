@@ -24,6 +24,10 @@ class LocalDatabaseService {
     return await _appDatabase.muscleGroupDao.createMuscleGroup(muscleGroup);
   }
 
+  Future<void> deleteMuscleGroup(int id) async {
+    await _appDatabase.muscleGroupDao.deleteMuscleGroupById(id);
+  }
+
   Future<MuscleGroup?> getMuscleGroupByKey(String key, dynamic value) async {
     switch (key) {
       case "day":

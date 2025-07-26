@@ -10,7 +10,6 @@ import 'package:summerbody/blocs/MuscleGroup/muscleGroup_bloc.dart';
 import 'package:summerbody/blocs/Schedule/schedule_bloc.dart';
 import 'package:summerbody/database/tables/MuscleGroup.dart';
 import 'package:summerbody/database/tables/MuscleGroupPreset.dart';
-import 'package:summerbody/database/tables/Workout.dart';
 import 'package:summerbody/routing/routes.dart';
 import 'package:summerbody/services/DIService.dart';
 import 'package:summerbody/services/LocalDatabaseService.dart';
@@ -202,19 +201,11 @@ class _DayState extends State<Day> {
                                 ),
                               ),
                               IconButton(
-                                onPressed: () =>
-                                    handleAction("edit", state.currentDay),
-                                tooltip: "Edit muscle group",
-                                constraints: BoxConstraints(
-                                    maxWidth: 10.w, maxHeight: 10.w),
-                                icon: Icon(
-                                  Icons.edit,
-                                  size: 17.sp,
-                                ),
-                              ),
-                              IconButton(
-                                onPressed: () =>
-                                    handleAction("delete", state.currentDay),
+                                onPressed: () => handleAction(
+                                    "delete", state.currentDay,
+                                    muscleGroupId: (currentMuscleGroup ??
+                                            state.muscleGroups[0])
+                                        .id!),
                                 tooltip: "Delete muscle group",
                                 constraints: BoxConstraints(
                                     maxWidth: 10.w, maxHeight: 10.w),
@@ -462,14 +453,15 @@ class _DayState extends State<Day> {
     }
   }
 
-  handleAction(String action, int day) async {
+  handleAction(String action, int day, {int? muscleGroupId}) async {
     switch (action) {
       case "add":
         await addMuscleGroup(day);
         break;
-      case "edit":
-        break;
       case "delete":
+        context
+            .read<ScheduleBloc>()
+            .add(DeleteMuscleGroup(muscleGroupId: muscleGroupId!));
         break;
     }
 

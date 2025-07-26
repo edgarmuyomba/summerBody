@@ -16,3 +16,9 @@ final class AddMuscleGroup extends ScheduleEvent {
 
   AddMuscleGroup({required this.muscleGroupPreset});
 }
+
+final class DeleteMuscleGroup extends ScheduleEvent {
+  final int muscleGroupId;
+
+  DeleteMuscleGroup({required this.muscleGroupId});
+}

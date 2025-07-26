@@ -30,6 +30,7 @@ class ScheduleBloc extends Bloc<ScheduleEvent, ScheduleState> {
     on<Initialize>(_onInitialize);
     on<ChangeDay>(_onChangeDay);
     on<AddMuscleGroup>(_onAddMuscleGroup);
+    on<DeleteMuscleGroup>(_onDeleteMuscleGroup);
   }
 
   int? selectDay;
@@ -106,6 +107,27 @@ class ScheduleBloc extends Bloc<ScheduleEvent, ScheduleState> {
         Logger().e(e);
         emit(state);
       }
+    }
+  }
+
+  Future<void> _onDeleteMuscleGroup(
+      DeleteMuscleGroup event, Emitter emit) async {
+    final state = this.state;
+
+    if (state is ScheduleReady) {
+      List<MuscleGroup> updatedMuscleGroups = [];
+
+      try {
+        await _localDatabaseService.deleteMuscleGroup(event.muscleGroupId);
+        updatedMuscleGroups = state.muscleGroups
+            .where((muscleGroup) => muscleGroup.id != event.muscleGroupId)
+            .toList();
+      } catch (e) {
+        Logger().e("Error while deleting muscleGroup:: $e");
+        updatedMuscleGroups = state.muscleGroups;
+      }
+      emit(ScheduleReady(
+          currentDay: state.currentDay, muscleGroups: updatedMuscleGroups));
     }
   }
 }
