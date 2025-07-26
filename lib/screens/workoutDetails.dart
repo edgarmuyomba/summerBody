@@ -14,10 +14,14 @@ import 'package:summerbody/utils/utilities.dart';
 
 class WorkoutDetails extends StatefulWidget {
   final int workoutId;
+  final int muscleGroupId;
+  final bool loadWorkoutsOnBack;
   final SharedPreferencesService _sharedPreferencesService;
   WorkoutDetails(
       {super.key,
       required this.workoutId,
+      required this.muscleGroupId,
+      required this.loadWorkoutsOnBack,
       SharedPreferencesService? sharedPreferencesService})
       : _sharedPreferencesService = sharedPreferencesService ??
             DIService().locator.get<SharedPreferencesService>();
@@ -41,6 +45,11 @@ class _WorkoutDetailsState extends State<WorkoutDetails> {
         canPop: false,
         onPopInvokedWithResult: (didPop, result) async {
           if (didPop) return;
+          if (widget.loadWorkoutsOnBack) {
+            context
+                .read<MuscleGroupBloc>()
+                .add(LoadWorkouts(muscleGroupId: widget.muscleGroupId));
+          }
           context.pop();
         },
         child: Scaffold(
@@ -48,6 +57,9 @@ class _WorkoutDetailsState extends State<WorkoutDetails> {
             centerTitle: true,
             leading: IconButton(
                 onPressed: () {
+                  context
+                      .read<MuscleGroupBloc>()
+                      .add(LoadWorkouts(muscleGroupId: widget.muscleGroupId));
                   context.pop();
                 },
                 icon: const Icon(Icons.arrow_back)),
@@ -63,7 +75,9 @@ class _WorkoutDetailsState extends State<WorkoutDetails> {
                   onPressed: () {
                     context.pushNamed(Routes.workout, pathParameters: {
                       "workoutId": widget.workoutId.toString(),
-                      "triggerSetup": "true"
+                      "muscleGroupId": widget.muscleGroupId.toString(),
+                      "triggerSetup": "true",
+                      "loadWorkoutsOnBack": "false"
                     });
                   },
                   icon: const Icon(Icons.edit)),

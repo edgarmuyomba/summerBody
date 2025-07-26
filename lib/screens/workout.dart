@@ -12,9 +12,15 @@ import 'package:summerbody/utils/utilities.dart';
 
 class Workout extends StatefulWidget {
   final int workoutId;
+  final int muscleGroupId;
   final bool triggerSetup;
+  final bool loadWorkoutsOnBack;
   const Workout(
-      {super.key, required this.workoutId, required this.triggerSetup});
+      {super.key,
+      required this.workoutId,
+      required this.muscleGroupId,
+      required this.triggerSetup,
+      required this.loadWorkoutsOnBack});
 
   @override
   State<Workout> createState() => _WorkoutState();
@@ -128,7 +134,9 @@ class _WorkoutState extends State<Workout> {
       canPop: false,
       onPopInvokedWithResult: (didPop, result) async {
         if (didPop) return;
-        if (!widget.triggerSetup) {}
+        if (widget.loadWorkoutsOnBack) {
+          bloc.add(LoadWorkouts(muscleGroupId: widget.muscleGroupId));
+        }
         context.pop();
       },
       child: Scaffold(
@@ -136,6 +144,9 @@ class _WorkoutState extends State<Workout> {
           centerTitle: true,
           leading: IconButton(
               onPressed: () {
+                if (widget.loadWorkoutsOnBack) {
+                  bloc.add(LoadWorkouts(muscleGroupId: widget.muscleGroupId));
+                }
                 context.pop();
               },
               icon: const Icon(Icons.arrow_back)),

@@ -13,9 +13,11 @@ class WorkoutWidget extends StatelessWidget {
   final Map<String, dynamic> workout;
   final bool editable;
   final bool canDelete;
+  final bool loadWorkoutsOnBack;
   const WorkoutWidget(
       {super.key,
       required this.workout,
+      required this.loadWorkoutsOnBack,
       this.editable = true,
       this.canDelete = false});
 
@@ -57,7 +59,7 @@ class WorkoutWidget extends StatelessWidget {
                       style: const TextStyle(color: Colors.white),
                     ),
                   ],
-                ), 
+                ),
               ),
             ),
             SizedBox(width: 10.w),
@@ -69,12 +71,18 @@ class WorkoutWidget extends StatelessWidget {
                         if (workout["isSuggested"] == true) {
                           context.pushNamed(Routes.workoutDetails,
                               pathParameters: {
-                                "workoutId": workout["id"].toString()
+                                "workoutId": workout["id"].toString(),
+                                "muscleGroupId":
+                                    workout["muscleGroupId"].toString(),
+                                "loadWorkoutsOnBack": "$loadWorkoutsOnBack"
                               });
                         } else {
                           context.pushNamed(Routes.workout, pathParameters: {
                             "workoutId": workout["id"].toString(),
-                            "triggerSetup": 'false'
+                            "muscleGroupId":
+                                workout["muscleGroupId"].toString(),
+                            "triggerSetup": 'false',
+                            "loadWorkoutsOnBack": "$loadWorkoutsOnBack"
                           });
                         }
                       },
