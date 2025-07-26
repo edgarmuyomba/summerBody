@@ -38,24 +38,20 @@ class MuscleGroupBloc extends Bloc<MuscleGroupEvent, MuscleGroupState> {
   Future<void> _onAddWorkout(AddWorkout event, Emitter emit) async {
     final state = this.state;
 
-    if (state is MuscleGroupReady) {
-      try {
-        int workoutId = await _localDatabaseService.createWorkout(
-            event.muscleGroupId, event.workoutName, event.workoutPreset);
+    try {
+      int workoutId = await _localDatabaseService.createWorkout(
+          event.muscleGroupId, event.workoutName, event.workoutPreset);
 
-        await _localDatabaseService.createSet(workoutId, event.date,
-            event.weight1, event.reps1, event.weight2, event.reps2);
+      await _localDatabaseService.createSet(workoutId, event.date,
+          event.weight1, event.reps1, event.weight2, event.reps2);
 
-        List<Workout> updatedWorkouts = await _localDatabaseService
-            .getWorkoutsByMuscleGroup(event.muscleGroupId);
+      List<Workout> updatedWorkouts = await _localDatabaseService
+          .getWorkoutsByMuscleGroup(event.muscleGroupId);
 
-        Logger().i(updatedWorkouts);
-
-        emit(MuscleGroupReady(workouts: updatedWorkouts));
-      } catch (e) {
-        Logger().e(e);
-        emit(state);
-      }
+      emit(MuscleGroupReady(workouts: updatedWorkouts));
+    } catch (e) {
+      Logger().e(e);
+      emit(state);
     }
   }
 
