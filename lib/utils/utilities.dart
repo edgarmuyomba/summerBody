@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
+import 'package:logger/logger.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:summerbody/database/tables/MuscleGroup.dart';
 import 'package:summerbody/database/tables/MuscleGroupPreset.dart';
@@ -107,7 +108,7 @@ class Utilities {
 
     // get all musclegroups
     List<MuscleGroupPreset> muscleGroupPresets =
-        await LocalDatabaseService().getAllMuscleGroupPresets();
+        await _localDatabaseService.getAllMuscleGroupPresets();
 
     List<MuscleGroupPreset> presetsToSync = [];
 
@@ -116,25 +117,26 @@ class Utilities {
 
     _syncStateModal.update(isSyncing: true, syncProgress: 0, active: false);
 
-    for (final muscleGroup in muscleGroupPresets) {
-      bool presetsAvailable = ((await _localDatabaseService
-                  .countWorkoutPresets(muscleGroup.name!) ??
-              0)) >
-          0;
+    for (final preset in muscleGroupPresets) {
+      bool presetsAvailable =
+          ((await _localDatabaseService.countWorkoutPresets(preset.name!) ??
+                  0)) >
+              0;
 
       if (presetsAvailable) {
         // firebase count
 
-        int firebaseCount =
-            await _firebaseService.getRecordCount(muscleGroup.name!);
+        int firebaseCount = await _firebaseService.getRecordCount(preset.name!);
 
         totalCount += firebaseCount;
-        presetsToSync.add(muscleGroup);
+        presetsToSync.add(preset);
       }
 
       syncProgress += (1 / muscleGroupPresets.length) * 0.1;
       _syncStateModal.update(syncProgress: syncProgress);
     }
+
+    int presetSyncCount = 0;
 
     for (final preset in presetsToSync) {
       await _localDatabaseService.deleteWorkoutPresets(preset.name!);
@@ -147,13 +149,16 @@ class Utilities {
         syncProgress += (value.length / totalCount) * 0.9;
         _syncStateModal.update(syncProgress: syncProgress);
       }, onDone: () async {
+        presetSyncCount++;
         subscription?.cancel();
-        if (syncProgress == 1.0) {
+        if (presetSyncCount == presetsToSync.length) {
           _syncStateModal.update(isSyncing: false);
           await Future.delayed(const Duration(seconds: 5), () {
             _syncStateModal.update(syncProgress: 0, active: true);
           });
         }
+      }, onError: (error) {
+        Logger().e("Error while syncing:: $error");
       });
     }
   }
