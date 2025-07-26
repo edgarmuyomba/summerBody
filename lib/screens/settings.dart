@@ -1,3 +1,4 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -6,6 +7,7 @@ import 'package:summerbody/services/DIService.dart';
 import 'package:summerbody/services/SharedPreferencesService.dart';
 import 'package:summerbody/state/SyncState.dart';
 import 'package:summerbody/utils/utilities.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class Settings extends StatefulWidget {
   final SyncStateModal _syncStateModal;
@@ -175,6 +177,54 @@ class _SettingsState extends State<Settings> {
                     )
                   ],
                 ),
+              ),
+            ),
+            const Expanded(child: SizedBox()),
+            Padding(
+              padding:
+                  const EdgeInsets.only(bottom: 20.0, left: 12.0, right: 12.0),
+              child: RichText(
+                textAlign: TextAlign.center,
+                text: TextSpan(
+                    text:
+                        "This application utilizes informational content from ",
+                    style: TextStyle(color: Colors.black54, fontSize: 12.5.sp),
+                    children: [
+                      TextSpan(
+                          text: "MuscleWiki",
+                          style: const TextStyle(color: Color(0xffe80c53)),
+                          recognizer: TapGestureRecognizer()
+                            ..onTap = () async {
+                              const url = 'https://musclewiki.com/';
+                              if (await canLaunchUrl(Uri.parse(url))) {
+                                await launchUrl(Uri.parse(url));
+                              } else {
+                                if (context.mounted) {
+                                  Utilities.showSnackBar("Failed to open site",
+                                      context, Colors.redAccent);
+                                }
+                              }
+                            }),
+                      const TextSpan(text: " and videos from their official "),
+                      TextSpan(
+                          text: "YouTube Channel",
+                          style: const TextStyle(color: Color(0xffe80c53)),
+                          recognizer: TapGestureRecognizer()
+                            ..onTap = () async {
+                              const url = 'https://www.youtube.com/@musclewiki';
+                              if (await canLaunchUrl(Uri.parse(url))) {
+                                await launchUrl(Uri.parse(url));
+                              } else {
+                                if (context.mounted) {
+                                  Utilities.showSnackBar("Failed to open site",
+                                      context, Colors.redAccent);
+                                }
+                              }
+                            }),
+                      const TextSpan(
+                          text:
+                              ". All credit for the original material belongs to MuscleWiki."),
+                    ]),
               ),
             )
           ],

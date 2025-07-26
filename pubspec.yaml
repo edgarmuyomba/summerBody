@@ -60,6 +60,7 @@ dependencies:
   youtube_player_flutter: ^9.1.1
   rxdart: ^0.28.0
   carousel_slider: ^5.1.1
+  url_launcher: ^6.3.2
 
 
 dev_dependencies:
