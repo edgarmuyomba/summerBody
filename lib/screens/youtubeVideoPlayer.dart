@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:youtube_player_iframe/youtube_player_iframe.dart';
 
 class YoutubeVideoPlayer extends StatefulWidget {
@@ -66,10 +67,10 @@ class _YoutubeVideoPlayerState extends State<YoutubeVideoPlayer> {
   @override
   Widget build(BuildContext context) {
     if (_isLoading) {
-      return SizedBox(
-        height: 200.h,
-        child: const Center(
-          child: CircularProgressIndicator(),
+      return Center(
+        child: SpinKitFadingCircle(
+          color: Colors.black,
+          size: 40.0.h,
         ),
       );
     }
