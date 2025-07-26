@@ -374,6 +374,14 @@ class _DayState extends State<Day> {
     List<MuscleGroupPreset> muscleGroupPresets =
         await widget._localDatabaseService.getAllMuscleGroupPresets();
 
+    List<MuscleGroup> currentMuscleGroups =
+        await widget._localDatabaseService.getMuscleGroupsByDay(day);
+
+    muscleGroupPresets = muscleGroupPresets
+        .where((preset) =>
+            !currentMuscleGroups.any((group) => group.name == preset.name))
+        .toList();
+
     MuscleGroupPreset? result = await showModalBottomSheet(
         backgroundColor: Colors.white,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),

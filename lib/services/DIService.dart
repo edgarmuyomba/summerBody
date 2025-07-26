@@ -39,10 +39,10 @@ class DIService {
     ('Back', 'assets/icons/back.png'),
     ('Legs', 'assets/icons/legs.png'),
     ('Cardio', 'assets/icons/cardio.png'),
-    ('Full Body', 'assets/icons/full-body.png'),
-    ('Rest Day', 'assets/icons/rest-day.png')
+    ('Full Body', 'assets/icons/full-body.png')
   ''');
     });
+    // ('Rest Day', 'assets/icons/rest-day.png')
 
     final database = await $FloorAppDatabase
         .databaseBuilder('summerbody.db')
