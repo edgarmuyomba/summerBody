@@ -6,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:summerbody/blocs/MuscleGroup/muscleGroup_bloc.dart';
 import 'package:summerbody/blocs/Schedule/schedule_bloc.dart';
 import 'package:summerbody/database/tables/MuscleGroup.dart';
 import 'package:summerbody/database/tables/MuscleGroupPreset.dart';
@@ -35,7 +36,7 @@ class Day extends StatefulWidget {
 }
 
 class _DayState extends State<Day> {
-  List<Workout> workouts = [];
+  // List<Workout> workouts = [];
   MuscleGroupPreset? selectMuscleGroupPreset;
   MuscleGroup? currentMuscleGroup;
 
@@ -163,9 +164,9 @@ class _DayState extends State<Day> {
                                 onPageChanged: (index, reason) async {
                                   currentMuscleGroup =
                                       state.muscleGroups[index];
-                                  workouts = await widget._localDatabaseService
-                                      .getWorkoutsByMuscleGroup(
-                                          currentMuscleGroup!.id!);
+                                  // workouts = await widget._localDatabaseService
+                                  //     .getWorkoutsByMuscleGroup(
+                                  //         currentMuscleGroup!.id!);
                                   setState(() {});
                                 }),
                             items: state.muscleGroups.map((muscleGroup) {
@@ -231,149 +232,147 @@ class _DayState extends State<Day> {
                         child: const Divider(),
                       ),
                       Expanded(
-                        child: FutureBuilder(
-                            future: widget._localDatabaseService
-                                .getWorkoutsByMuscleGroup((currentMuscleGroup ??
+                        child: BlocBuilder<MuscleGroupBloc, MuscleGroupState>(
+                          bloc: context.read<MuscleGroupBloc>()
+                            ..add(LoadWorkouts(
+                                muscleGroupId: (currentMuscleGroup ??
                                         state.muscleGroups[0])
-                                    .id!),
-                            builder: (context, snapshot) {
-                              if (snapshot.hasData) {
-                                List<Workout> workouts = snapshot.data!;
-                                return Column(
-                                  mainAxisSize: MainAxisSize.max,
-                                  children: [
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Text(
-                                          "Workouts",
-                                          style: GoogleFonts.monda(
-                                              fontSize: 18.sp,
-                                              color: Colors.black87,
-                                              fontWeight: FontWeight.bold),
-                                        ),
-                                        if (workouts.isNotEmpty) ...[
-                                          IconButton(
-                                              onPressed: () {
-                                                context.pushNamed(
-                                                    Routes.workouts,
-                                                    pathParameters: {
-                                                      "muscleGroupId":
-                                                          "${(currentMuscleGroup ?? state.muscleGroups[0]).id!}"
-                                                    });
-                                              },
-                                              icon: const Icon(
-                                                Icons.menu,
-                                                color: Colors.black87,
-                                              ))
-                                        ]
-                                      ],
-                                    ),
-                                    if (workouts.isEmpty) ...[
-                                      Expanded(
-                                        child: Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
-                                            RichText(
-                                              text: TextSpan(
-                                                text:
-                                                    "You have no workouts for the ",
-                                                style: TextStyle(
-                                                    fontSize: 12.sp,
-                                                    color: Colors.black87),
-                                                children: [
-                                                  TextSpan(
-                                                    text:
-                                                        "${(currentMuscleGroup ?? state.muscleGroups[0]).name!.toLowerCase()}.",
-                                                    style: TextStyle(
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                        fontSize: 12.sp,
-                                                        color: Colors.black87),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                            TextButton(
-                                              onPressed: () {
-                                                context.pushNamed(
-                                                    Routes.workouts,
-                                                    pathParameters: {
-                                                      "muscleGroupId":
-                                                          "${(currentMuscleGroup ?? state.muscleGroups[0]).id!}"
-                                                    });
-                                              },
-                                              child: Text(
-                                                "Add Some",
-                                                style: TextStyle(
-                                                    fontSize: 12.sp,
-                                                    color: Colors.blue,
-                                                    fontWeight:
-                                                        FontWeight.bold),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
+                                    .id!)),
+                          builder: (context, muscleGroupState) {
+                            if (muscleGroupState is MuscleGroupReady) {
+                              return Column(
+                                mainAxisSize: MainAxisSize.max,
+                                children: [
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        "Workouts",
+                                        style: GoogleFonts.monda(
+                                            fontSize: 18.sp,
+                                            color: Colors.black87,
+                                            fontWeight: FontWeight.bold),
                                       ),
-                                    ] else ...[
-                                      Expanded(
-                                        child: SingleChildScrollView(
-                                            child: Column(
-                                          children: workouts.map((workout) {
-                                            return FutureBuilder(
-                                                future: widget
-                                                    ._localDatabaseService
-                                                    .getAllSets(workout.id!),
-                                                builder: (BuildContext context,
-                                                    snapshot) {
-                                                  if (snapshot.hasData) {
-                                                    Map<String, dynamic>
-                                                        workoutMap = {
-                                                      "muscleGroupId":
-                                                          (currentMuscleGroup ??
-                                                                  state.muscleGroups[
-                                                                      0])
-                                                              .id!,
-                                                      "id": workout.id,
-                                                      "name": workout.name,
-                                                      "isSuggested":
-                                                          workout.isSuggested,
-                                                      "sets":
-                                                          (snapshot.data ?? [])
-                                                              .map((set) {
-                                                        return {
-                                                          "weight1":
-                                                              set.weight1,
-                                                          "reps1": set.reps1,
-                                                          "weight2":
-                                                              set.weight2,
-                                                          "reps2": set.reps2,
-                                                          "date": set.date!
-                                                              .toString()
-                                                        };
-                                                      }).toList()
-                                                    };
-                                                    return WorkoutWidget(
-                                                      workout: workoutMap,
-                                                      loadWorkoutsOnBack: false,
-                                                    );
-                                                  } else {
-                                                    return const SizedBox
-                                                        .shrink();
-                                                  }
-                                                });
-                                          }).toList(),
-                                        )),
-                                      )
-                                    ]
-                                  ],
-                                );
-                              } else {
-                                return const SizedBox.shrink();
-                              }
-                            }),
+                                      if (muscleGroupState
+                                          .workouts.isNotEmpty) ...[
+                                        IconButton(
+                                            onPressed: () {
+                                              context.pushNamed(Routes.workouts,
+                                                  pathParameters: {
+                                                    "muscleGroupId":
+                                                        "${(currentMuscleGroup ?? state.muscleGroups[0]).id!}"
+                                                  });
+                                            },
+                                            icon: const Icon(
+                                              Icons.menu,
+                                              color: Colors.black87,
+                                            ))
+                                      ]
+                                    ],
+                                  ),
+                                  if (muscleGroupState.workouts.isEmpty) ...[
+                                    Expanded(
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          RichText(
+                                            text: TextSpan(
+                                              text:
+                                                  "You have no workouts for the ",
+                                              style: TextStyle(
+                                                  fontSize: 12.sp,
+                                                  color: Colors.black87),
+                                              children: [
+                                                TextSpan(
+                                                  text:
+                                                      "${(currentMuscleGroup ?? state.muscleGroups[0]).name!.toLowerCase()}.",
+                                                  style: TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      fontSize: 12.sp,
+                                                      color: Colors.black87),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                          TextButton(
+                                            onPressed: () {
+                                              context.pushNamed(Routes.workouts,
+                                                  pathParameters: {
+                                                    "muscleGroupId":
+                                                        "${(currentMuscleGroup ?? state.muscleGroups[0]).id!}"
+                                                  });
+                                            },
+                                            child: Text(
+                                              "Add Some",
+                                              style: TextStyle(
+                                                  fontSize: 12.sp,
+                                                  color: Colors.blue,
+                                                  fontWeight: FontWeight.bold),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ] else ...[
+                                    Expanded(
+                                      child: SingleChildScrollView(
+                                          child: Column(
+                                        children: muscleGroupState.workouts
+                                            .map((workout) {
+                                          return FutureBuilder(
+                                              future: widget
+                                                  ._localDatabaseService
+                                                  .getAllSets(workout.id!),
+                                              builder: (BuildContext context,
+                                                  snapshot) {
+                                                if (snapshot.hasData) {
+                                                  Map<String, dynamic>
+                                                      workoutMap = {
+                                                    "muscleGroupId":
+                                                        (currentMuscleGroup ??
+                                                                state.muscleGroups[
+                                                                    0])
+                                                            .id!,
+                                                    "id": workout.id,
+                                                    "name": workout.name,
+                                                    "isSuggested":
+                                                        workout.isSuggested,
+                                                    "sets":
+                                                        (snapshot.data ?? [])
+                                                            .map((set) {
+                                                      return {
+                                                        "weight1": set.weight1,
+                                                        "reps1": set.reps1,
+                                                        "weight2": set.weight2,
+                                                        "reps2": set.reps2,
+                                                        "date":
+                                                            set.date!.toString()
+                                                      };
+                                                    }).toList()
+                                                  };
+                                                  return WorkoutWidget(
+                                                    workout: workoutMap,
+                                                    loadWorkoutsOnBack: false,
+                                                  );
+                                                } else {
+                                                  return const SizedBox
+                                                      .shrink();
+                                                }
+                                              });
+                                        }).toList(),
+                                      )),
+                                    )
+                                  ]
+                                ],
+                              );
+                            } else {
+                              return const SizedBox.shrink();
+                            }
+                          },
+                        ),
                       ),
                     ]
                   ],
