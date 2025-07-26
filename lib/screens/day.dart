@@ -37,7 +37,9 @@ class Day extends StatefulWidget {
 class _DayState extends State<Day> {
   // List<Workout> workouts = [];
   MuscleGroupPreset? selectMuscleGroupPreset;
-  MuscleGroup? currentMuscleGroup;
+  int muscleGroupIndex = 0;
+  final CarouselSliderController _carouselController =
+      CarouselSliderController();
 
   @override
   void initState() {
@@ -54,6 +56,7 @@ class _DayState extends State<Day> {
     return Scaffold(
         appBar: AppBar(
           centerTitle: true,
+          backgroundColor: Colors.white,
           title: Text(
             "Summer Body",
             style: GoogleFonts.monda(
@@ -70,6 +73,7 @@ class _DayState extends State<Day> {
                 ))
           ],
         ),
+        backgroundColor: Colors.white,
         body: BlocBuilder<ScheduleBloc, ScheduleState>(
           builder: (context, state) {
             if (state is ScheduleReady) {
@@ -155,17 +159,15 @@ class _DayState extends State<Day> {
                         alignment: Alignment.bottomRight,
                         children: [
                           CarouselSlider(
+                            carouselController: _carouselController,
                             options: CarouselOptions(
                                 enableInfiniteScroll: false,
                                 autoPlay: false,
                                 viewportFraction: 1,
+                                initialPage: muscleGroupIndex,
                                 height: 400.0,
                                 onPageChanged: (index, reason) async {
-                                  currentMuscleGroup =
-                                      state.muscleGroups[index];
-                                  // workouts = await widget._localDatabaseService
-                                  //     .getWorkoutsByMuscleGroup(
-                                  //         currentMuscleGroup!.id!);
+                                  muscleGroupIndex = index;
                                   setState(() {});
                                 }),
                             items: state.muscleGroups.map((muscleGroup) {
@@ -186,7 +188,7 @@ class _DayState extends State<Day> {
                             mainAxisAlignment: MainAxisAlignment.end,
                             children: [
                               IconButton(
-                                onPressed: () async {
+                                onPressed: () {
                                   setState(() {
                                     selectMuscleGroupPreset = null;
                                   });
@@ -203,9 +205,8 @@ class _DayState extends State<Day> {
                               IconButton(
                                 onPressed: () => handleAction(
                                     "delete", state.currentDay,
-                                    muscleGroupId: (currentMuscleGroup ??
-                                            state.muscleGroups[0])
-                                        .id!),
+                                    muscleGroupId: state
+                                        .muscleGroups[muscleGroupIndex].id!),
                                 tooltip: "Delete muscle group",
                                 constraints: BoxConstraints(
                                     maxWidth: 10.w, maxHeight: 10.w),
@@ -226,9 +227,8 @@ class _DayState extends State<Day> {
                         child: BlocBuilder<MuscleGroupBloc, MuscleGroupState>(
                           bloc: context.read<MuscleGroupBloc>()
                             ..add(LoadWorkouts(
-                                muscleGroupId: (currentMuscleGroup ??
-                                        state.muscleGroups[0])
-                                    .id!)),
+                                muscleGroupId:
+                                    state.muscleGroups[muscleGroupIndex].id!)),
                           builder: (context, muscleGroupState) {
                             if (muscleGroupState is MuscleGroupReady) {
                               return Column(
@@ -252,7 +252,7 @@ class _DayState extends State<Day> {
                                               context.pushNamed(Routes.workouts,
                                                   pathParameters: {
                                                     "muscleGroupId":
-                                                        "${(currentMuscleGroup ?? state.muscleGroups[0]).id!}"
+                                                        "${state.muscleGroups[muscleGroupIndex].id!}"
                                                   });
                                             },
                                             icon: const Icon(
@@ -278,7 +278,7 @@ class _DayState extends State<Day> {
                                               children: [
                                                 TextSpan(
                                                   text:
-                                                      "${(currentMuscleGroup ?? state.muscleGroups[0]).name!.toLowerCase()}.",
+                                                      "${state.muscleGroups[muscleGroupIndex].name!.toLowerCase()}.",
                                                   style: TextStyle(
                                                       fontWeight:
                                                           FontWeight.bold,
@@ -293,7 +293,7 @@ class _DayState extends State<Day> {
                                               context.pushNamed(Routes.workouts,
                                                   pathParameters: {
                                                     "muscleGroupId":
-                                                        "${(currentMuscleGroup ?? state.muscleGroups[0]).id!}"
+                                                        "${state.muscleGroups[muscleGroupIndex].id!}"
                                                   });
                                             },
                                             child: Text(
@@ -375,6 +375,7 @@ class _DayState extends State<Day> {
         await widget._localDatabaseService.getAllMuscleGroupPresets();
 
     MuscleGroupPreset? result = await showModalBottomSheet(
+        backgroundColor: Colors.white,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
         context: context,
         builder: (BuildContext context) {
@@ -453,40 +454,94 @@ class _DayState extends State<Day> {
     }
   }
 
+  deleteMuscleGroup(int muscleGroupId) async {
+    await showModalBottomSheet(
+        backgroundColor: Colors.white,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
+        context: context,
+        builder: (BuildContext context) {
+          return Padding(
+              padding: EdgeInsets.symmetric(
+                horizontal: 16.w,
+                vertical: 24.h,
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    "Are you sure you want to delete this muscle group?",
+                    textAlign: TextAlign.center,
+                    style: GoogleFonts.monda(
+                        fontSize: 18.sp,
+                        color: Colors.black87,
+                        fontWeight: FontWeight.bold),
+                  ),
+                  SizedBox(
+                    height: 15.h,
+                  ),
+                  Row(
+                    mainAxisSize: MainAxisSize.max,
+                    children: [
+                      Expanded(
+                        child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                                fixedSize: Size(double.infinity, 50.h),
+                                shape: RoundedRectangleBorder(
+                                    side: const BorderSide(
+                                        color: Color(0xffe80c53)),
+                                    borderRadius: BorderRadius.circular(5)),
+                                foregroundColor: const Color(0xffe80c53),
+                                backgroundColor: Colors.white),
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                            child: const Text(
+                              "No",
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            )),
+                      ),
+                      SizedBox(
+                        width: 10.w,
+                      ),
+                      Expanded(
+                        child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                                fixedSize: Size(double.infinity, 50.h),
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(5)),
+                                foregroundColor: Colors.white,
+                                backgroundColor: const Color(0xffe80c53)),
+                            onPressed: () {
+                              Navigator.pop(context);
+                              context.read<ScheduleBloc>().add(
+                                  DeleteMuscleGroup(
+                                      muscleGroupId: muscleGroupId));
+                              setState(() {
+                                muscleGroupIndex = 0;
+                                _carouselController
+                                    .jumpToPage(muscleGroupIndex);
+                              });
+                            },
+                            child: const Text(
+                              "Yes",
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            )),
+                      )
+                    ],
+                  )
+                ],
+              ));
+        });
+  }
+
   handleAction(String action, int day, {int? muscleGroupId}) async {
     switch (action) {
       case "add":
         await addMuscleGroup(day);
         break;
       case "delete":
-        context
-            .read<ScheduleBloc>()
-            .add(DeleteMuscleGroup(muscleGroupId: muscleGroupId!));
+        deleteMuscleGroup(muscleGroupId!);
         break;
     }
-
-    // return showModalBottomSheet(
-    //     backgroundColor: Colors.white,
-    //     context: context,
-    //     constraints: BoxConstraints(
-    //       minWidth: MediaQuery.of(context).size.width,
-    //     ),
-    //     builder: (BuildContext context) {
-    //       return Padding(
-    //           padding:
-    //               EdgeInsets.symmetric(horizontal: 16.0.w, vertical: 24.0.h),
-    //           child: Column(
-    //             mainAxisSize: MainAxisSize.min,
-    //             children: [
-    //               Text(
-    //                 title,
-    //                 style: GoogleFonts.monda(
-    //                     fontSize: 18.sp,
-    //                     color: Colors.black87,
-    //                     fontWeight: FontWeight.bold),
-    //               )
-    //             ],
-    //           ));
-    //     });
   }
 }

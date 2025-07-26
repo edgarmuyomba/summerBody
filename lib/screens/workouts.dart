@@ -117,6 +117,7 @@ class _WorkoutsState extends State<Workouts> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
+        backgroundColor: Colors.white,
         title: Text(
           "Workouts",
           style: GoogleFonts.monda(
@@ -125,6 +126,7 @@ class _WorkoutsState extends State<Workouts> {
               fontWeight: FontWeight.bold),
         ),
       ),
+      backgroundColor: Colors.white,
       body: BlocBuilder<MuscleGroupBloc, MuscleGroupState>(
           builder: (BuildContext context, state) {
         if (state is MuscleGroupReady) {

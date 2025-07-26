@@ -44,6 +44,7 @@ class _WorkoutDetailsState extends State<WorkoutDetails> {
         child: Scaffold(
           appBar: AppBar(
             centerTitle: true,
+            backgroundColor: Colors.white,
             leading: IconButton(
                 onPressed: () {
                   context.pop();
@@ -67,6 +68,7 @@ class _WorkoutDetailsState extends State<WorkoutDetails> {
                   icon: const Icon(Icons.edit)),
             ],
           ),
+          backgroundColor: Colors.white,
           body: BlocBuilder<MuscleGroupBloc, MuscleGroupState>(
             bloc: context.read<MuscleGroupBloc>()
               ..add(LoadWorkout(workoutId: widget.workoutId)),

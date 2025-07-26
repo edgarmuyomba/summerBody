@@ -45,6 +45,7 @@ class _SettingsState extends State<Settings> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
+        backgroundColor: Colors.white,
         title: Text(
           "Settings",
           style: GoogleFonts.monda(
@@ -53,6 +54,7 @@ class _SettingsState extends State<Settings> {
               fontWeight: FontWeight.bold),
         ),
       ),
+      backgroundColor: Colors.white,
       body: Padding(
         padding: EdgeInsets.all(16.0.h),
         child: Column(
@@ -60,6 +62,7 @@ class _SettingsState extends State<Settings> {
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             Card(
+              color: Colors.white,
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadiusGeometry.circular(5)),
               child: Padding(
@@ -156,6 +159,7 @@ class _SettingsState extends State<Settings> {
               ),
             ),
             Card(
+              color: Colors.white,
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadiusGeometry.circular(5)),
               child: Padding(
