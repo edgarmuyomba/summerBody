@@ -423,9 +423,12 @@ class _$WorkoutPresetDao extends WorkoutPresetDao {
   final InsertionAdapter<WorkoutPreset> _workoutPresetInsertionAdapter;
 
   @override
-  Stream<List<WorkoutPreset>> searchWorkoutPresets(String query) {
+  Stream<List<WorkoutPreset>> searchWorkoutPresets(
+    String muscleGroupName,
+    String query,
+  ) {
     return _queryAdapter.queryListStream(
-        'SELECT * FROM WorkoutPresets WHERE name LIKE ?1',
+        'SELECT * FROM WorkoutPresets WHERE muscleGroupName =?1 AND name LIKE ?2',
         mapper: (Map<String, Object?> row) => WorkoutPreset(
             id: row['id'] as int?,
             name: row['name'] as String?,
@@ -436,7 +439,7 @@ class _$WorkoutPresetDao extends WorkoutPresetDao {
             videoUrl: _stringMapConverter.decode(row['videoUrl'] as String?),
             gifUrl: _stringMapConverter.decode(row['gifUrl'] as String?),
             muscleGroup: row['muscleGroupName'] as String?),
-        arguments: [query],
+        arguments: [muscleGroupName, query],
         queryableName: 'WorkoutPresets',
         isView: false);
   }

@@ -14,10 +14,12 @@ import 'package:summerbody/widgets/workoutWidget.dart';
 
 class Workouts extends StatefulWidget {
   final int muscleGroupId;
+  final String muscleGroupName;
   final LocalDatabaseService _localDatabaseService;
   Workouts(
       {super.key,
       required this.muscleGroupId,
+      required this.muscleGroupName,
       LocalDatabaseService? localDatabaseService})
       : _localDatabaseService = localDatabaseService ??
             DIService().locator.get<LocalDatabaseService>();
@@ -65,8 +67,8 @@ class _WorkoutsState extends State<Workouts> {
   void _searchPresets(String input) {
     if (input.isNotEmpty) {
       setState(() {
-        _presetStream =
-            widget._localDatabaseService.searchWorkoutPresets(input);
+        _presetStream = widget._localDatabaseService
+            .searchWorkoutPresets(widget.muscleGroupName, input);
       });
     } else {
       _presetStream = null;

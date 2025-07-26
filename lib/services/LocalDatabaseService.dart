@@ -140,8 +140,10 @@ class LocalDatabaseService {
         .deleteByMuscleGroupName(muscleGroupName);
   }
 
-  Stream<List<WorkoutPreset>> searchWorkoutPresets(String query) {
-    return _appDatabase.workoutPresetDao.searchWorkoutPresets("%$query%");
+  Stream<List<WorkoutPreset>> searchWorkoutPresets(
+      String muscleGroupName, String query) {
+    return _appDatabase.workoutPresetDao
+        .searchWorkoutPresets(muscleGroupName, "%$query%");
   }
 
   Future<int?> countWorkoutPresets(String muscleGroupName) async {

@@ -95,6 +95,9 @@ class _DayState extends State<Day> {
                             context
                                 .read<ScheduleBloc>()
                                 .add(ChangeDay(next: false));
+                            setState(() {
+                              muscleGroupIndex = 0;
+                            });
                           },
                         ),
                         Column(
@@ -117,6 +120,9 @@ class _DayState extends State<Day> {
                             context
                                 .read<ScheduleBloc>()
                                 .add(ChangeDay(next: true));
+                            setState(() {
+                              muscleGroupIndex = 0;
+                            });
                           },
                         )
                       ],
@@ -252,7 +258,11 @@ class _DayState extends State<Day> {
                                               context.pushNamed(Routes.workouts,
                                                   pathParameters: {
                                                     "muscleGroupId":
-                                                        "${state.muscleGroups[muscleGroupIndex].id!}"
+                                                        "${state.muscleGroups[muscleGroupIndex].id!}",
+                                                    "muscleGroupName": state
+                                                        .muscleGroups[
+                                                            muscleGroupIndex]
+                                                        .name!
                                                   });
                                             },
                                             icon: const Icon(
@@ -293,7 +303,11 @@ class _DayState extends State<Day> {
                                               context.pushNamed(Routes.workouts,
                                                   pathParameters: {
                                                     "muscleGroupId":
-                                                        "${state.muscleGroups[muscleGroupIndex].id!}"
+                                                        "${state.muscleGroups[muscleGroupIndex].id!}",
+                                                    "muscleGroupName": state
+                                                        .muscleGroups[
+                                                            muscleGroupIndex]
+                                                        .name!
                                                   });
                                             },
                                             child: Text(
